@@ -11,7 +11,15 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://senditsystem.netlify.app"
+    ],
+    credentials: true
+  })
+);
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static("uploads"));
@@ -22,5 +30,5 @@ app.use("/api", fileRoutes);
 
 const PORT = 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on ${PORT}`);
 });
