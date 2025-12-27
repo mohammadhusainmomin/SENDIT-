@@ -3,7 +3,10 @@ import File from "../models/File.js";
 
 /* ================= SEND FILE ================= */
 export const sendFile = async (req, res) => {
+    console.log("REQ FILE:", req.file); 
   try {
+    
+    
     if (!req.file) {
       return res.status(400).json({ message: "File missing" });
     }
@@ -23,7 +26,7 @@ export const sendFile = async (req, res) => {
     res.status(201).json({ code });
 
   } catch (err) {
-     console.error("SEND FILE ERROR:", error);
+     console.error("UPLOAD ERROR BACKEND:", err); 
     res.status(500).json({ message: "Upload failed" });
   }
 };
