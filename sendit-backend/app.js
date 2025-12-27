@@ -11,21 +11,18 @@ connectDB();
 
 const app = express();
 
-
+// ✅ CORS FIX (Node 22 SAFE)
 app.use(
   cors({
     origin: [
       "http://localhost:3000",
       "https://senditsystem.netlify.app"
     ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
   })
 );
-
-
-app.options("*", cors());
 
 app.use(express.json());
 
