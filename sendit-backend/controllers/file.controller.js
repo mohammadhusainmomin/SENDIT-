@@ -42,6 +42,11 @@ export const receiveFile = async (req, res) => {
     }
 
    
+    if (req.user && !fileData.receiverId) {
+      fileData.receiverId = req.user.id;
+      await fileData.save();
+    }
+
     res.setHeader(
       "Content-Disposition",
       `attachment; filename="${encodeURIComponent(fileData.originalName)}"`

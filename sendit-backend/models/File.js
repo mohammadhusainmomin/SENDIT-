@@ -17,11 +17,12 @@ const fileSchema = new mongoose.Schema(
 
 
     //  RECEIVER
-    receiverId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: null
-    }
+  receiverId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  default: null
+}
+
   },
   { timestamps: true }
 );
