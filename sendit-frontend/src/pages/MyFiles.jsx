@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import Mascot from "../components/Mascot";
 import "../styles/MyFiles.css";
 import api from "../services/api";
+import { useToast } from "../context/ToastContext";
 
 function MyFiles() {
   const [files, setFiles] = useState([]);
@@ -10,6 +11,7 @@ function MyFiles() {
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
   const { user } = useContext(AuthContext);
+  const { success, error: showError } = useToast();
 
   useEffect(() => {
     if (!token) return;
@@ -126,7 +128,10 @@ function MyFiles() {
                   <div className="file-card-footer">
                     <button
                       className="btn-copy-code"
-                      onClick={() => navigator.clipboard.writeText(file.code)}
+                      onClick={() => {
+                        navigator.clipboard.writeText(file.code);
+                        success("✓ Code copied to clipboard!");
+                      }}
                       title="Copy code"
                     >
                       📋 {file.code}
@@ -159,7 +164,7 @@ function MyFiles() {
                           a.remove();
                           window.URL.revokeObjectURL(url);
                         } catch (err) {
-                          alert("Download failed");
+                          showError("Download failed. Please try again.");
                         }
                       }}
                     >

@@ -1,27 +1,26 @@
 import { useState } from "react";
 import "./styles/CodeInput.css";
 import api from "../services/api";
+import { useToast } from "../context/ToastContext";
 
 function CodeInput() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const { success: showSuccess, error: showError } = useToast();
 
   const handleDownload = async () => {
     if (code.length !== 4) {
-      setError("Please enter a valid 4-digit code");
+      showError("Please enter a valid 4-digit code");
       return;
     }
 
     try {
       setLoading(true);
-      setError("");
 
       const token = localStorage.getItem("token");
 
       if (!token) {
-        setError("Please login to receive file");
+        showError("Please login to receive file");
         return;
       }
 
@@ -61,12 +60,11 @@ function CodeInput() {
       a.remove();
       window.URL.revokeObjectURL(url);
 
-      setSuccess(true);
+      showSuccess("✓ File downloaded successfully!");
       setCode("");
-      setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       console.error(err.response?.data || err.message);
-      setError("Invalid code or file expired. Please try again.");
+      showError("Invalid code or file expired. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -75,7 +73,6 @@ function CodeInput() {
   const handleCodeChange = (e) => {
     const value = e.target.value.replace(/\D/g, "").slice(0, 4);
     setCode(value);
-    setError("");
   };
 
   return (
@@ -96,11 +93,6 @@ function CodeInput() {
           className="code-input"
         />
       </div>
-
-      {error && <div className="error-message">{error}</div>}
-      {success && (
-        <div className="success-message">✓ File downloaded successfully!</div>
-      )}
 
       <button
         className="btn-download"
