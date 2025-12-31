@@ -65,14 +65,18 @@ function FileUpload() {
   };
 
   const shareOnWhatsApp = () => {
-    const message = `📁 SENDIT File Share
+   const message = `📁 SENDIT – Fast & Secure File Share
 
-Here is your secure file access code:
-🔐 Code: ${code}
+🔐 Access Code:
+👉 ${code}
 
-⏰ Valid for 10 minutes only.
+⏰ This code is valid for 10 minutes only.
 
-Open SENDIT app to download the file.`;
+🌐 Download your file here:
+https://senditsystem.netlify.app/
+
+🔒 Secure • No links • One-time access`;
+
 
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
