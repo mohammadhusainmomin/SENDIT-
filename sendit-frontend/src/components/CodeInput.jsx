@@ -85,7 +85,7 @@ function CodeInput() {
           id="access-code"
           type="text"
           inputMode="numeric"
-          placeholder="0000"
+          placeholder=" "
           value={code}
           onChange={handleCodeChange}
           disabled={loading}

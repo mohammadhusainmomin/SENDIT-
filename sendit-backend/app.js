@@ -9,7 +9,7 @@ import connectDB from "./db.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import fileRoutes from "./routes/file.routes.js";
-
+import codeRoutes from "./routes/code.routes.js";
 
 connectDB();
 
@@ -49,6 +49,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api", fileRoutes);
+app.use("/api", codeRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>

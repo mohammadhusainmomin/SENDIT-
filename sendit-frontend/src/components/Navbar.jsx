@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import AuthModal from "./AuthModel";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Mascot from "./Mascot";
 import "./styles/Navbar.css";
+
 
 function Navbar() {
   const { user, logout } = useContext(AuthContext);
@@ -25,17 +26,30 @@ function Navbar() {
           </div>
           <h3>SENDIT</h3>
         </div>
+<div className="navbar-menu">
+  {user && (
+    <>
+      <button
+        className="nav-btn nav-link"
+        onClick={() => navigate("/my-files")}
+      >
+        📋 My Files
+      </button>
 
-          <div className="navbar-menu">
-            {user && (
-              <button
-                className="nav-btn nav-link"
-                onClick={() => navigate("/my-files")}
-              >
-                📋 My Files
-              </button>
-            )}
+      <Link className="nav-link" to="/code/send">
+        💻 Send Code
+      </Link>
 
+      <Link className="nav-link" to="/code/receive">
+        📥 Receive Code
+      </Link>
+
+      <Link className="nav-link" to="/code/history">
+        📜 Code History
+      </Link>
+    </>
+  )}
+           
             <div className="navbar-auth">
               {user ? (
                 <div className="user-menu">
