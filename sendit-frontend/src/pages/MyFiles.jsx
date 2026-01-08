@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Mascot from "../components/Mascot";
+import SEO from "../components/SEO";
 import "../styles/MyFiles.css";
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
@@ -54,6 +55,11 @@ function MyFiles() {
 
   return (
     <div className="my-files-container">
+      <SEO
+        title="My Files - SendIt File History"
+        description="View your sent and received files. Manage your file transfers and track history."
+        url="https://sendit.example.com/my-files"
+      />
       <div className="my-files-content">
         {/* Header */}
         <section className="files-header">

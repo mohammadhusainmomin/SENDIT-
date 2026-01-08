@@ -11,6 +11,11 @@ import MyFiles from "./pages/MyFiles";
 import CodeHistory from "./components/CodeHistory";
 import CodeShare from "./pages/CodeShare";
 import CodeReceive from "./components/CodeReceive";
+import About from "./pages/About";
+import Features from "./pages/Features";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import FAQ from "./pages/FAQ";
 
 
 function App() {
@@ -25,9 +30,14 @@ function App() {
           <Route path="/send" element={<Send />} />
           <Route path="/receive" element={<Receive />} />
           <Route path="/my-files" element={<MyFiles />} />
-            <Route path="/code/send" element={<CodeShare />} />
-        <Route path="/code/receive" element={<CodeReceive />} />
-        <Route path="/code/history" element={<CodeHistory />} />
+          <Route path="/code/send" element={<CodeShare />} />
+          <Route path="/code/receive" element={<CodeReceive />} />
+          <Route path="/code/history" element={<CodeHistory />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/faq" element={<FAQ />} />
         </Routes>
       </BrowserRouter>
     </ToastProvider>

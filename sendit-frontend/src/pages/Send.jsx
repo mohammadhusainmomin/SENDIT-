@@ -1,10 +1,16 @@
 import FileUpload from "../components/FileUpload";
 import { UploadIllustration } from "../components/Illustrations";
+import SEO from "../components/SEO";
 import "../styles/Send.css";
 
 function Send() {
   return (
     <div className="send-container">
+      <SEO
+        title="Send File - SendIt Secure File Sharing"
+        description="Upload and send your files securely. Get a 4-digit access code to share. Files auto-delete for security."
+        url="https://sendit.example.com/send"
+      />
       <div className="send-content">
         <section className="send-header">
           <div className="header-icon">📤</div>

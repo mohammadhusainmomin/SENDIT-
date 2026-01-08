@@ -6,6 +6,7 @@
   top: 0;
   z-index: 100;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  overflow: visible;
 }
 
 .navbar-container {
@@ -16,6 +17,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
+  position: relative;
 }
 
 /* ============ BRAND ============ */
@@ -250,24 +252,29 @@
   }
 
   .navbar-menu {
-    position: absolute;
-    top: 70px;
+    position: fixed;
+    top: 0;
     right: 0;
     left: 0;
     background: linear-gradient(180deg, #0f1419 0%, #1a1f2e 100%);
     border-bottom: 2px solid rgba(0, 212, 255, 0.1);
     flex-direction: column;
     gap: 0.5rem;
-    padding: 1rem;
+    padding: 5.5rem 1rem 1rem 1rem;
     margin-left: 0;
     justify-content: flex-start;
-    max-height: 0;
+    transform: translateY(-100%);
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: transform 0.3s ease;
+    z-index: 99;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .navbar-menu.mobile-active {
-    max-height: 500px;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
   }
 
   .nav-btn,

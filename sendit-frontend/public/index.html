@@ -4,40 +4,80 @@
     <meta charset="utf-8" />
     <link rel="icon" href="./images/Sendit_logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="google-site-verification" content="Dh5c_6qp5pRq7fPBv0wqtofedSArIyxOT_CoB4a4IFY" />
-    <meta name="theme-color" content="#000000" />
+    <meta
+      name="google-site-verification"
+      content="Dh5c_6qp5pRq7fPBv0wqtofedSArIyxOT_CoB4a4IFY"
+    />
+    <meta name="theme-color" content="#3498db" />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="SendIt - Secure file and code sharing platform. Share files and code snippets safely with encrypted links."
     />
-  
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <meta
+      name="keywords"
+      content="file sharing, code sharing, secure transfer, encrypted files, share files online"
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="author" content="SendIt Team" />
+    <meta name="revisit-after" content="7 days" />
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>SendIt</title>
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SendIt - Secure File & Code Sharing" />
+    <meta
+      property="og:description"
+      content="Share files and code snippets securely with encrypted links. No registration needed."
+    />
+    <meta property="og:url" content="https://sendit.example.com" />
+    <meta property="og:site_name" content="SendIt" />
+    <meta
+      property="og:image"
+      content="https://sendit.example.com/og-image.png"
+    />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SendIt - Secure File & Code Sharing" />
+    <meta
+      name="twitter:description"
+      content="Share files and code snippets securely with encrypted links."
+    />
+    <meta
+      name="twitter:image"
+      content="https://sendit.example.com/og-image.png"
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sendit.example.com" />
+
+    <!-- Preconnect to improve performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <meta name="theme-color" content="#0d6efd" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="SendIt" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon-192.png" />
+
+    <!-- Service Worker Script -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js').catch(() => {
+            // Service worker registration failed, app will still work
+          });
+        });
+      }
+    </script>
+
+    <title>SendIt - Secure File & Code Sharing Platform</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>

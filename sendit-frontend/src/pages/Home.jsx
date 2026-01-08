@@ -4,13 +4,34 @@ import {
   FileTransferIllustration,
   SecurityIllustration,
 } from "../components/Illustrations";
+import SEO from "../components/SEO";
 import "../styles/Home.css";
 
 function Home() {
   const navigate = useNavigate();
 
+  const homeStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "SendIt",
+    description: "Secure file and code sharing platform with code-based access",
+    url: "https://sendit.example.com",
+    applicationCategory: "UtilityApplication",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
   return (
     <div className="home-container">
+      <SEO
+        title="SendIt - Secure File & Code Sharing Platform"
+        description="Share files instantly with just a 4-digit code. No links, no accounts required. Secure, fast, and easy file transfer."
+        url="https://sendit.example.com"
+        structuredData={homeStructuredData}
+      />
       {/* Background Animation Elements */}
       <div className="background-gradient"></div>
       <div className="floating-element floating-1"></div>

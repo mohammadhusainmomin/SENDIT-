@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import api from "../services/api";
 import { formatCode } from "../utils/formatCode";
 import { useToast } from "../context/ToastContext";
+import SEO from "../components/SEO";
 
 function CodeShare() {
   const [rawCode, setRawCode] = useState("");
@@ -76,6 +77,11 @@ function CodeShare() {
 
   return (
     <div className="code-share-container">
+      <SEO
+        title="Share Code - SendIt Code Snippet Sharing"
+        description="Share code snippets securely with syntax highlighting. Share code with 4-digit access codes."
+        url="https://sendit.example.com/code/send"
+      />
       <div className="code-share-content">
         <section className="code-share-header">
           <div className="header-icon">📤</div>

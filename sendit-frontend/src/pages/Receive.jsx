@@ -1,10 +1,16 @@
 import CodeInput from "../components/CodeInput";
 import { DownloadIllustration } from "../components/Illustrations";
+import SEO from "../components/SEO";
 import "../styles/Receive.css";
 
 function Receive() {
   return (
     <div className="receive-container">
+      <SEO
+        title="Receive File - SendIt"
+        description="Receive files securely using a 4-digit access code. Fast, secure, and no account required."
+        url="https://sendit.example.com/receive"
+      />
       <div className="receive-content">
         <section className="receive-header">
           <div className="header-icon">📥</div>
