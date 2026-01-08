@@ -1,40 +1,25 @@
-import nodemailer from "nodemailer";
+import emailjs from "@emailjs/nodejs";
 
-let transporter = null;
+let initialized = false;
 
-const initializeTransporter = () => {
-  if (transporter) return transporter;
+const initializeEmailJS = () => {
+  if (initialized) return;
 
-  console.log("=== EMAIL CONFIGURATION ===");
-  console.log("EMAIL_USER configured:", !!process.env.EMAIL_USER);
-  console.log("EMAIL_PASS configured:", !!process.env.EMAIL_PASS);
+  console.log("=== EMAILJS CONFIGURATION ===");
+  console.log("EMAILJS_SERVICE_ID configured:", !!process.env.EMAILJS_SERVICE_ID);
+  console.log("EMAILJS_TEMPLATE_ID configured:", !!process.env.EMAILJS_TEMPLATE_ID);
+  console.log("EMAILJS_PUBLIC_KEY configured:", !!process.env.EMAILJS_PUBLIC_KEY);
+  console.log("EMAILJS_PRIVATE_KEY configured:", !!process.env.EMAILJS_PRIVATE_KEY);
 
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.error("❌ WARNING: Email credentials not found in environment variables!");
-    console.error("   Set EMAIL_USER and EMAIL_PASS in your .env file");
+  if (!process.env.EMAILJS_SERVICE_ID || !process.env.EMAILJS_TEMPLATE_ID || !process.env.EMAILJS_PRIVATE_KEY) {
+    console.error("❌ WARNING: EmailJS credentials not found in environment variables!");
+    console.error("   Set EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, and EMAILJS_PRIVATE_KEY in your .env file");
+    console.error("   Get these from https://dashboard.emailjs.com/admin/account");
+    return;
   }
 
-  transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
-  // Test the connection
-  transporter.verify((error, success) => {
-    if (error) {
-      console.error("❌ Email transporter verification failed:", error.message);
-      console.error("   This usually means your Gmail credentials are wrong or 2FA is enabled without an app password");
-    } else {
-      console.log("✓ Email transporter is ready");
-    }
-  });
-
-  return transporter;
+  console.log("✓ EmailJS configuration loaded successfully");
+  initialized = true;
 };
 
 export const sendOtpEmail = async (to, otp) => {
@@ -43,15 +28,11 @@ export const sendOtpEmail = async (to, otp) => {
       throw new Error("Recipient email address is required");
     }
 
-    const mail = initializeTransporter();
+    initializeEmailJS();
 
     console.log("📧 Attempting to send OTP to:", to);
 
-    const info = await mail.sendMail({
-      from: `"SENDIT" <${process.env.EMAIL_USER}>`,
-      to,
-      subject: `Your SENDIT Verification Code: ${otp}`,
-      html: `
+    const emailHtml = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -367,11 +348,26 @@ export const sendOtpEmail = async (to, otp) => {
     </div>
 </body>
 </html>
-      `,
-    });
+    `;
 
-    console.log("✓ OTP email sent successfully to:", to, "- Message ID:", info.messageId);
-    return info;
+    const templateParams = {
+      to_email: to,
+      otp_code: otp,
+      html_content: emailHtml,
+    };
+
+    const result = await emailjs.send(
+      process.env.EMAILJS_SERVICE_ID,
+      process.env.EMAILJS_TEMPLATE_ID,
+      templateParams,
+      {
+        publicKey: process.env.EMAILJS_PUBLIC_KEY,
+        privateKey: process.env.EMAILJS_PRIVATE_KEY,
+      }
+    );
+
+    console.log("✓ OTP email sent successfully to:", to);
+    return result;
   } catch (error) {
     console.error("❌ Failed to send OTP email to:", to);
     console.error("Error code:", error.code);

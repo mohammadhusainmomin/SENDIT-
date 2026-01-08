@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import ForgotPassword from "./ForgotPassword";
 import { AuthContext } from "../context/AuthContext";
@@ -16,6 +16,17 @@ function AuthModal({ isOpen, closeModal }) {
 
   const { login } = useContext(AuthContext);
   const { success, error: showError } = useToast();
+
+  // 🔹 Reset modal state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setMode("login");
+      setStep("form");
+      setForm({ name: "", email: "", password: "" });
+      setOtp("");
+      setError("");
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
