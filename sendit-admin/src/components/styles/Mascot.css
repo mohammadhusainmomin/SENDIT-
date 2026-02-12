@@ -1,0 +1,270 @@
+.mascot-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 8px 16px rgba(0, 212, 255, 0.2));
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mascot-container:hover {
+  transform: scale(1.05);
+}
+
+.mascot-large {
+  width: 280px;
+  height: 340px;
+}
+
+.mascot-medium {
+  width: 200px;
+  height: 240px;
+}
+
+.mascot-small {
+  width: 120px;
+  height: 140px;
+}
+
+.mascot-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+}
+
+/* Eyes blinking animation */
+.eye {
+  animation: blink 4s ease-in-out infinite;
+}
+
+.eye-left {
+  animation-delay: 0s;
+}
+
+.eye-right {
+  animation-delay: 0.1s;
+}
+
+@keyframes blink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+/* Pupil looking around */
+.pupil {
+  animation: look-around 6s ease-in-out infinite;
+}
+
+.eye-left .pupil {
+  animation: look-left 6s ease-in-out infinite;
+}
+
+.eye-right .pupil {
+  animation: look-right 6s ease-in-out infinite;
+}
+
+@keyframes look-left {
+  0%,
+  100% {
+    cx: 82;
+    cy: 66;
+  }
+  25% {
+    cx: 77;
+    cy: 65;
+  }
+  50% {
+    cx: 82;
+    cy: 70;
+  }
+  75% {
+    cx: 85;
+    cy: 64;
+  }
+}
+
+@keyframes look-right {
+  0%,
+  100% {
+    cx: 122;
+    cy: 66;
+  }
+  25% {
+    cx: 127;
+    cy: 65;
+  }
+  50% {
+    cx: 122;
+    cy: 70;
+  }
+  75% {
+    cx: 119;
+    cy: 64;
+  }
+}
+
+/* Arms waving */
+.arm {
+  animation: wave 2.5s ease-in-out infinite;
+  transform-origin: top;
+}
+
+.arm-left {
+  animation-delay: 0s;
+  transform-origin: 45px 95px;
+}
+
+.arm-right {
+  animation-delay: 1.25s;
+  transform-origin: 155px 95px;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: rotateZ(0deg);
+  }
+  25% {
+    transform: rotateZ(-25deg);
+  }
+  50% {
+    transform: rotateZ(15deg);
+  }
+  75% {
+    transform: rotateZ(-10deg);
+  }
+}
+
+/* Floating files animation */
+.floating-file {
+  animation: float 3s ease-in-out infinite;
+}
+
+.file-1 {
+  animation-delay: 0s;
+}
+
+.file-2 {
+  animation-delay: 1.5s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotateZ(0deg);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translateY(-12px) rotateZ(-8deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-8px) rotateZ(4deg);
+    opacity: 0.7;
+  }
+  75% {
+    transform: translateY(-15px) rotateZ(-6deg);
+    opacity: 0.8;
+  }
+}
+
+/* Arrow accent animation */
+.arrow-accent {
+  animation: arrow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes arrow-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translateY(0px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+}
+
+/* Body gentle bounce */
+.mascot-svg {
+  animation: mascot-bounce 3s ease-in-out infinite;
+}
+
+@keyframes mascot-bounce {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Aura glow effect */
+.mascot-aura {
+  position: absolute;
+  width: 110%;
+  height: 110%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 212, 255, 0.15) 0%,
+    transparent 70%
+  );
+  animation: aura-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes aura-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  .mascot-large {
+    width: 220px;
+    height: 260px;
+  }
+
+  .mascot-medium {
+    width: 150px;
+    height: 180px;
+  }
+
+  .mascot-small {
+    width: 100px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mascot-large {
+    width: 180px;
+    height: 220px;
+  }
+
+  .mascot-medium {
+    width: 120px;
+    height: 150px;
+  }
+
+  .mascot-small {
+    width: 80px;
+    height: 100px;
+  }
+}

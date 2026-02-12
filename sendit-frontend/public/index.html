@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#3498db" />
     <meta
       name="description"
-      content="SendIt - Share files and code online securely. Send large files for free with a simple 4-digit code. No links or accounts required. The fastest and safest way to share files."
+      content="SendIt - Secure file and code sharing. Share files free with 4-digit codes. No links, no accounts. Fast, safe, and instant."
     />
     <meta
       name="keywords"
@@ -60,6 +60,41 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="SendIt" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon-192.png" />
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SendIt",
+      "description": "Secure file and code sharing platform. Share files free with 4-digit codes.",
+      "url": "https://senditsystem.netlify.app",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "SendIt Team",
+        "url": "https://senditsystem.netlify.app"
+      }
+    }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "SendIt",
+      "url": "https://senditsystem.netlify.app",
+      "logo": "https://senditsystem.netlify.app/images/Sendit_logo.png",
+      "description": "Secure file and code sharing platform with simple 4-digit code access"
+    }
+    </script>
 
     <!-- Service Worker Script -->
     <script>

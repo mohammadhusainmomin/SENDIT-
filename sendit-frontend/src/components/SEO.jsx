@@ -13,8 +13,8 @@ import { useEffect } from "react";
  */
 export default function SEO({
   title = "SendIt - Share Files Online | Secure File & Code Sharing Platform",
-  description = "SendIt is the fastest way to share files and code snippets online. Send large files for free, securely, and with no registration required. Best alternative for secure file transfer.",
-  keywords = "share files online, send large files free, secure file transfer, code sharing, anonymous file sharing, sendit, encrypted file sharing, best file sharing site",
+  description = "Secure file and code sharing platform. Share files free with 4-digit codes. No links, no accounts. Fast, safe, and instant.",
+  keywords = "share files online, send files free, secure file transfer, code sharing, anonymous file sharing, sendit, best file sharing site",
   url = "https://senditsystem.netlify.app",
   image = "https://senditsystem.netlify.app/og-image.png",
   type = "website",
