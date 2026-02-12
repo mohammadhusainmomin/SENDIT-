@@ -2,11 +2,14 @@
   command = "npm run build"
   publish = "dist"
 
+[context.production.environment]
+  VITE_API_URL = "https://sendit-backend-8h7d.onrender.com/api"
+
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline';"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://sendit-backend-8h7d.onrender.com;"
 
 [[headers]]
   for = "/index.html"
