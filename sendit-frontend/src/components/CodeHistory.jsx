@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FiBook, FiCopy, FiUser, FiCalendar, FiClock, FiTrash2 } from "react-icons/fi";
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
@@ -10,11 +10,7 @@ function CodeHistory() {
   const [loading, setLoading] = useState(true);
   const { success, error } = useToast();
 
-  useEffect(() => {
-    fetchHistory();
-  }, []);
-
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     try {
       setLoading(true);
       const res = await api.get("/code/history");
@@ -26,7 +22,11 @@ function CodeHistory() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [error]);
+
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
 
   const handleCopyCode = async (preview) => {
     try {
