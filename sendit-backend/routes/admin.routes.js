@@ -8,6 +8,8 @@ import {
   getFileDetails,
   getCodeDetails
 } from "../controllers/admin.controller.js";
+import { getAdminFileHistory } from "../controllers/file.controller.js";
+import { getAdminCodeHistory } from "../controllers/code.controller.js";
 
 const router = express.Router();
 
@@ -31,5 +33,11 @@ router.get("/files", getFileDetails);
 
 // Codes details
 router.get("/codes", getCodeDetails);
+
+// File history details
+router.get("/file-history", getAdminFileHistory);
+
+// Code history details
+router.get("/code-history", getAdminCodeHistory);
 
 export default router;

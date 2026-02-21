@@ -5,7 +5,6 @@ import { useToast } from "../context/ToastContext";
 import { useAuth } from "../context/AuthContext";
 import { FiCode, FiSend, FiTrash2,  FiCopy, FiRefreshCw,  } from "react-icons/fi";
 import SEO from "../components/SEO";
-import QRCodeDisplay from "../components/QRCodeDisplay";
 import CountdownTimer from "../components/CountdownTimer";
 
 function CodeShare() {
@@ -247,32 +246,26 @@ function CodeShare() {
               </div>
 
               <div className="result-body">
-                <div className="result-main-info">
-                  <div className="code-display-wrapper">
-                    <p className="access-code">{shareCode}</p>
-                    <button
-                      onClick={handleCopyCode}
-                      className="btn-copy-compact"
-                      title="Copy code"
-                    >
-                      <FiCopy />
-                    </button>
-                  </div>
-
-                  {totalExpiryMinutes > 0 && (
-                    <CountdownTimer
-                      expiresInMinutes={totalExpiryMinutes}
-                      onExpire={() => {
-                        error("Code has expired!");
-                        handleReset();
-                      }}
-                    />
-                  )}
+                <div className="code-display-wrapper">
+                  <p className="access-code">{shareCode}</p>
+                  <button
+                    onClick={handleCopyCode}
+                    className="btn-copy-compact"
+                    title="Copy code"
+                  >
+                    <FiCopy />
+                  </button>
                 </div>
 
-                <div className="result-qr-wrapper">
-                  <QRCodeDisplay value={shareCode} size={120} />
-                </div>
+                {totalExpiryMinutes > 0 && (
+                  <CountdownTimer
+                    expiresInMinutes={totalExpiryMinutes}
+                    onExpire={() => {
+                      error("Code has expired!");
+                      handleReset();
+                    }}
+                  />
+                )}
               </div>
 
               <div className="result-footer">

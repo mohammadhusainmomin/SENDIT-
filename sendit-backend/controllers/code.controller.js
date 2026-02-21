@@ -1,4 +1,5 @@
 import Code from "../models/Code.js";
+import CodeHistory from "../models/CodeHistory.js";
 import crypto from "crypto";
 
 const algorithm = "aes-256-cbc";
@@ -63,16 +64,35 @@ export const sendCode = async (req, res) => {
 
     const shareCode = Math.floor(1000 + Math.random() * 9000).toString();
     const expirationTime = parseInt(expiresIn) || 10; // Default to 10 minutes
+    const expiresAtTime = new Date(Date.now() + expirationTime * 60 * 1000);
 
     // Encrypt the code content
     const encryptedContent = encryptText(content);
 
-    await Code.create({
+    // Create code document
+    const codeDoc = await Code.create({
       code: shareCode,
       content: encryptedContent,
       expiresIn: expirationTime,
-      expiresAt: new Date(Date.now() + expirationTime * 60 * 1000),
+      expiresAt: expiresAtTime,
       senderId: req.user?.id
+    });
+
+    // Create history record
+    const contentPreview = content.length > 100 ? content.substring(0, 100) + "..." : content;
+
+    await CodeHistory.create({
+      codeId: codeDoc._id,
+      code: shareCode,
+      contentPreview,
+      senderId: req.user?.id || null,
+      senderEmail: req.user?.email || null,
+      senderName: req.user?.name || null,
+      senderType: req.user?.id ? "authenticated" : "guest",
+      sentAt: new Date(),
+      expiresAt: expiresAtTime,
+      expiresIn: expirationTime,
+      status: "pending"
     });
 
     res.json({ code: shareCode, expiresIn: expirationTime });
@@ -104,6 +124,21 @@ export const receiveCode = async (req, res) => {
     if (!data.receiverId && req.user) {
       data.receiverId = req.user.id;
       await data.save();
+    }
+
+    // Update history if user is authenticated
+    if (req.user) {
+      await CodeHistory.updateMany(
+        { codeId: data._id, receivedAt: { $exists: false } },
+        {
+          receiverId: req.user.id,
+          receiverEmail: req.user.email,
+          receiverName: req.user.name,
+          receiverType: "authenticated",
+          receivedAt: new Date(),
+          status: "received"
+        }
+      );
     }
 
     res.json({ content: decryptedContent });
@@ -141,5 +176,63 @@ export const getMyCodes = async (req, res) => {
   } catch (err) {
     console.error("GET CODES ERROR:", err);
     res.status(500).json({ message: "Failed to fetch codes" });
+  }
+};
+
+/* ================= CODE HISTORY ================= */
+export const getCodeHistory = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const history = await CodeHistory.find({
+      $or: [{ senderId: userId }, { receiverId: userId }]
+    })
+      .sort({ sentAt: -1 })
+      .select("-codeId");
+
+    res.json({
+      success: true,
+      history
+    });
+  } catch (err) {
+    console.error("GET CODE HISTORY ERROR:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch code history"
+    });
+  }
+};
+
+/* ================= ADMIN CODE HISTORY ================= */
+export const getAdminCodeHistory = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
+    const history = await CodeHistory.find()
+      .sort({ sentAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select("-codeId");
+
+    const total = await CodeHistory.countDocuments();
+
+    res.json({
+      success: true,
+      history,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+        limit
+      }
+    });
+  } catch (err) {
+    console.error("GET ADMIN CODE HISTORY ERROR:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch code history"
+    });
   }
 };

@@ -8,12 +8,21 @@ const api = axios.create({
   baseURL
 });
 
+// Cache token in memory for faster access
+let cachedToken = localStorage.getItem("token");
+
+// Listen for storage changes (e.g., login/logout in other tabs)
+window.addEventListener("storage", (e) => {
+  if (e.key === "token") {
+    cachedToken = e.newValue;
+  }
+});
+
 // Add token to all requests
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (cachedToken) {
+      config.headers.Authorization = `Bearer ${cachedToken}`;
     }
     return config;
   },
@@ -21,5 +30,10 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+// Expose function to update cached token when it changes
+export const updateCachedToken = (token) => {
+  cachedToken = token;
+};
 
 export default api;

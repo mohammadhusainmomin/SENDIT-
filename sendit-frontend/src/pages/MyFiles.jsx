@@ -38,7 +38,6 @@ function MyFiles() {
   }, [token]);
 
   const sentFiles = files.filter((file) => file.senderId === user?._id);
-
   const receivedFiles = files.filter((file) => file.receiverId === user?._id);
 
   const displayFiles = activeTab === "sent" ? sentFiles : receivedFiles;
@@ -76,14 +75,14 @@ function MyFiles() {
             onClick={() => setActiveTab("sent")}
           >
             <FiUploadCloud />
-            Sent ({sentFiles.length})
+            Sent Files ({sentFiles.length})
           </button>
           <button
             className={`tab-btn ${activeTab === "received" ? "active" : ""}`}
             onClick={() => setActiveTab("received")}
           >
             <FiDownload />
-            Received ({receivedFiles.length})
+            Received Files ({receivedFiles.length})
           </button>
         </div>
 
@@ -97,12 +96,8 @@ function MyFiles() {
           ) : displayFiles.length === 0 ? (
             <div className="empty-state">
               <Mascot size="medium" />
-              <h3>No files yet</h3>
-              <p>
-                {activeTab === "sent"
-                  ? "Files you send will appear here"
-                  : "Files you receive will appear here"}
-              </p>
+              <h3>{activeTab === "sent" ? "No sent files yet" : "No received files yet"}</h3>
+              <p>{activeTab === "sent" ? "Files you send will appear here" : "Files you receive will appear here"}</p>
             </div>
           ) : (
             <div className="files-grid">
@@ -110,9 +105,7 @@ function MyFiles() {
                 <div key={file._id} className="file-card">
                   <div className="file-card-header">
                     <div className="file-type-icon"><FiFile /></div>
-                    <span className="file-status-badge">
-                      {activeTab === "sent" ? "Sent" : "Received"}
-                    </span>
+                    <span className="file-status-badge">{activeTab === "sent" ? "Sent" : "Received"}</span>
                   </div>
 
                   <div className="file-card-content">

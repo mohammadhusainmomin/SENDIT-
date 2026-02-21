@@ -118,6 +118,7 @@ function Dashboard({ user, onLogout }) {
   const [users, setUsers] = useState([])
   const [files, setFiles] = useState([])
   const [codes, setCodes] = useState([])
+  const [codeHistory, setCodeHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [backendConnected, setBackendConnected] = useState(true)
 
@@ -135,17 +136,18 @@ function Dashboard({ user, onLogout }) {
   const fetchDashboardData = async () => {
     try {
       // Fetch all data from backend
-      const [statsRes, trendRes, activityRes, usersRes, filesRes, codesRes] = await Promise.all([
+      const [statsRes, trendRes, activityRes, usersRes, filesRes, codesRes, codeHistoryRes] = await Promise.all([
         fetch(`${API_BASE_URL}/admin/stats`),
         fetch(`${API_BASE_URL}/admin/trend`),
         fetch(`${API_BASE_URL}/admin/activity?limit=15`),
         fetch(`${API_BASE_URL}/admin/users?limit=10`),
         fetch(`${API_BASE_URL}/admin/files?limit=10`),
-        fetch(`${API_BASE_URL}/admin/codes?limit=10`)
+        fetch(`${API_BASE_URL}/admin/codes?limit=10`),
+        fetch(`${API_BASE_URL}/admin/code-history?limit=10`)
       ])
 
       // Check if all responses are ok
-      if (!statsRes.ok || !trendRes.ok || !activityRes.ok || !usersRes.ok || !filesRes.ok || !codesRes.ok) {
+      if (!statsRes.ok || !trendRes.ok || !activityRes.ok || !usersRes.ok || !filesRes.ok || !codesRes.ok || !codeHistoryRes.ok) {
         throw new Error('One or more API endpoints failed')
       }
 
@@ -155,6 +157,7 @@ function Dashboard({ user, onLogout }) {
       const usersData = await usersRes.json()
       const filesData = await filesRes.json()
       const codesData = await codesRes.json()
+      const codeHistoryData = await codeHistoryRes.json()
 
       if (statsData.success) setStats(statsData.stats)
       if (trendData.success) setMonthlyData(trendData.data)
@@ -162,6 +165,7 @@ function Dashboard({ user, onLogout }) {
       if (usersData.success) setUsers(usersData.users)
       if (filesData.success) setFiles(filesData.files)
       if (codesData.success) setCodes(codesData.codes)
+      if (codeHistoryData.success) setCodeHistory(codeHistoryData.history)
 
       setLoading(false)
       setBackendConnected(true)
@@ -230,10 +234,9 @@ function Dashboard({ user, onLogout }) {
             <div className="error-box">
               <div className="error-icon">⚠️</div>
               <h2>Backend Connection Error</h2>
-              <p>Cannot connect to the API server at {API_BASE_URL}</p>
-              <p className="error-hint">Make sure the backend is running:</p>
-              <code>cd sendit-backend && node app.js</code>
-              <p className="error-hint-2">Also ensure MongoDB is running</p>
+              <p>Unable to connect to the API server.</p>
+              <p className="error-hint">Please ensure the backend service is running and accessible.</p>
+              <p className="error-hint-2">If the problem persists, please contact the system administrator.</p>
               <button onClick={fetchDashboardData} className="retry-button">
                 Retry Connection
               </button>

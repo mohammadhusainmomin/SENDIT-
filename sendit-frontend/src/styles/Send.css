@@ -8,14 +8,33 @@
 }
 
 .send-content {
-  max-width: 500px;
+  max-width: 550px;
   width: 100%;
+  transition: max-width 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .send-content {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .send-content {
+    max-width: 450px;
+  }
 }
 
 .send-header {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   animation: fadeInDown 0.6s ease-out;
+}
+
+@media (max-width: 768px) {
+  .send-header {
+    margin-bottom: 2.5rem;
+  }
 }
 
 .header-icon {
@@ -23,6 +42,13 @@
   display: inline-block;
   margin-bottom: 0.5rem;
   color: var(--primary-main);
+  transition: font-size 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .header-icon {
+    font-size: 3rem;
+  }
 }
 
 .send-header h2 {
@@ -30,11 +56,25 @@
   color: var(--text-primary);
   margin-bottom: 0.25rem;
   font-weight: 700;
+  transition: font-size 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .send-header h2 {
+    font-size: 2.25rem;
+  }
 }
 
 .send-header p {
   font-size: 0.95rem;
   color: var(--text-secondary);
+  transition: font-size 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .send-header p {
+    font-size: 1rem;
+  }
 }
 
 @keyframes fadeInDown {
@@ -52,11 +92,26 @@
   background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   border: 1px solid var(--border-color);
   border-radius: 1rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 2rem;
   box-shadow: var(--shadow-sm);
   animation: fadeInUp 0.6s ease-out;
   transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .send-form-section {
+    padding: 1.75rem;
+    margin-bottom: 2.5rem;
+    border-radius: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .send-form-section {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
 }
 
 .send-form-section:hover {
@@ -67,8 +122,23 @@
 .form-illustration {
   display: flex;
   justify-content: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
   min-height: 100px;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .form-illustration {
+    margin-bottom: 1.5rem;
+    min-height: 120px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .form-illustration {
+    margin-bottom: 0.75rem;
+    min-height: 80px;
+  }
 }
 
 @keyframes fadeInUp {
@@ -84,6 +154,13 @@
 
 .send-info {
   margin-top: 2rem;
+  animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+@media (max-width: 768px) {
+  .send-info {
+    margin-top: 2.5rem;
+  }
 }
 
 .send-info h3 {
@@ -92,36 +169,81 @@
   color: var(--text-primary);
   margin-bottom: 1.5rem;
   font-weight: 700;
+  transition: font-size 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .send-info h3 {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+  }
 }
 
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 1rem;
+  transition: gap 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem;
+  }
 }
 
 .info-item {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 0.75rem;
-  padding: 1rem;
+  padding: 1.25rem 1rem;
   text-align: center;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  will-change: transform, background-color, border-color, box-shadow;
+}
+
+@media (max-width: 768px) {
+  .info-item {
+    padding: 1.5rem 1.25rem;
+  }
 }
 
 .info-item:hover {
-  border-color: #0066cc;
-  background: rgba(0, 102, 204, 0.03);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 102, 204, 0.12);
+  border-color: var(--primary-main);
+  background: rgba(37, 99, 235, 0.03);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.15);
 }
 
 .info-icon {
   font-size: 1.75rem;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   color: var(--primary-main);
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .info-icon {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.info-item:hover .info-icon {
+  transform: scale(1.15) translateY(-4px);
 }
 
 .info-item h4 {
@@ -129,11 +251,19 @@
   font-size: 1.05rem;
   margin-bottom: 0.5rem;
   font-weight: 700;
+  transition: font-size 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .info-item h4 {
+    font-size: 1.15rem;
+  }
 }
 
 .info-item p {
   color: var(--text-secondary);
   font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 /* Responsive Design */

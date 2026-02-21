@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { FiDownload, FiSmartphone, FiCopy, FiCheckCircle } from "react-icons/fi";
+import { FiDownload, FiCopy, FiCheckCircle } from "react-icons/fi";
 import api from "../services/api";
 import { formatCode } from "../utils/formatCode";
 import { useToast } from "../context/ToastContext";
-import QRCodeScanner from "./QRCodeScanner";
 import "./styles/CodeReceive.css";
 
 function CodeReceive() {
@@ -11,7 +10,6 @@ function CodeReceive() {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [showScanner, setShowScanner] = useState(false);
   const { success, error } = useToast();
 
   const handleReceive = async () => {
@@ -69,11 +67,6 @@ function CodeReceive() {
     }
   };
 
-  const handleQRScan = (scannedCode) => {
-    setCode(scannedCode);
-    setShowScanner(false);
-  };
-
   return (
     <div className="code-receive-container">
       <div className="code-receive-content">
@@ -107,14 +100,6 @@ function CodeReceive() {
             >
               {loading ? "Retrieving..." : "Get Code"}
             </button>
-            <button
-              onClick={() => setShowScanner(true)}
-              disabled={loading}
-              className="btn-scan-qr"
-              title="Scan QR code with camera"
-            >
-              <FiSmartphone /> Scan QR
-            </button>
             {content && (
               <button
                 onClick={handleReset}
@@ -142,13 +127,6 @@ function CodeReceive() {
               {copied ? <><FiCheckCircle /> Copied!</> : <><FiCopy /> Copy Code</>}
             </button>
           </section>
-        )}
-
-        {showScanner && (
-          <QRCodeScanner
-            onScan={handleQRScan}
-            onClose={() => setShowScanner(false)}
-          />
         )}
       </div>
     </div>

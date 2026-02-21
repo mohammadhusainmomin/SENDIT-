@@ -38,20 +38,20 @@
 }
 
 .receive-form-section {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  border: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  border: 1px solid var(--border-color);
   border-radius: 1rem;
   padding: 1rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-sm);
   animation: fadeInUp 1s ease-out 0.2s both;
   transition: all 0.3s ease;
   will-change: transform, box-shadow;
 }
 
 .receive-form-section:hover {
-  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1), 0 2px 4px rgba(15, 23, 42, 0.06);
-  border-color: #d1d5db;
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-main);
 }
 
 .form-illustration {
@@ -62,19 +62,19 @@
 }
 
 .receive-info {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  border: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  border: 1px solid var(--border-color);
   border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-sm);
   animation: fadeInUp 1s ease-out 0.4s both;
   transition: all 0.3s ease;
 }
 
 .receive-info:hover {
-  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1), 0 2px 4px rgba(15, 23, 42, 0.06);
-  border-color: #d1d5db;
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-main);
 }
 
 .receive-info h3 {
@@ -83,10 +83,6 @@
   margin-bottom: 1.5rem;
   font-size: 1.15rem;
   font-weight: 700;
-}
-
-[data-theme='dark'] .receive-info h3 {
-  color: var(--text-primary);
 }
 
 .steps {
@@ -152,6 +148,62 @@
   background: var(--border-color);
   margin: 0 0.25rem;
   flex-shrink: 0;
+}
+
+/* Receive Notes Section */
+.receive-notes {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.note-item {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(96, 165, 250, 0.04) 100%);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--primary-main);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  will-change: transform, background-color;
+}
+
+.note-item:hover {
+  transform: translateX(4px);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(96, 165, 250, 0.08) 100%);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+  border-color: var(--primary-main);
+}
+
+.note-icon {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  color: var(--primary-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 0.5rem;
+  background: rgba(37, 99, 235, 0.1);
+  transition: all 0.3s ease;
+}
+
+.note-item:hover .note-icon {
+  background: rgba(37, 99, 235, 0.2);
+  transform: scale(1.1);
+}
+
+.note-item p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 /* Animations */

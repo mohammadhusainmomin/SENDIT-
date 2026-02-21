@@ -2,7 +2,9 @@ import express from "express";
 import {
   sendCode,
   receiveCode,
-  getMyCodes
+  getMyCodes,
+  getCodeHistory,
+  getAdminCodeHistory
 } from "../controllers/code.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 
@@ -16,5 +18,8 @@ router.post("/code/receive", receiveCode);
 
 // History requires authentication
 router.get("/code/my", authMiddleware, getMyCodes);
+
+// Code history (detailed tracking records)
+router.get("/code/history", authMiddleware, getCodeHistory);
 
 export default router;

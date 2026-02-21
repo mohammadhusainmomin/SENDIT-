@@ -2,9 +2,9 @@ import { useState } from "react";
 import "./styles/FileUpload.css";
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
+import { formatFileSize } from "../utils/formatFileSize";
 import { FaWhatsapp } from "react-icons/fa";
 import { FiUploadCloud, FiFile, FiRefreshCw, FiSend, FiCopy, FiCheck,  } from "react-icons/fi";
-import QRCodeDisplay from "./QRCodeDisplay";
 import CountdownTimer from "./CountdownTimer";
 
 function FileUpload() {
@@ -16,6 +16,7 @@ function FileUpload() {
   const [expiresInHours, setExpiresInHours] = useState("0");
   const [expiresInMinutes, setExpiresInMinutes] = useState("10");
   const [totalExpiryMinutes, setTotalExpiryMinutes] = useState(0);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const { success, error: showError } = useToast();
 
   // Generate hour options (0-24)
@@ -53,6 +54,7 @@ function FileUpload() {
 
     try {
       setLoading(true);
+      setUploadProgress(0);
       setError("");
 
       const token = localStorage.getItem("token");
@@ -69,15 +71,23 @@ function FileUpload() {
         formData,
         {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percentCompleted);
+          },
         }
       );
 
       setCode(res.data.code);
       setTotalExpiryMinutes(expiresIn);
+      setUploadProgress(0);
       success(`🎉 ${files.length} file(s) uploaded successfully!`);
     } catch (err) {
       console.error("UPLOAD ERROR:", err.response?.data || err.message);
       showError("Upload failed. Please try again.");
+      setUploadProgress(0);
     } finally {
       setLoading(false);
     }
@@ -163,12 +173,7 @@ https://senditsystem.netlify.app/
                         {files.length === 1 ? files[0].name : `${files.length} files selected`}
                       </p>
                       <p className="file-size">
-                        {(
-                          files.reduce((total, f) => total + f.size, 0) /
-                          1024 /
-                          1024
-                        ).toFixed(2)}{" "}
-                        MB
+                        {formatFileSize(files.reduce((total, f) => total + f.size, 0))}
                       </p>
                       <button
                         type="button"
@@ -243,14 +248,21 @@ https://senditsystem.netlify.app/
               )}
             </div>
 
-            <button
-              className="btn-send"
-              onClick={handleSend}
-              disabled={files.length === 0 || loading || isMaxTimeExceeded()}
-            >
-              <FiSend />
-              {loading ? "Uploading..." : `Send ${files.length === 1 ? "File" : "Files"}`}
-            </button>
+            <div className="button-container">
+              <button
+                className="btn-send"
+                onClick={handleSend}
+                disabled={files.length === 0 || loading || isMaxTimeExceeded()}
+              >
+                <FiSend />
+                {loading ? `Uploading... ${uploadProgress}%` : `Send ${files.length === 1 ? "File" : "Files"}`}
+              </button>
+              {loading && uploadProgress > 0 && (
+                <div className="progress-bar-container">
+                  <div className="progress-bar" style={{ width: `${uploadProgress}%` }} />
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <div className="code-success-container">
@@ -289,11 +301,6 @@ https://senditsystem.netlify.app/
                 </button>
               </div>
             </div>
-
-            <QRCodeDisplay
-              value={code}
-             
-            />
 
             {totalExpiryMinutes > 0 && (
               <CountdownTimer

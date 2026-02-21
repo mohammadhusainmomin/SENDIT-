@@ -4,7 +4,9 @@ import {
   sendFile,
   receiveFile,
   getMyFiles,
-  downloadFromHistory
+  downloadFromHistory,
+  getUserFileHistory,
+  getAdminFileHistory
 } from "../controllers/file.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 
@@ -30,6 +32,9 @@ router.post("/receive", receiveFile);
 
 //  History
 router.get("/files/my", authMiddleware, getMyFiles);
+
+//  File history (detailed records)
+router.get("/files/history", authMiddleware, getUserFileHistory);
 
 //  Download from history
 router.get("/files/download/:id", authMiddleware, downloadFromHistory);

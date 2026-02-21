@@ -2,7 +2,6 @@ import { useState } from "react";
 import { FiCopy, FiRefreshCw } from "react-icons/fi";
 import api from "../services/api";
 import { formatCode } from "../utils/formatCode";
-import QRCodeDisplay from "./QRCodeDisplay";
 import CountdownTimer from "./CountdownTimer";
 import { useToast } from "../context/ToastContext";
 import "./styles/CodeSend.css";
@@ -119,9 +118,6 @@ function CodeSend() {
               )}
             </div>
 
-            <div className="result-qr-wrapper">
-              <QRCodeDisplay value={shareCode} size={100} />
-            </div>
           </div>
 
           <div className="result-footer">

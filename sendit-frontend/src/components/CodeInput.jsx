@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { FiDownload, FiSmartphone, FiBox, FiFile, FiArrowDown } from "react-icons/fi";
+import { FiDownload, FiBox, FiFile, FiArrowDown } from "react-icons/fi";
 import "./styles/CodeInput.css";
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
-import QRCodeScanner from "./QRCodeScanner";
+import { formatFileSize } from "../utils/formatFileSize";
 
 function CodeInput() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [filesList, setFilesList] = useState([]);
   const [showFileList, setShowFileList] = useState(false);
-  const [showScanner, setShowScanner] = useState(false);
   const { success: showSuccess, error: showError } = useToast();
 
   const handleGetFiles = async () => {
@@ -117,11 +116,6 @@ function CodeInput() {
     setShowFileList(false);
   };
 
-  const handleQRScan = (scannedCode) => {
-    setCode(scannedCode);
-    setShowScanner(false);
-  };
-
   return (
     <div className="code-input-container">
       <div className="code-input-wrapper">
@@ -152,15 +146,6 @@ function CodeInput() {
               <FiDownload />
               {loading ? "Retrieving..." : "Get Files"}
             </button>
-            <button
-              className="btn-scan-qr"
-              onClick={() => setShowScanner(true)}
-              disabled={loading}
-              title="Scan QR code with camera"
-            >
-              <FiSmartphone />
-              Scan QR
-            </button>
           </div>
 
           <div className="code-info">
@@ -182,7 +167,12 @@ function CodeInput() {
                 disabled={loading}
               >
                 <span className="file-icon"><FiFile /></span>
-                <span className="file-name">{file.name}</span>
+                <div className="file-details">
+                  <span className="file-name">{file.name}</span>
+                  {file.size && (
+                    <span className="file-size">{formatFileSize(file.size)}</span>
+                  )}
+                </div>
                 <span className="download-icon"><FiArrowDown /></span>
               </button>
             ))}
@@ -196,13 +186,6 @@ function CodeInput() {
             Try Another Code
           </button>
         </div>
-      )}
-
-      {showScanner && (
-        <QRCodeScanner
-          onScan={handleQRScan}
-          onClose={() => setShowScanner(false)}
-        />
       )}
     </div>
   );

@@ -5,6 +5,7 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import connectDB from "./db.js";
+import { startCleanupScheduler } from "./utils/fileCleanup.utils.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import fileRoutes from "./routes/file.routes.js";
@@ -13,6 +14,9 @@ import adminRoutes from "./routes/admin.routes.js";
 
 
 connectDB();
+
+// Start file cleanup scheduler (runs every 5 minutes)
+startCleanupScheduler(5);
 
 const app = express();
 

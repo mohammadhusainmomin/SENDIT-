@@ -1,28 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./styles/CountdownTimer.css";
 
 function CountdownTimer({ expiresInMinutes, onExpire }) {
   const [timeLeft, setTimeLeft] = useState(expiresInMinutes * 60); // Convert to seconds
+  const timerRef = useRef(null);
+  const onExpireRef = useRef(onExpire);
+
+  // Update ref when onExpire changes
+  useEffect(() => {
+    onExpireRef.current = onExpire;
+  }, [onExpire]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (timeLeft <= 0) {
-      onExpire && onExpire();
+      onExpireRef.current && onExpireRef.current();
       return;
     }
 
-    const timer = setInterval(() => {
+    // Create timer only once and keep it running
+    timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(timer);
-          onExpire && onExpire();
+          onExpireRef.current && onExpireRef.current();
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [timeLeft, onExpire]);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const hours = Math.floor(timeLeft / 3600);
   const minutes = Math.floor((timeLeft % 3600) / 60);

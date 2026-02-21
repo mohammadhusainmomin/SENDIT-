@@ -103,6 +103,7 @@
   align-items: center;
   gap: 0.75rem;
   transition: var(--transition-fast);
+  text-align: left;
 }
 
 .file-download-btn:hover {
@@ -110,6 +111,34 @@
   border-color: var(--primary-main);
   color: var(--primary-main);
   transform: translateX(4px);
+}
+
+.file-icon {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+}
+
+.file-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.file-name {
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.file-size {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.download-icon {
+  flex-shrink: 0;
 }
 
 .btn-reset {

@@ -1,5 +1,6 @@
 import fs from "fs";
 import File from "../models/File.js";
+import FileHistory from "../models/FileHistory.js";
 import { encryptFile, decryptFile } from "../utils/encryption.utils.js";
 
 /* ================= SEND FILE ================= */
@@ -29,8 +30,8 @@ export const sendFile = async (req, res) => {
       });
     }
 
-    // Create single document with all files
-    await File.create({
+    // Create file document
+    const fileDoc = await File.create({
       code,
       files: fileObjects,
       expiresIn,
@@ -38,8 +39,26 @@ export const sendFile = async (req, res) => {
       senderId: req.user?.id
     });
 
-    res.json({ 
-      code, 
+    // Create history records for each file
+    for (const file of fileObjects) {
+      await FileHistory.create({
+        fileId: fileDoc._id,
+        code,
+        originalName: file.originalName,
+        mimeType: file.mimeType,
+        senderId: req.user?.id || null,
+        senderEmail: req.user?.email || null,
+        senderName: req.user?.name || null,
+        senderType: req.user?.id ? "authenticated" : "guest",
+        sentAt: new Date(),
+        expiresAt: new Date(Date.now() + expiresIn * 60 * 1000),
+        expiresIn,
+        status: "pending"
+      });
+    }
+
+    res.json({
+      code,
       expiresIn,
       filesCount: fileObjects.length
     });
@@ -79,9 +98,25 @@ export const receiveFile = async (req, res) => {
     if (!file) return res.status(404).json({ message: "File not found" });
 
     // Record receiverId if user is authenticated
-    if (!fileBundle.receiverId && req.user) {
+    const isFirstReceive = !fileBundle.receiverId;
+    if (isFirstReceive && req.user) {
       fileBundle.receiverId = req.user.id;
       await fileBundle.save();
+    }
+
+    // Update history if user is authenticated
+    if (req.user) {
+      await FileHistory.updateMany(
+        { fileId: fileBundle._id, receivedAt: { $exists: false } },
+        {
+          receiverId: req.user.id,
+          receiverEmail: req.user.email,
+          receiverName: req.user.name,
+          receiverType: "authenticated",
+          receivedAt: new Date(),
+          status: "received"
+        }
+      );
     }
 
     const decryptedPath = `uploads/tmp-${Date.now()}`;
@@ -121,6 +156,64 @@ export const getMyFiles = async (req, res) => {
   } catch (err) {
     console.error("GET FILES ERROR:", err);
     res.status(500).json({ message: "Failed to fetch files" });
+  }
+};
+
+/* ================= FILE HISTORY ================= */
+export const getUserFileHistory = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const history = await FileHistory.find({
+      $or: [{ senderId: userId }, { receiverId: userId }]
+    })
+      .sort({ sentAt: -1 })
+      .select("-fileId"); // Don't need the ObjectId reference
+
+    res.json({
+      success: true,
+      history
+    });
+  } catch (err) {
+    console.error("GET FILE HISTORY ERROR:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch file history"
+    });
+  }
+};
+
+/* ================= ADMIN FILE HISTORY ================= */
+export const getAdminFileHistory = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
+    const history = await FileHistory.find()
+      .sort({ sentAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select("-fileId");
+
+    const total = await FileHistory.countDocuments();
+
+    res.json({
+      success: true,
+      history,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+        limit
+      }
+    });
+  } catch (err) {
+    console.error("GET ADMIN FILE HISTORY ERROR:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch file history"
+    });
   }
 };
 
