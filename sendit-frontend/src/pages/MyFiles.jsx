@@ -21,24 +21,32 @@ function MyFiles() {
     const fetchFiles = async () => {
       try {
         setLoading(true);
-        const res = await api.get("/files/my", {
+        const res = await api.get("/files/history", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setFiles(res.data);
+        setFiles(res.data.success ? res.data.history : res.data);
       } catch (err) {
         console.error("Failed to fetch history", err);
+        showError("Failed to load file history");
       } finally {
         setLoading(false);
       }
     };
 
     fetchFiles();
-  }, [token]);
+  }, [token, showError]);
 
-  const sentFiles = files.filter((file) => file.senderId === user?._id);
-  const receivedFiles = files.filter((file) => file.receiverId === user?._id);
+  const userId = user?._id || user?.id;
+  const sentFiles = files.filter((file) => {
+    const senderId = file.senderId?._id || file.senderId;
+    return senderId === userId;
+  });
+  const receivedFiles = files.filter((file) => {
+    const receiverId = file.receiverId?._id || file.receiverId;
+    return receiverId === userId;
+  });
 
   const displayFiles = activeTab === "sent" ? sentFiles : receivedFiles;
 
@@ -119,8 +127,12 @@ function MyFiles() {
                       <div className="meta-item">
                         <span className="meta-label">Date</span>
                         <span className="meta-value">
-                          {formatDate(file.createdAt)}
+                          {formatDate(file.sentAt || file.createdAt)}
                         </span>
+                      </div>
+                      <div className="meta-item">
+                        <span className="meta-label">Status</span>
+                        <span className="meta-value">{file.status}</span>
                       </div>
                     </div>
                   </div>
@@ -141,8 +153,9 @@ function MyFiles() {
                       className="btn-download-history"
                       onClick={async () => {
                         try {
+                          const downloadId = file.fileId || file._id;
                           const res = await api.get(
-                            `/files/download/${file._id}`,
+                            `/files/download/${downloadId}`,
                             {
                               responseType: "blob",
                               headers: {
@@ -163,6 +176,7 @@ function MyFiles() {
                           a.click();
                           a.remove();
                           window.URL.revokeObjectURL(url);
+                          success("✓ File downloaded successfully!");
                         } catch (err) {
                           showError("Download failed. Please try again.");
                         }

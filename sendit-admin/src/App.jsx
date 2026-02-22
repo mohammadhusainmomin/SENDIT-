@@ -118,6 +118,7 @@ function Dashboard({ user, onLogout }) {
   const [users, setUsers] = useState([])
   const [files, setFiles] = useState([])
   const [codes, setCodes] = useState([])
+  const [fileHistory, setFileHistory] = useState([])
   const [codeHistory, setCodeHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [backendConnected, setBackendConnected] = useState(true)
@@ -136,18 +137,17 @@ function Dashboard({ user, onLogout }) {
   const fetchDashboardData = async () => {
     try {
       // Fetch all data from backend
-      const [statsRes, trendRes, activityRes, usersRes, filesRes, codesRes, codeHistoryRes] = await Promise.all([
+      const [statsRes, trendRes, activityRes, usersRes, fileHistoryRes, codeHistoryRes] = await Promise.all([
         fetch(`${API_BASE_URL}/admin/stats`),
         fetch(`${API_BASE_URL}/admin/trend`),
         fetch(`${API_BASE_URL}/admin/activity?limit=15`),
         fetch(`${API_BASE_URL}/admin/users?limit=10`),
-        fetch(`${API_BASE_URL}/admin/files?limit=10`),
-        fetch(`${API_BASE_URL}/admin/codes?limit=10`),
-        fetch(`${API_BASE_URL}/admin/code-history?limit=10`)
+        fetch(`${API_BASE_URL}/admin/file-history?limit=10&page=1`),
+        fetch(`${API_BASE_URL}/admin/code-history?limit=10&page=1`)
       ])
 
       // Check if all responses are ok
-      if (!statsRes.ok || !trendRes.ok || !activityRes.ok || !usersRes.ok || !filesRes.ok || !codesRes.ok || !codeHistoryRes.ok) {
+      if (!statsRes.ok || !trendRes.ok || !activityRes.ok || !usersRes.ok || !fileHistoryRes.ok || !codeHistoryRes.ok) {
         throw new Error('One or more API endpoints failed')
       }
 
@@ -155,16 +155,14 @@ function Dashboard({ user, onLogout }) {
       const trendData = await trendRes.json()
       const activityData = await activityRes.json()
       const usersData = await usersRes.json()
-      const filesData = await filesRes.json()
-      const codesData = await codesRes.json()
+      const fileHistoryData = await fileHistoryRes.json()
       const codeHistoryData = await codeHistoryRes.json()
 
       if (statsData.success) setStats(statsData.stats)
       if (trendData.success) setMonthlyData(trendData.data)
       if (activityData.success) setRecentActivity(activityData.activity)
       if (usersData.success) setUsers(usersData.users)
-      if (filesData.success) setFiles(filesData.files)
-      if (codesData.success) setCodes(codesData.codes)
+      if (fileHistoryData.success) setFileHistory(fileHistoryData.history)
       if (codeHistoryData.success) setCodeHistory(codeHistoryData.history)
 
       setLoading(false)
@@ -247,8 +245,8 @@ function Dashboard({ user, onLogout }) {
         ) : (
           <>
             {selectedTab === 'overview' && <OverviewTab stats={stats} monthlyData={monthlyData} />}
-            {selectedTab === 'files' && <FilesTab files={files} />}
-            {selectedTab === 'codes' && <CodesTab codes={codes} />}
+            {selectedTab === 'files' && <FilesTab files={fileHistory} />}
+            {selectedTab === 'codes' && <CodesTab codes={codeHistory} />}
             {selectedTab === 'users' && <UsersTab users={users} />}
             {selectedTab === 'activity' && <ActivityTab recentActivity={recentActivity} />}
           </>
@@ -349,7 +347,7 @@ function OverviewTab({ stats, monthlyData }) {
 }
 
 function FilesTab({ files }) {
-  
+
   return (
     <div className="tab-content">
       <div className="section-header">
@@ -358,7 +356,7 @@ function FilesTab({ files }) {
       </div>
 
       <div className="table-container">
-        
+
         <table className="data-table">
           <thead>
             <tr>
@@ -367,22 +365,22 @@ function FilesTab({ files }) {
               <th>Sender</th>
               <th>Receiver</th>
               <th>Status</th>
-              <th>Created</th>
+              <th>Sent</th>
             </tr>
           </thead>
           <tbody>
             {files.map((file) => (
               <tr key={file._id}>
                 <td className="code-cell">{file.code}</td>
-                <td className="filename-cell" title={file.fileName}>{file.fileName}</td>
-                <td>{file.senderName || 'Guest'}</td>
-                <td>{file.receiverName || '-'}</td>
+                <td className="filename-cell" title={file.originalName}>{file.originalName}</td>
+                <td>{file.senderName || file.senderEmail || 'Guest'}</td>
+                <td>{file.receiverName || file.receiverEmail || '-'}</td>
                 <td>
                   <span className={`status-badge status-${file.status.toLowerCase()}`}>
                     {file.status}
                   </span>
                 </td>
-                <td className="time-cell">{formatTime(file.createdAt)}</td>
+                <td className="time-cell">{formatTime(file.sentAt)}</td>
               </tr>
             ))}
           </tbody>
@@ -390,7 +388,7 @@ function FilesTab({ files }) {
       </div>
     </div>
 
-   
+
   )
 }
 
@@ -411,22 +409,22 @@ function CodesTab({ codes }) {
               <th>Receiver</th>
               <th>Status</th>
               <th>Preview</th>
-              <th>Created</th>
+              <th>Sent</th>
             </tr>
           </thead>
           <tbody>
             {codes.map((code) => (
               <tr key={code._id}>
                 <td className="code-cell">{code.code}</td>
-                <td>{code.senderName || 'Unknown'}</td>
-                <td>{code.receiverName || '-'}</td>
+                <td>{code.senderName || code.senderEmail || 'Unknown'}</td>
+                <td>{code.receiverName || code.receiverEmail || '-'}</td>
                 <td>
                   <span className={`status-badge status-${code.status.toLowerCase()}`}>
                     {code.status}
                   </span>
                 </td>
                 <td className="preview-cell" title={code.contentPreview}>{code.contentPreview}</td>
-                <td className="time-cell">{formatTime(code.createdAt)}</td>
+                <td className="time-cell">{formatTime(code.sentAt)}</td>
               </tr>
             ))}
           </tbody>
