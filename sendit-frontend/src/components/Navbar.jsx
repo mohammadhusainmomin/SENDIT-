@@ -66,15 +66,15 @@ function Navbar() {
           </Link>
   {user && (
     <>
-      <button
-        className="nav-btn nav-link"
+      <Link
+        className="nav-link"
         onClick={() => {
           navigate("/my-files");
           setMobileMenuOpen(false);
         }}
       >
         <FiFileText /> My Files
-      </button>
+      </Link>
 
       <Link className="nav-link" to="/code/history" onClick={() => setMobileMenuOpen(false)}>
         <FiClock /> Code History
