@@ -1,8 +1,12 @@
-import { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useEffect, useState } from "react";
 import Mascot from "../components/Mascot";
 import SEO from "../components/SEO";
-import { FiFileText, FiUploadCloud, FiDownload, FiFile, FiCopy } from "react-icons/fi";
+import {
+  FiFileText,
+  FiUploadCloud,
+  FiFile,
+  FiCopy,
+} from "react-icons/fi";
 import "../styles/MyFiles.css";
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
@@ -12,7 +16,6 @@ function MyFiles() {
   const [activeTab, setActiveTab] = useState("sent");
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
-  const { user } = useContext(AuthContext);
   const { success, error: showError } = useToast();
 
   useEffect(() => {
@@ -21,12 +24,19 @@ function MyFiles() {
     const fetchFiles = async () => {
       try {
         setLoading(true);
-        const res = await api.get("/files/history", {
+
+        const endpoint =
+          activeTab === "sent"
+            ? "/files/sent"
+            : "/files/received";
+
+        const res = await api.get(endpoint, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setFiles(res.data.success ? res.data.history : res.data);
+
+        setFiles(res.data.history || []);
       } catch (err) {
         console.error("Failed to fetch history", err);
         showError("Failed to load file history");
@@ -36,21 +46,10 @@ function MyFiles() {
     };
 
     fetchFiles();
-  }, [token, showError]);
-
-  const userId = user?._id || user?.id;
-  const sentFiles = files.filter((file) => {
-    const senderId = file.senderId?._id || file.senderId;
-    return senderId === userId;
-  });
-  const receivedFiles = files.filter((file) => {
-    const receiverId = file.receiverId?._id || file.receiverId;
-    return receiverId === userId;
-  });
-
-  const displayFiles = activeTab === "sent" ? sentFiles : receivedFiles;
+  }, [token, activeTab, showError]);
 
   const formatDate = (dateString) => {
+    if (!dateString) return "-";
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       month: "short",
@@ -65,74 +64,112 @@ function MyFiles() {
     <div className="my-files-container">
       <SEO
         title="My Files - SendIt File History"
-        description="View your sent and received files. Manage your file transfers and track history."
-        url="https://sendit.example.com/my-files"
+        description="View your sent and received files."
+        url="https://senditsysytem.netlify.app/my-files"
       />
+
       <div className="my-files-content">
         {/* Header */}
         <section className="files-header">
-          <div className="header-icon"><FiFileText /></div>
+          <div className="header-icon">
+            <FiFileText />
+          </div>
           <h2>My Files</h2>
           <p>View your sent and received files</p>
         </section>
 
-        {/* Tab Navigation */}
+        {/* Tabs */}
         <div className="tabs-container">
           <button
             className={`tab-btn ${activeTab === "sent" ? "active" : ""}`}
             onClick={() => setActiveTab("sent")}
           >
             <FiUploadCloud />
-            Sent Files ({sentFiles.length})
+            Sent Files
           </button>
+
           <button
             className={`tab-btn ${activeTab === "received" ? "active" : ""}`}
             onClick={() => setActiveTab("received")}
           >
-            <FiDownload />
-            Received Files ({receivedFiles.length})
+           
+            Received Files
           </button>
         </div>
 
-        {/* Files Content */}
+        {/* Content */}
         <section className="files-section">
           {loading ? (
             <div className="loading-state">
               <div className="spinner"></div>
               <p>Loading your files...</p>
             </div>
-          ) : displayFiles.length === 0 ? (
+          ) : files.length === 0 ? (
             <div className="empty-state">
               <Mascot size="medium" />
-              <h3>{activeTab === "sent" ? "No sent files yet" : "No received files yet"}</h3>
-              <p>{activeTab === "sent" ? "Files you send will appear here" : "Files you receive will appear here"}</p>
+              <h3>
+                {activeTab === "sent"
+                  ? "No sent files yet"
+                  : "No received files yet"}
+              </h3>
+              <p>
+                {activeTab === "sent"
+                  ? "Files you send will appear here"
+                  : "Files you receive will appear here"}
+              </p>
             </div>
           ) : (
             <div className="files-grid">
-              {displayFiles.map((file) => (
+              {files.map((file) => (
                 <div key={file._id} className="file-card">
                   <div className="file-card-header">
-                    <div className="file-type-icon"><FiFile /></div>
-                    <span className="file-status-badge">{activeTab === "sent" ? "Sent" : "Received"}</span>
+                    <div className="file-type-icon">
+                      <FiFile />
+                    </div>
+                    <span className="file-status-badge">
+                      {activeTab === "sent" ? "Sent" : "Received"}
+                    </span>
                   </div>
 
                   <div className="file-card-content">
-                    <h4 className="file-name">{file.originalName}</h4>
+                    <h4 className="file-name">
+                      {file.originalName}
+                    </h4>
 
                     <div className="file-meta">
                       <div className="meta-item">
                         <span className="meta-label">Code</span>
                         <span className="meta-value">{file.code}</span>
                       </div>
+
+                      <div className="meta-item">
+                        <span className="meta-label">
+                          {activeTab === "sent"
+                            ? "Receiver"
+                            : "Sender"}
+                        </span>
+                        <span className="meta-value">
+                          {activeTab === "sent"
+                            ? file.receiverName || "Guest User"
+                            : file.senderName || "Guest User"}
+                        </span>
+                      </div>
+
                       <div className="meta-item">
                         <span className="meta-label">Date</span>
                         <span className="meta-value">
-                          {formatDate(file.sentAt || file.createdAt)}
+                          {formatDate(
+                            file.receivedAt ||
+                              file.sentAt
+                          )}
                         </span>
                       </div>
+
                       <div className="meta-item">
                         <span className="meta-label">Status</span>
-                        <span className="meta-value">{file.status}</span>
+                        <span className="meta-value">
+                          {file.status}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -142,48 +179,13 @@ function MyFiles() {
                       className="btn-copy-code"
                       onClick={() => {
                         navigator.clipboard.writeText(file.code);
-                        success("✓ Code copied to clipboard!");
-                      }}
-                      title="Copy code"
-                    >
-                      <FiCopy /> {file.code}
-                    </button>
-
-                    <button
-                      className="btn-download-history"
-                      onClick={async () => {
-                        try {
-                          const downloadId = file.fileId || file._id;
-                          const res = await api.get(
-                            `/files/download/${downloadId}`,
-                            {
-                              responseType: "blob",
-                              headers: {
-                                Authorization: `Bearer ${token}`,
-                              },
-                            }
-                          );
-
-                          const blob = new Blob([res.data], {
-                            type: res.headers["content-type"],
-                          });
-
-                          const url = window.URL.createObjectURL(blob);
-                          const a = document.createElement("a");
-                          a.href = url;
-                          a.download = file.originalName;
-                          document.body.appendChild(a);
-                          a.click();
-                          a.remove();
-                          window.URL.revokeObjectURL(url);
-                          success("✓ File downloaded successfully!");
-                        } catch (err) {
-                          showError("Download failed. Please try again.");
-                        }
+                        success("✓ Code copied!");
                       }}
                     >
-                      <FiDownload /> Download
+                      <FiCopy /> Copy Code
                     </button>
+
+                   
                   </div>
                 </div>
               ))}

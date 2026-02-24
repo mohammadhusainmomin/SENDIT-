@@ -26,7 +26,7 @@ export const sendFile = async (req, res) => {
       fileObjects.push({
         encryptedPath,
         originalName: file.originalname,
-        mimeType: file.mimetype
+        mimeType: file.mimetype,
       });
     }
 
@@ -36,7 +36,7 @@ export const sendFile = async (req, res) => {
       files: fileObjects,
       expiresIn,
       expiresAt: new Date(Date.now() + expiresIn * 60 * 1000),
-      senderId: req.user?.id
+      senderId: req.user?.id,
     });
 
     // Create history records for each file
@@ -46,28 +46,29 @@ export const sendFile = async (req, res) => {
         code,
         originalName: file.originalName,
         mimeType: file.mimeType,
-        senderId: req.user?.id || null,
+
+        senderId: req.user?._id || null,
         senderEmail: req.user?.email || null,
-        senderName: req.user?.name || null,
-        senderType: req.user?.id ? "authenticated" : "guest",
+        senderName: req.user?.name || "Guest User",
+        senderType: req.user ? "authenticated" : "guest",
+
         sentAt: new Date(),
         expiresAt: new Date(Date.now() + expiresIn * 60 * 1000),
         expiresIn,
-        status: "pending"
+        status: "pending",
       });
     }
 
     res.json({
       code,
       expiresIn,
-      filesCount: fileObjects.length
+      filesCount: fileObjects.length,
     });
   } catch (err) {
     console.error("SEND FILE ERROR:", err);
     res.status(500).json({ message: "File upload failed" });
   }
 };
-
 
 /* ================= RECEIVE FILE ================= */
 export const receiveFile = async (req, res) => {
@@ -88,8 +89,8 @@ export const receiveFile = async (req, res) => {
         files: fileBundle.files.map((f, idx) => ({
           index: idx,
           name: f.originalName,
-          mimeType: f.mimeType
-        }))
+          mimeType: f.mimeType,
+        })),
       });
     }
 
@@ -107,15 +108,15 @@ export const receiveFile = async (req, res) => {
     // Update history if user is authenticated
     if (req.user) {
       await FileHistory.updateMany(
-        { fileId: fileBundle._id, receivedAt: { $exists: false } },
+        { fileId: fileBundle._id },
         {
           receiverId: req.user.id,
           receiverEmail: req.user.email,
           receiverName: req.user.name,
           receiverType: "authenticated",
           receivedAt: new Date(),
-          status: "received"
-        }
+          status: "received",
+        },
       );
     }
 
@@ -124,61 +125,69 @@ export const receiveFile = async (req, res) => {
 
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="${encodeURIComponent(file.originalName)}"`
+      `attachment; filename="${encodeURIComponent(file.originalName)}"`,
     );
     res.setHeader("Content-Type", file.mimeType);
 
-    res.download(decryptedPath, file.originalName, (err) => {
-      if (err) console.error("DOWNLOAD ERROR:", err);
-
-      if (fs.existsSync(decryptedPath)) {
-        fs.unlink(decryptedPath, () => {});
-      }
-    });
-
+   
   } catch (err) {
     console.error("RECEIVE ERROR:", err);
-    res.status(500).json({ message: "Download failed" });
   }
 };
 
 
-/* ================= HISTORY ================= */
-export const getMyFiles = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    const files = await File.find({
-      $or: [{ senderId: userId }, { receiverId: userId }]
-    }).sort({ createdAt: -1 });
-
-    res.json(files);
-  } catch (err) {
-    console.error("GET FILES ERROR:", err);
-    res.status(500).json({ message: "Failed to fetch files" });
-  }
-};
 
 /* ================= FILE HISTORY ================= */
-export const getUserFileHistory = async (req, res) => {
+export const getSentFilesHistory = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     const history = await FileHistory.find({
-      $or: [{ senderId: userId }, { receiverId: userId }]
+      senderId: userId
     })
       .sort({ sentAt: -1 })
-      .select("-fileId"); // Don't need the ObjectId reference
+      .select(
+        "code originalName mimeType receiverName receiverEmail receiverType sentAt status"
+      );
 
     res.json({
       success: true,
+      type: "sent",
       history
     });
+
   } catch (err) {
-    console.error("GET FILE HISTORY ERROR:", err);
+    console.error("GET SENT FILES ERROR:", err);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch file history"
+      message: "Failed to fetch sent files"
+    });
+  }
+};
+
+export const getReceivedFilesHistory = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const history = await FileHistory.find({
+      receiverId: userId
+    })
+      .sort({ receivedAt: -1 })
+      .select(
+        "code originalName mimeType senderName senderEmail senderType sentAt receivedAt status"
+      );
+
+    res.json({
+      success: true,
+      type: "received",
+      history
+    });
+
+  } catch (err) {
+    console.error("GET RECEIVED FILES ERROR:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch received files"
     });
   }
 };
@@ -205,51 +214,16 @@ export const getAdminFileHistory = async (req, res) => {
         total,
         page,
         pages: Math.ceil(total / limit),
-        limit
-      }
+        limit,
+      },
     });
   } catch (err) {
     console.error("GET ADMIN FILE HISTORY ERROR:", err);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch file history"
+      message: "Failed to fetch file history",
     });
   }
 };
 
-/* ================= DOWNLOAD FROM HISTORY ================= */
-export const downloadFromHistory = async (req, res) => {
-  try {
-    const file = await File.findById(req.params.id);
-    if (!file) return res.sendStatus(404);
 
-    if (
-      file.senderId.toString() !== req.user.id &&
-      file.receiverId?.toString() !== req.user.id
-    ) return res.sendStatus(403);
-
-    // Download first file from bundle
-    const firstFile = file.files[0];
-    if (!firstFile) return res.status(404).json({ message: "No files in bundle" });
-
-    const decryptedPath = `uploads/tmp-${Date.now()}`;
-    await decryptFile(firstFile.encryptedPath, decryptedPath);
-
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${encodeURIComponent(firstFile.originalName)}"`
-    );
-    res.setHeader("Content-Type", firstFile.mimeType);
-
-    res.download(decryptedPath, firstFile.originalName, (err) => {
-      if (err) console.error(err);
-
-      if (fs.existsSync(decryptedPath)) {
-        fs.unlink(decryptedPath, () => {});
-      }
-    });
-  } catch (err) {
-    console.error("DOWNLOAD FROM HISTORY ERROR:", err);
-    res.status(500).json({ message: "Download failed" });
-  }
-};

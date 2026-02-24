@@ -68,8 +68,8 @@ function Navbar() {
     <>
       <Link
         className="nav-link"
+        to="/my-files"
         onClick={() => {
-          navigate("/my-files");
           setMobileMenuOpen(false);
         }}
       >

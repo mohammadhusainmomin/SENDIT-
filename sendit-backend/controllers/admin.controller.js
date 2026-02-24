@@ -1,6 +1,8 @@
 import User from "../models/User.js";
-import File from "../models/File.js";
+import FileHistory from "../models/FileHistory.js";
+import CodeHistory from "../models/CodeHistory.js";
 import Code from "../models/Code.js";
+import File from "../models/File.js";
 
 // Admin credentials (using environment variables for production)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "senditsystem786@gmail.com";
@@ -24,28 +26,34 @@ export const verifyAdmin = (req, res) => {
 };
 
 export const getDashboardStats = async (req, res) => {
-  try { 
+  try {
     const totalUsers = await User.countDocuments();
-    const totalFiles = await File.countDocuments();
-    const totalCodes = await Code.countDocuments();
+    const totalFiles = await FileHistory.countDocuments();
+    const totalCodes = await CodeHistory.countDocuments();
 
-    // Files sent and received
-    const filesSent = await File.countDocuments({ senderId: { $exists: true, $ne: null } });
-    const filesReceived = await File.countDocuments({ receiverId: { $exists: true, $ne: null } });
+    const filesSent = await FileHistory.countDocuments();
+    const filesReceived = await FileHistory.countDocuments({ status: "received" });
+    const expiredFiles = await FileHistory.countDocuments({ isExpired: true });
 
-    // Codes sent and received
-    const codesSent = await Code.countDocuments({ senderId: { $exists: true, $ne: null } });
-    const codesReceived = await Code.countDocuments({ receiverId: { $exists: true, $ne: null } });
+    const codesSent = await CodeHistory.countDocuments();
+    const codesReceived = await CodeHistory.countDocuments({ status: "received" });
+    const expiredCodes = await CodeHistory.countDocuments({ isExpired: true });
 
-    // Recent activity (last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const recentFiles = await File.countDocuments({ createdAt: { $gte: thirtyDaysAgo } });
-    const recentCodes = await Code.countDocuments({ createdAt: { $gte: thirtyDaysAgo } });
-    const recentUsers = await User.countDocuments({ createdAt: { $gte: thirtyDaysAgo } });
+    const recentFiles = await FileHistory.countDocuments({
+      sentAt: { $gte: thirtyDaysAgo }
+    });
 
-    // Auth provider breakdown
+    const recentCodes = await CodeHistory.countDocuments({
+      sentAt: { $gte: thirtyDaysAgo }
+    });
+
+    const recentUsers = await User.countDocuments({
+      createdAt: { $gte: thirtyDaysAgo }
+    });
+
     const localAuth = await User.countDocuments({ authProvider: "local" });
     const googleAuth = await User.countDocuments({ authProvider: "google" });
 
@@ -57,8 +65,10 @@ export const getDashboardStats = async (req, res) => {
         totalCodes,
         filesSent,
         filesReceived,
+        expiredFiles,
         codesSent,
         codesReceived,
+        expiredCodes,
         recentFiles,
         recentCodes,
         recentUsers,
@@ -68,6 +78,7 @@ export const getDashboardStats = async (req, res) => {
         }
       }
     });
+
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);
     return res.status(500).json({
@@ -86,31 +97,31 @@ export const getMonthlyTrend = async (req, res) => {
       const startDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const endDate = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
 
-      const files = await File.countDocuments({
-        createdAt: { $gte: startDate, $lt: endDate }
+      const files = await FileHistory.countDocuments({
+        sentAt: { $gte: startDate, $lt: endDate },
       });
 
-      const codes = await Code.countDocuments({
-        createdAt: { $gte: startDate, $lt: endDate }
+      const codes = await CodeHistory.countDocuments({
+        sentAt: { $gte: startDate, $lt: endDate },
       });
 
       monthlyData.push({
-        month: startDate.toLocaleString('default', { month: 'short' }),
+        month: startDate.toLocaleString("default", { month: "short" }),
         files,
         codes,
-        total: files + codes
+        total: files + codes,
       });
     }
 
     return res.json({
       success: true,
-      data: monthlyData
+      data: monthlyData,
     });
   } catch (error) {
     console.error("Error fetching monthly trend:", error);
     return res.status(500).json({
       success: false,
-      message: "Error fetching monthly trend"
+      message: "Error fetching monthly trend",
     });
   }
 };
@@ -119,46 +130,47 @@ export const getRecentActivity = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 20;
 
-    // Get recent files
-    const recentFiles = await File.find()
-      .sort({ createdAt: -1 })
+    // File history
+    const recentFiles = await FileHistory.find()
+      .sort({ sentAt: -1 })
       .limit(limit)
-      .populate('senderId', 'email name')
-      .populate('receiverId', 'email name')
       .lean();
 
     const filesActivity = recentFiles.map(file => ({
-      type: 'file',
+      type: "file",
       id: file._id,
       code: file.code,
-      sender: file.senderId?.email || 'Guest',
-      receiver: file.receiverId?.email || 'Not received',
       fileName: file.originalName,
-      status: file.isCodeUsed ? 'Received' : 'Pending',
-      date: file.createdAt,
-      mimeType: file.mimeType
+      sender: file.senderEmail || "Guest",
+      senderName: file.senderName || "Guest",
+      receiver: file.receiverEmail || "Not received",
+      receiverName: file.receiverName || "Not received",
+      status: file.status,
+      isExpired: file.isExpired,
+      isDeleted: file.isFileDeleted,
+      date: file.sentAt
     }));
 
-    // Get recent codes
-    const recentCodes = await Code.find()
-      .sort({ createdAt: -1 })
+    // Code history
+    const recentCodes = await CodeHistory.find()
+      .sort({ sentAt: -1 })
       .limit(limit)
-      .populate('senderId', 'email name')
-      .populate('receiverId', 'email name')
       .lean();
 
     const codesActivity = recentCodes.map(code => ({
-      type: 'code',
+      type: "code",
       id: code._id,
       code: code.code,
-      sender: code.senderId?.email || 'Unknown',
-      receiver: code.receiverId?.email || 'Not received',
-      status: code.receiverId ? 'Received' : 'Pending',
-      date: code.createdAt,
-      preview: code.content ? code.content.substring(0, 50) : 'No content'
+      sender: code.senderEmail || "Guest",
+      senderName: code.senderName || "Guest",
+      receiver: code.receiverEmail || "Not received",
+      receiverName: code.receiverName || "Not received",
+      status: code.status,
+      isExpired: code.isExpired,
+      isDeleted: code.isContentDeleted,
+      date: code.sentAt
     }));
 
-    // Merge and sort by date
     const allActivity = [...filesActivity, ...codesActivity]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, limit);
@@ -167,6 +179,7 @@ export const getRecentActivity = async (req, res) => {
       success: true,
       activity: allActivity
     });
+
   } catch (error) {
     console.error("Error fetching recent activity:", error);
     return res.status(500).json({
@@ -183,16 +196,26 @@ export const getUsersList = async (req, res) => {
     const users = await User.find()
       .sort({ createdAt: -1 })
       .limit(limit)
-      .select('name email authProvider createdAt')
+      .select("name email authProvider createdAt")
       .lean();
 
-    // Get file counts per user
     const usersWithStats = await Promise.all(
       users.map(async (user) => {
-        const filesSent = await File.countDocuments({ senderId: user._id });
-        const filesReceived = await File.countDocuments({ receiverId: user._id });
-        const codesSent = await Code.countDocuments({ senderId: user._id });
-        const codesReceived = await Code.countDocuments({ receiverId: user._id });
+        const filesSent = await FileHistory.countDocuments({
+          senderId: user._id,
+        });
+
+        const filesReceived = await FileHistory.countDocuments({
+          receiverId: user._id,
+        });
+
+        const codesSent = await CodeHistory.countDocuments({
+          senderId: user._id,
+        });
+
+        const codesReceived = await CodeHistory.countDocuments({
+          receiverId: user._id,
+        });
 
         return {
           ...user,
@@ -200,8 +223,8 @@ export const getUsersList = async (req, res) => {
             filesSent,
             filesReceived,
             codesSent,
-            codesReceived
-          }
+            codesReceived,
+          },
         };
       })
     );
@@ -209,13 +232,13 @@ export const getUsersList = async (req, res) => {
     return res.json({
       success: true,
       users: usersWithStats,
-      total: await User.countDocuments()
+      total: await User.countDocuments(),
     });
   } catch (error) {
     console.error("Error fetching users list:", error);
     return res.status(500).json({
       success: false,
-      message: "Error fetching users"
+      message: "Error fetching users",
     });
   }
 };
@@ -223,39 +246,50 @@ export const getUsersList = async (req, res) => {
 export const getFileDetails = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
 
-    const files = await File.find()
-      .sort({ createdAt: -1 })
+    const history = await FileHistory.find()
+      .sort({ sentAt: -1 })
+      .skip(skip)
       .limit(limit)
-      .populate('senderId', 'email name')
-      .populate('receiverId', 'email name')
       .lean();
 
-    const filesWithDetails = files.map(file => ({
+    const formatted = history.map(file => ({
       _id: file._id,
       code: file.code,
       fileName: file.originalName,
       mimeType: file.mimeType,
-      sender: file.senderId?.email || 'Guest',
-      senderName: file.senderId?.name || 'Guest',
-      receiver: file.receiverId?.email || 'Not received',
-      receiverName: file.receiverId?.name || 'Not received',
-      status: file.isCodeUsed ? 'Received' : 'Pending',
-      expiresAt: file.expiresAt,
-      createdAt: file.createdAt,
-      age: Math.floor((new Date() - new Date(file.createdAt)) / 60000) // in minutes
+
+      senderName: file.senderName || "Guest",
+      senderEmail: file.senderEmail || "Guest",
+      senderType: file.senderType,
+
+      receiverName: file.receiverName || "Not received",
+      receiverEmail: file.receiverEmail || "Not received",
+      receiverType: file.receiverType || "guest",
+
+      status: file.status,
+      isExpired: file.isExpired,
+      isFileDeleted: file.isFileDeleted,
+
+      sentAt: file.sentAt,
+      receivedAt: file.receivedAt,
+      deletedAt: file.deletedAt,
+      expiresAt: file.expiresAt
     }));
 
     return res.json({
       success: true,
-      files: filesWithDetails,
-      total: await File.countDocuments()
+      files: formatted,
+      total: await FileHistory.countDocuments()
     });
+
   } catch (error) {
-    console.error("Error fetching file details:", error);
+    console.error("Error fetching file history:", error);
     return res.status(500).json({
       success: false,
-      message: "Error fetching file details"
+      message: "Error fetching file history"
     });
   }
 };
@@ -263,37 +297,48 @@ export const getFileDetails = async (req, res) => {
 export const getCodeDetails = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
 
-    const codes = await Code.find()
-      .sort({ createdAt: -1 })
+    const history = await CodeHistory.find()
+      .sort({ sentAt: -1 })
+      .skip(skip)
       .limit(limit)
-      .populate('senderId', 'email name')
-      .populate('receiverId', 'email name')
       .lean();
 
-    const codesWithDetails = codes.map(code => ({
+    const formatted = history.map((code) => ({
       _id: code._id,
       code: code.code,
-      sender: code.senderId?.email || 'Unknown',
-      senderName: code.senderId?.name || 'Unknown',
-      receiver: code.receiverId?.email || 'Not received',
-      receiverName: code.receiverId?.name || 'Not received',
-      status: code.receiverId ? 'Received' : 'Pending',
+
+      senderName: code.senderName || "Guest",
+      senderEmail: code.senderEmail || "Guest",
+      senderType: code.senderType,
+
+      receiverName: code.receiverName || "Not received",
+      receiverEmail: code.receiverEmail || "Not received",
+      receiverType: code.receiverType || "guest",
+
+      status: code.status,
+      isExpired: code.isExpired,
+      isContentDeleted: code.isContentDeleted,
+
+      sentAt: code.sentAt,
+      receivedAt: code.receivedAt,
+      deletedAt: code.deletedAt,
       expiresAt: code.expiresAt,
-      createdAt: code.createdAt,
-      contentPreview: code.content ? code.content.substring(0, 100) : 'No content'
+      contentPreview: code.contentPreview,
     }));
 
     return res.json({
       success: true,
-      codes: codesWithDetails,
-      total: await Code.countDocuments()
+      codes: formatted,
+      total: await CodeHistory.countDocuments(),
     });
   } catch (error) {
-    console.error("Error fetching code details:", error);
+    console.error("Error fetching code history:", error);
     return res.status(500).json({
       success: false,
-      message: "Error fetching code details"
+      message: "Error fetching code history",
     });
   }
 };

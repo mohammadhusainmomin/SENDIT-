@@ -2,12 +2,10 @@ import mongoose from "mongoose";
 
 const codeHistorySchema = new mongoose.Schema(
   {
-    // Code reference
-    codeId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Code",
-      required: true
-    },
+   codeId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Code"
+},
     code: {
       type: String,
       required: true

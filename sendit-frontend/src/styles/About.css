@@ -44,6 +44,7 @@
   opacity: 0.95;
   margin: 0;
   animation: slideUpFade 0.7s ease-out 0.2s both;
+
 }
 
 /* About Container */
@@ -128,7 +129,7 @@
 .card-icon {
   width: 60px;
   height: 60px;
-  background: var(--primary-main);
+background: #01aedf;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -242,22 +243,43 @@
   box-shadow: 0 16px 40px rgba(37, 99, 235, 0.2), 0 0 20px rgba(37, 99, 235, 0.1);
   transform: translateY(-10px);
 }
-
+/* Base Icon Style */
 .feature-item-icon {
   font-size: 2.8rem;
-  color: var(--primary-main);
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 70px;
   height: 70px;
-
   border-radius: 12px;
   transition: all 0.3s ease;
   align-self: center;
 }
 
+/* 🔵 Security - Blue */
+.security-icon {
+  color: #2563eb;
+ 
+}
+
+/* 🟡 Speed - Yellow */
+.speed-icon {
+  color: #facc15;
+ 
+}
+
+/* 🟣 Code - Purple */
+.code-icon {
+  color: #7c3aed;
+ 
+}
+
+/* 🟢 Users - Green */
+.users-icon {
+  color: #16a34a;
+
+}
 .feature-item:hover .feature-item-icon {
   transform: scale(1.15) rotate(-5deg);
 
@@ -311,7 +333,7 @@
 .value-icon {
   width: 65px;
   height: 65px;
-  background: linear-gradient(135deg, var(--primary-main), var(--primary-dark));
+  background: #01aedf;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -491,7 +513,7 @@
 }
 
 .skill-badge:hover {
-  background: var(--primary-main);
+background: #01aedf;
   color: white;
   border-color: var(--primary-main);
   transform: scale(1.05);
@@ -519,7 +541,7 @@
 }
 
 .social-link:hover {
-  background: var(--primary-main);
+background: #01aedf;
   color: white;
   border-color: var(--primary-main);
   transform: translateY(-4px);

@@ -6,11 +6,10 @@ const fileHistorySchema = new mongoose.Schema(
     fileId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "File",
-      required: true
     },
     code: {
       type: String,
-      required: true
+      required: true,
     },
 
     // File details
@@ -21,31 +20,31 @@ const fileHistorySchema = new mongoose.Schema(
     // Sender details
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
     },
     senderEmail: String,
     senderName: String,
     senderType: {
       type: String,
       enum: ["authenticated", "guest"],
-      default: "guest"
+      default: "guest",
     },
     sentAt: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
 
     // Receiver details
     receiverId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
     },
     receiverEmail: String,
     receiverName: String,
     receiverType: {
       type: String,
       enum: ["authenticated", "guest"],
-      default: "guest"
+      default: "guest",
     },
     receivedAt: Date,
 
@@ -53,33 +52,33 @@ const fileHistorySchema = new mongoose.Schema(
     expiresAt: Date,
     expiresIn: {
       type: Number,
-      description: "Expiration time in minutes"
+      description: "Expiration time in minutes",
     },
     isExpired: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     // Status tracking
     status: {
       type: String,
       enum: ["pending", "received", "expired", "deleted"],
-      default: "pending"
+      default: "pending",
     },
 
     // File deletion
     isFileDeleted: {
       type: Boolean,
-      default: false
+      default: false,
     },
     deletedAt: Date,
     deletionReason: {
       type: String,
       enum: ["expired", "manual"],
-      description: "Why the file was deleted"
-    }
+      description: "Why the file was deleted",
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Index for quick queries

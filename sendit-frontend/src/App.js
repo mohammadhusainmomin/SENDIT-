@@ -8,7 +8,7 @@ import { ToastProvider } from "./context/ToastContext";
 import "./styles/global.css";
 import "./styles/CodeShare.css";
 import MyFiles from "./pages/MyFiles";
-import CodeHistory from "./components/CodeHistory";
+import CodeHistory from "./pages//CodeHistory";
 import CodeShare from "./pages/CodeShare";
 import CodeReceive from "./components/CodeReceive";
 import About from "./pages/About";

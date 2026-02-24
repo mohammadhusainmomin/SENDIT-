@@ -58,37 +58,44 @@ const decryptText = (combinedData) => {
 export const sendCode = async (req, res) => {
   try {
     const { content, expiresIn } = req.body;
+
     if (!content) {
       return res.status(400).json({ message: "Code is required" });
     }
 
     const shareCode = Math.floor(1000 + Math.random() * 9000).toString();
-    const expirationTime = parseInt(expiresIn) || 10; // Default to 10 minutes
+    const expirationTime = parseInt(expiresIn) || 10;
     const expiresAtTime = new Date(Date.now() + expirationTime * 60 * 1000);
 
-    // Encrypt the code content
     const encryptedContent = encryptText(content);
 
-    // Create code document
+    // 🔥 IMPORTANT FIX
+    const senderId = req.user?._id || null;
+    const senderEmail = req.user?.email || null;
+    const senderName = req.user?.name || "Guest User";
+    const senderType = req.user ? "authenticated" : "guest";
+
     const codeDoc = await Code.create({
       code: shareCode,
       content: encryptedContent,
       expiresIn: expirationTime,
       expiresAt: expiresAtTime,
-      senderId: req.user?.id
+      senderId
     });
 
-    // Create history record
-    const contentPreview = content.length > 100 ? content.substring(0, 100) + "..." : content;
+    const contentPreview =
+      content.length > 100 ? content.substring(0, 100) + "..." : content;
 
     await CodeHistory.create({
       codeId: codeDoc._id,
       code: shareCode,
       contentPreview,
-      senderId: req.user?.id || null,
-      senderEmail: req.user?.email || null,
-      senderName: req.user?.name || null,
-      senderType: req.user?.id ? "authenticated" : "guest",
+
+      senderId,
+      senderEmail,
+      senderName,
+      senderType,
+
       sentAt: new Date(),
       expiresAt: expiresAtTime,
       expiresIn: expirationTime,
@@ -122,7 +129,7 @@ export const receiveCode = async (req, res) => {
 
     // Record receiverId if user is authenticated and no receiver yet
     if (!data.receiverId && req.user) {
-      data.receiverId = req.user.id;
+      data.receiverId = req.user._id;
       await data.save();
     }
 
@@ -131,7 +138,7 @@ export const receiveCode = async (req, res) => {
       await CodeHistory.updateMany(
         { codeId: data._id, receivedAt: { $exists: false } },
         {
-          receiverId: req.user.id,
+          receiverId: req.user._id,
           receiverEmail: req.user.email,
           receiverName: req.user.name,
           receiverType: "authenticated",
@@ -149,56 +156,58 @@ export const receiveCode = async (req, res) => {
   }
 };
 
-/* ================= HISTORY ================= */
-export const getMyCodes = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    const codes = await Code.find({
-      $or: [{ senderId: userId }, { receiverId: userId }]
-    }).sort({ createdAt: -1 });
-
-    // Decrypt all codes for display
-    const decryptedCodes = codes.map((codeItem) => {
-      try {
-        const decrypted = decryptText(codeItem.content);
-        return {
-          ...codeItem.toObject(),
-          content: decrypted
-        };
-      } catch (err) {
-        console.error("Failed to decrypt code:", err);
-        return codeItem.toObject();
-      }
-    });
-
-    res.json(decryptedCodes);
-  } catch (err) {
-    console.error("GET CODES ERROR:", err);
-    res.status(500).json({ message: "Failed to fetch codes" });
-  }
-};
 
 /* ================= CODE HISTORY ================= */
-export const getCodeHistory = async (req, res) => {
+export const getSentCodesHistory = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     const history = await CodeHistory.find({
-      $or: [{ senderId: userId }, { receiverId: userId }]
+      senderId: userId
     })
       .sort({ sentAt: -1 })
-      .select("-codeId");
+      .select(
+        "code contentPreview receiverName receiverEmail receiverType sentAt status"
+      );
 
     res.json({
       success: true,
+      type: "sent",
       history
     });
+
   } catch (err) {
-    console.error("GET CODE HISTORY ERROR:", err);
+    console.error("GET SENT CODES ERROR:", err);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch code history"
+      message: "Failed to fetch sent codes"
+    });
+  }
+};
+
+export const getReceivedCodesHistory = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const history = await CodeHistory.find({
+      receiverId: userId
+    })
+      .sort({ receivedAt: -1 })
+      .select(
+        "code contentPreview senderName senderEmail senderType sentAt receivedAt status"
+      );
+
+    res.json({
+      success: true,
+      type: "received",
+      history
+    });
+
+  } catch (err) {
+    console.error("GET RECEIVED CODES ERROR:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch received codes"
     });
   }
 };

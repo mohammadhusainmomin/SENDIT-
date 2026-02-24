@@ -28,57 +28,41 @@ export const cleanupExpiredFiles = async () => {
   try {
     const now = new Date();
 
-    // Find all expired files
     const expiredFiles = await File.find({
       expiresAt: { $lte: now },
-      isFileDeleted: { $ne: true }
     });
 
-    console.log(`Found ${expiredFiles.length} expired files to clean up`);
+    console.log(`Found ${expiredFiles.length} expired files`);
 
     for (const fileBundle of expiredFiles) {
-      try {
-        // Delete all encrypted files from disk
-        for (const file of fileBundle.files) {
-          const decryptedExists = fs.existsSync(file.encryptedPath);
-          if (decryptedExists) {
-            deleteFileFromDisk(file.encryptedPath);
-            console.log(`Deleted file: ${file.encryptedPath}`);
-          }
+      // 1️⃣ Delete encrypted files from disk
+      for (const file of fileBundle.files) {
+        if (file.encryptedPath && fs.existsSync(file.encryptedPath)) {
+          fs.unlinkSync(file.encryptedPath);
         }
-
-        // Update File document
-        fileBundle.isFileDeleted = true;
-        fileBundle.deletedAt = now;
-        fileBundle.deletionReason = "expired";
-        await fileBundle.save();
-
-        // Update FileHistory documents
-        await FileHistory.updateMany(
-          { fileId: fileBundle._id },
-          {
-            isFileDeleted: true,
-            isExpired: true,
-            status: fileBundle.receiverId ? "received" : "expired",
-            deletedAt: now,
-            deletionReason: "expired"
-          }
-        );
-
-        console.log(`Cleaned up file bundle: ${fileBundle.code}`);
-      } catch (error) {
-        console.error(`Error cleaning up file bundle ${fileBundle._id}:`, error);
       }
+
+      // 2️⃣ Update history
+      await FileHistory.updateMany(
+        { fileId: fileBundle._id },
+        {
+          isFileDeleted: true,
+          isExpired: true,
+          status: "expired",
+          deletedAt: now,
+          deletionReason: "expired",
+        },
+      );
+
+      // 3️⃣ Delete File document from DB
+      await File.deleteOne({ _id: fileBundle._id });
+
+      console.log(`Deleted file bundle with code: ${fileBundle.code}`);
     }
-
-    console.log("File cleanup completed");
-
-    // Also cleanup expired code content
-    await cleanupExpiredCodes();
 
     return expiredFiles.length;
   } catch (error) {
-    console.error("Error in cleanupExpiredFiles:", error);
+    console.error("Cleanup error:", error);
     return 0;
   }
 };
@@ -87,12 +71,14 @@ export const cleanupExpiredFiles = async () => {
  * Start automatic cleanup scheduler
  * Runs every 5 minutes by default
  */
-export const startCleanupScheduler = (intervalMinutes = 5) => {
-  console.log(`Starting file cleanup scheduler (every ${intervalMinutes} minutes)`);
+export const startCleanupScheduler = async (intervalMinutes = 5) => {
+  console.log(
+    `Starting file cleanup scheduler (every ${intervalMinutes} minutes)`,
+  );
 
   // Run immediately on startup
-  cleanupExpiredFiles();
-
+  await cleanupExpiredFiles();
+  await cleanupExpiredCodes();
   // Then run periodically
   const intervalMs = intervalMinutes * 60 * 1000;
   return setInterval(cleanupExpiredFiles, intervalMs);
@@ -105,42 +91,30 @@ export const cleanupExpiredCodes = async () => {
   try {
     const now = new Date();
 
-    // Find all expired codes
     const expiredCodes = await Code.find({
-      expiresAt: { $lte: now },
-      content: { $exists: true, $ne: null }
+      expiresAt: { $lte: now }
     });
 
-    console.log(`Found ${expiredCodes.length} expired codes to clean up`);
-
     for (const codeDoc of expiredCodes) {
-      try {
-        // Delete content but keep the document for potential future reference
-        codeDoc.content = null;
-        await codeDoc.save();
 
-        // Update CodeHistory documents
-        await CodeHistory.updateMany(
-          { codeId: codeDoc._id },
-          {
-            isContentDeleted: true,
-            isExpired: true,
-            status: codeDoc.receiverId ? "received" : "expired",
-            deletedAt: now,
-            deletionReason: "expired"
-          }
-        );
+      await CodeHistory.updateMany(
+        { codeId: codeDoc._id },
+        {
+          isExpired: true,
+          isContentDeleted: true,
+          status: "expired",
+          deletedAt: now,
+          deletionReason: "expired"
+        }
+      );
 
-        console.log(`Cleaned up code: ${codeDoc.code}`);
-      } catch (error) {
-        console.error(`Error cleaning up code ${codeDoc._id}:`, error);
-      }
+      await Code.deleteOne({ _id: codeDoc._id });
     }
 
-    console.log("Code cleanup completed");
     return expiredCodes.length;
+
   } catch (error) {
-    console.error("Error in cleanupExpiredCodes:", error);
+    console.error("Code cleanup error:", error);
     return 0;
   }
 };

@@ -3,12 +3,12 @@ import multer from "multer";
 import {
   sendFile,
   receiveFile,
-  getMyFiles,
-  downloadFromHistory,
-  getUserFileHistory,
+  getSentFilesHistory,
+  getReceivedFilesHistory,
   getAdminFileHistory
 } from "../controllers/file.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
+import authMiddlewareOptional from "../middleware/authOptional.middleware.js";
 
 const router = express.Router();
 
@@ -27,16 +27,16 @@ router.post("/send", upload.array("files"), sendFile);
 //  Logged-in send (history) - supports multiple files
 router.post("/send-auth", authMiddleware, upload.array("files"), sendFile);
 
-//  Receive (guests can receive, auth is optional for history tracking)
-router.post("/receive", receiveFile);
 
-//  History
-router.get("/files/my", authMiddleware, getMyFiles);
+router.post("/receive", authMiddlewareOptional, receiveFile);
 
-//  File history (detailed records)
-router.get("/files/history", authMiddleware, getUserFileHistory);
 
-//  Download from history
-router.get("/files/download/:id", authMiddleware, downloadFromHistory);
+// Sent files
+router.get("/files/sent", authMiddleware, getSentFilesHistory);
+
+// Received files
+router.get("/files/received", authMiddleware, getReceivedFilesHistory);
+
+
 
 export default router;
