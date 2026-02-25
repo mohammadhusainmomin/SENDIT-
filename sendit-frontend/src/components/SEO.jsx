@@ -16,7 +16,7 @@ export default function SEO({
   description = "Secure file and code sharing platform. Share files free with 4-digit codes. No links, no accounts. Fast, safe, and instant.",
   keywords = "share files online, send files free, secure file transfer, code sharing, anonymous file sharing, sendit, best file sharing site",
   url = "https://senditsystem.netlify.app",
-  image = "https://senditsystem.netlify.app/og-image.png",
+  image = "https://senditsystem.netlify.app/images/Sendit_logo.png",
   type = "website",
   structuredData = null,
 }) {

@@ -25,8 +25,8 @@ export default function About() {
     "@type": "Organization",
     name: "SendIt",
     description: "A secure platform for sharing files and code",
-    url: "https://sendit.example.com",
-    logo: "https://sendit.example.com/logo.png",
+    url: "https://senditsystem.netlify.app",
+    logo: "https://senditsystem.netlify.app/logo.png",
   };
 
   const teamMembers = [
@@ -120,7 +120,7 @@ export default function About() {
       <SEO
         title="About SendIt - Secure File & Code Sharing Platform"
         description="Learn about SendIt, a secure platform for sharing files and code snippets. Meet the team behind the innovation."
-        url="https://sendit.example.com/about"
+        url="https://senditsystem.netlify.app/about"
         structuredData={structuredData}
       />
 

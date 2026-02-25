@@ -12,7 +12,7 @@ export default function Features() {
       <SEO
         title="SendIt Features - Secure File & Code Sharing"
         description="Discover SendIt's powerful features: encrypted file transfer, code sharing with syntax highlighting, temporary links, and more."
-        url="https://sendit.example.com/features"
+        url="https://senditsystem.netlify.app/features"
       />
 
       <div className="content-page-wrapper">

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FiDownload, FiCopy, FiCheckCircle } from "react-icons/fi";
+import SEO from "./SEO";
 import api from "../services/api";
 import { formatCode } from "../utils/formatCode";
 import { useToast } from "../context/ToastContext";
@@ -69,6 +70,12 @@ function CodeReceive() {
 
   return (
     <div className="code-receive-container">
+      <SEO
+        title="Receive Code Online - SendIt Code Download"
+        description="Receive code snippets securely using a 4-digit access code. Get shared code instantly with syntax highlighting."
+        keywords="receive code online, download code, secure code sharing, code snippet retrieval"
+        url="https://senditsystem.netlify.app/code/receive"
+      />
       <div className="code-receive-content">
         <section className="code-receive-header">
           <div className="header-icon"><FiDownload /></div>

@@ -65,7 +65,7 @@ function CodeHistory() {
       <SEO
         title="My Codes - SendIt Code History"
         description="View your sent and received codes."
-        url="https://senditsysytem.netlify.app/code-history"
+        url="https://senditsystem.netlify.app/code-history"
       />
 
       <div className="my-files-content">

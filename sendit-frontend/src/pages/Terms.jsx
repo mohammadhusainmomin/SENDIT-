@@ -12,7 +12,7 @@ export default function Terms() {
       <SEO
         title="Terms of Service - SendIt"
         description="Read SendIt's terms of service to understand the rules and conditions for using our platform."
-        url="https://sendit.example.com/terms"
+        url="https://senditsystem.netlify.app/terms"
       />
 
       <div className="content-page-wrapper">
@@ -87,7 +87,7 @@ export default function Terms() {
           <section className="content-section">
             <h2>Contact Information</h2>
             <p>
-              If you have any questions about these Terms of Service, please contact us at terms@sendit.example.com.
+              If you have any questions about these Terms of Service, please contact us at support@senditsystem.netlify.app.
             </p>
           </section>
         </div>

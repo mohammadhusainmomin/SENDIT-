@@ -12,7 +12,7 @@ export default function Privacy() {
       <SEO
         title="Privacy Policy - SendIt"
         description="Read SendIt's privacy policy to understand how we collect, use, and protect your data."
-        url="https://sendit.example.com/privacy"
+        url="https://senditsystem.netlify.app/privacy"
       />
 
       <div className="content-page-wrapper">
@@ -70,7 +70,7 @@ export default function Privacy() {
           <section className="content-section">
             <h2>Contact Us</h2>
             <p>
-              If you have any questions about this Privacy Policy, please contact us at privacy@sendit.example.com.
+              If you have any questions about this Privacy Policy, please contact us at support@senditsystem.netlify.app.
             </p>
           </section>
         </div>

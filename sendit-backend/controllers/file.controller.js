@@ -23,6 +23,11 @@ export const sendFile = async (req, res) => {
       const encryptedPath = `uploads/encrypted-${Date.now()}-${Math.random()}`;
       await encryptFile(file.path, encryptedPath);
 
+      // Delete the original plaintext file after encryption
+      fs.unlink(file.path, (err) => {
+        if (err) console.error("Error deleting original file:", err);
+      });
+
       fileObjects.push({
         encryptedPath,
         originalName: file.originalname,
@@ -123,15 +128,24 @@ export const receiveFile = async (req, res) => {
     const decryptedPath = `uploads/tmp-${Date.now()}`;
     await decryptFile(file.encryptedPath, decryptedPath);
 
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${encodeURIComponent(file.originalName)}"`,
-    );
-    res.setHeader("Content-Type", file.mimeType);
-
-   
+    res.download(decryptedPath, file.originalName, (err) => {
+      if (err) {
+        console.error("DOWNLOAD ERROR:", err);
+        // Don't send another response if headers are already sent
+        if (!res.headersSent) {
+          res.status(500).json({ message: "File download failed" });
+        }
+      }
+      // Delete the temporary decrypted file
+      fs.unlink(decryptedPath, (err) => {
+        if (err) console.error("Error deleting temp file:", err);
+      });
+    });
   } catch (err) {
     console.error("RECEIVE ERROR:", err);
+    if (!res.headersSent) {
+      res.status(500).json({ message: "An error occurred during file retrieval" });
+    }
   }
 };
 
@@ -225,5 +239,3 @@ export const getAdminFileHistory = async (req, res) => {
     });
   }
 };
-
-

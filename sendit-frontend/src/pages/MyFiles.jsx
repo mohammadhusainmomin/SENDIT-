@@ -65,7 +65,7 @@ function MyFiles() {
       <SEO
         title="My Files - SendIt File History"
         description="View your sent and received files."
-        url="https://senditsysytem.netlify.app/my-files"
+        url="https://senditsystem.netlify.app/my-files"
       />
 
       <div className="my-files-content">
