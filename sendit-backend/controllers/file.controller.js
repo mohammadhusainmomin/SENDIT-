@@ -128,10 +128,10 @@ export const receiveFile = async (req, res) => {
     const decryptedPath = `uploads/tmp-${Date.now()}`;
     await decryptFile(file.encryptedPath, decryptedPath);
 
+    res.type(file.mimeType);
     res.download(decryptedPath, file.originalName, (err) => {
       if (err) {
         console.error("DOWNLOAD ERROR:", err);
-        // Don't send another response if headers are already sent
         if (!res.headersSent) {
           res.status(500).json({ message: "File download failed" });
         }

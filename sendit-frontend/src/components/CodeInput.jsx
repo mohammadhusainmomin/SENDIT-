@@ -77,14 +77,17 @@ function CodeInput() {
       let fileName = "downloaded-file";
 
       if (disposition) {
-        const match = disposition.match(/filename="?([^"]+)"?/);
-        if (match && match[1]) {
-          fileName = decodeURIComponent(match[1]);
+        // More robust filename extraction
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(disposition);
+        if (matches != null && matches[1]) {
+          fileName = matches[1].replace(/['"]/g, '');
+          fileName = decodeURIComponent(fileName);
         }
       }
 
       const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
+        type: response.headers["content-type"] || "application/octet-stream",
       });
 
       const url = window.URL.createObjectURL(blob);
