@@ -128,6 +128,7 @@ export const receiveFile = async (req, res) => {
     const decryptedPath = `uploads/tmp-${Date.now()}`;
     await decryptFile(file.encryptedPath, decryptedPath);
 
+    res.setHeader("X-Filename", encodeURIComponent(file.originalName));
     res.type(file.mimeType);
     res.download(decryptedPath, file.originalName, (err) => {
       if (err) {

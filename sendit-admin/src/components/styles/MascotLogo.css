@@ -1,0 +1,61 @@
+/* ===== MascotLogo Component Styling ===== */
+
+.mascot-logo {
+  display: inline-block;
+  vertical-align: middle;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mascot-logo-small {
+  width: 32px;
+  height: 32px;
+}
+
+.mascot-logo-medium {
+  width: 64px;
+  height: 64px;
+}
+
+.mascot-logo-large {
+  width: 128px;
+  height: 128px;
+}
+
+.mascot-logo-xl {
+  width: 200px;
+  height: 200px;
+}
+
+/* Hover animation */
+.mascot-logo:hover {
+  transform: scale(1.05) translateY(-2px);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.12));
+}
+
+/* Animation for mascot appearance */
+@keyframes mascotBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.mascot-logo.bounce {
+  animation: mascotBounce 0.6s ease-in-out;
+}
+
+/* Responsive scaling */
+@media (max-width: 768px) {
+  .mascot-logo-large {
+    width: 96px;
+    height: 96px;
+  }
+
+  .mascot-logo-xl {
+    width: 128px;
+    height: 128px;
+  }
+}

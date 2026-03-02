@@ -74,15 +74,32 @@ function CodeInput() {
       );
 
       const disposition = response.headers["content-disposition"];
-      let fileName = "downloaded-file";
+      const xFilename = response.headers["x-filename"];
+      let fileName = filesList[fileIndex]?.name || "downloaded-file";
 
-      if (disposition) {
+      if (xFilename) {
+        try {
+          fileName = decodeURIComponent(xFilename);
+        } catch (e) {
+          console.error("Error decoding X-Filename header:", e);
+        }
+      } else if (disposition) {
         // More robust filename extraction
+        const filenameStarRegex = /filename\*=UTF-8''([^;]*)/i;
         const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+
+        const starMatches = filenameStarRegex.exec(disposition);
         const matches = filenameRegex.exec(disposition);
-        if (matches != null && matches[1]) {
-          fileName = matches[1].replace(/['"]/g, '');
-          fileName = decodeURIComponent(fileName);
+
+        if (starMatches && starMatches[1]) {
+          fileName = decodeURIComponent(starMatches[1]);
+        } else if (matches && matches[1]) {
+          fileName = matches[1].replace(/['"]/g, "");
+          try {
+            fileName = decodeURIComponent(fileName);
+          } catch (e) {
+            // If decoding fails, use the raw filename
+          }
         }
       }
 
