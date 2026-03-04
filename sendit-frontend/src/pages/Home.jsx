@@ -35,7 +35,7 @@ function Home() {
   return (
     <div className="home-container">
       <SEO
-        title="SendIt - Free File Share Platform | Secure File Transfer Online"
+        title="SendIt - Secure Files Sharing Platform"
         description="SendIt is the easiest way to file share online. Share files instantly with a 4-digit code - no links needed. Secure, free, and fast file sharing for everyone."
         keywords="file share, share files online, file sharing platform, send files free, secure file transfer, online file share, send large files, anonymous file sharing, best file sharing site, share files securely"
         url="https://senditsystem.netlify.app"

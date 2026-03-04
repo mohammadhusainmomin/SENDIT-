@@ -2,5 +2,20 @@
 https://www.senditsystem.netlify.app/* https://senditsystem.netlify.app/:splat 301
 http://senditsystem.netlify.app/* https://senditsystem.netlify.app/:splat 301
 
-# SPA redirect rule
-/*    /index.html   200
+# SPA route rewrites
+/ /index.html 200
+/send /index.html 200
+/receive /index.html 200
+/my-files /index.html 200
+/code/send /index.html 200
+/code/receive /index.html 200
+/code/history /index.html 200
+/about /index.html 200
+/features /index.html 200
+/privacy /index.html 200
+/terms /index.html 200
+/faq /index.html 200
+
+# Explicit custom 404 page
+/404 /404.html 404
+/* /404.html 404
