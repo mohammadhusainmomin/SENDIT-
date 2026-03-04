@@ -220,6 +220,71 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.route-loading {
+  min-height: calc(100vh - 60px);
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.notfound-page {
+  min-height: calc(100vh - 60px);
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  background: var(--bg-secondary);
+}
+
+.notfound-card {
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2rem 1.25rem;
+  box-shadow: var(--shadow-md);
+}
+
+.notfound-card h1 {
+  font-size: clamp(2.6rem, 9vw, 4rem);
+  color: var(--primary-main);
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+.notfound-card h2 {
+  margin-bottom: 0.55rem;
+  font-size: 1.35rem;
+}
+
+.notfound-card p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.notfound-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.notfound-links a {
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.notfound-links a:hover {
+  border-color: var(--primary-main);
+  color: var(--primary-main);
+}
+
 /* Smooth page transitions */
 @media (prefers-reduced-motion: no-preference) {
   html {
@@ -336,7 +401,6 @@ button:hover::before {
 }
 
 button:hover:not(:disabled) {
-  background: var(--primary-dark);
   box-shadow: 0 8px 25px rgba(37, 99, 235, 0.35), 0 0 20px rgba(37, 99, 235, 0.15);
   transform: translateY(-4px);
 }

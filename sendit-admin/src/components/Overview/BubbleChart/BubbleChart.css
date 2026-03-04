@@ -1,0 +1,245 @@
+.bubble-chart-container {
+  width: 100%;
+  max-width: 920px;
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(14, 165, 233, 0.08), transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(245, 158, 11, 0.08), transparent 45%),
+    var(--bg-primary);
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+}
+
+.distribution-summary {
+  margin-bottom: 22px;
+}
+
+.summary-kicker {
+  margin: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
+  font-weight: 700;
+}
+
+.summary-total {
+  margin: 6px 0 2px;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.summary-caption {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.distribution-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+}
+
+.donut-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  justify-self: center;
+  margin: 0;
+}
+
+.donut-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ring-track {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.18);
+  stroke-width: 24;
+}
+
+.ring-segment {
+  fill: none;
+  stroke-width: 24;
+  stroke-linecap: round;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.ring-segment.files {
+  stroke: #0ea5e9;
+}
+
+.ring-segment.codes {
+  stroke: #f59e0b;
+}
+
+.ring-segment.muted {
+  opacity: 0.32;
+}
+
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.center-value {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.center-label {
+  margin-top: 6px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  font-weight: 700;
+}
+
+.distribution-cards {
+  display: grid;
+  gap: 14px;
+}
+
+.dist-card {
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  padding: 14px 16px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dist-card.active {
+  border-color: rgba(14, 165, 233, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+}
+
+.dist-card.codes.active {
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.dist-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dist-meta {
+  margin: 0;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.files-dot {
+  background: #0ea5e9;
+}
+
+.codes-dot {
+  background: #f59e0b;
+}
+
+.dist-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-light);
+  font-weight: 700;
+}
+
+.dist-value {
+  margin: 8px 0 2px;
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.dist-percent {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ratio-track {
+  margin-top: 18px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.15);
+  overflow: hidden;
+  display: flex;
+}
+
+.ratio-fill {
+  height: 100%;
+  display: block;
+}
+
+.ratio-fill.files-fill {
+  background: linear-gradient(90deg, #38bdf8, #0284c7);
+}
+
+.ratio-fill.codes-fill {
+  background: linear-gradient(90deg, #fbbf24, #d97706);
+}
+
+@media (max-width: 900px) {
+  .distribution-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .donut-wrap {
+    max-width: 260px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bubble-chart-container {
+    padding: 16px;
+  }
+
+  .summary-total {
+    font-size: 28px;
+  }
+
+  .center-value {
+    font-size: 24px;
+  }
+
+  .dist-value {
+    font-size: 22px;
+  }
+}

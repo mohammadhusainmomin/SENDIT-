@@ -3,7 +3,8 @@ import fs from "fs";
 
 const algorithm = "aes-256-cbc";
 
-const getSecretKey = () => {
+// File encryption secret key
+const getFileSecretKey = () => {
   if (!process.env.FILE_SECRET) {
     throw new Error("FILE_SECRET is missing in environment variables");
   }
@@ -14,9 +15,22 @@ const getSecretKey = () => {
     .digest();
 };
 
+// Code encryption secret key
+const getCodeSecretKey = () => {
+  if (!process.env.CODE_SECRET) {
+    throw new Error("CODE_SECRET is missing in environment variables");
+  }
+
+  return crypto
+    .createHash("sha256")
+    .update(String(process.env.CODE_SECRET))
+    .digest();
+};
+
+// ================= FILE ENCRYPTION =================
 export const encryptFile = (inputPath, outputPath) => {
   return new Promise((resolve, reject) => {
-    const secretKey = getSecretKey();
+    const secretKey = getFileSecretKey();
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
 
@@ -35,7 +49,7 @@ export const encryptFile = (inputPath, outputPath) => {
 
 export const decryptFile = (inputPath, outputPath) => {
   return new Promise((resolve, reject) => {
-    const secretKey = getSecretKey();
+    const secretKey = getFileSecretKey();
     const input = fs.createReadStream(inputPath);
 
     input.once("readable", () => {
@@ -55,3 +69,42 @@ export const decryptFile = (inputPath, outputPath) => {
   });
 };
 
+// ================= CODE ENCRYPTION =================
+export const encryptText = (text) => {
+  try {
+    const secretKey = getCodeSecretKey();
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+
+    let encrypted = cipher.update(text, "utf8", "hex");
+    encrypted += cipher.final("hex");
+
+    // Prepend IV to encrypted data for storage
+    const combinedData = iv.toString("hex") + ":" + encrypted;
+
+    return combinedData;
+  } catch (err) {
+    console.error("Encryption error:", err);
+    throw err;
+  }
+};
+
+export const decryptText = (combinedData) => {
+  try {
+    const secretKey = getCodeSecretKey();
+
+    // Extract IV and encrypted data
+    const [ivHex, encrypted] = combinedData.split(":");
+    const iv = Buffer.from(ivHex, "hex");
+
+    const decipher = crypto.createDecipheriv(algorithm, secretKey, iv);
+
+    let decrypted = decipher.update(encrypted, "hex", "utf8");
+    decrypted += decipher.final("utf8");
+
+    return decrypted;
+  } catch (err) {
+    console.error("Decryption error:", err);
+    throw err;
+  }
+};

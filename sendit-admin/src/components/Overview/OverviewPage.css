@@ -1,0 +1,14 @@
+.tab-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+  font-size: 16px;
+  min-height: 400px;
+}

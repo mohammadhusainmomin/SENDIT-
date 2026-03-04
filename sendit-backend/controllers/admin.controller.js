@@ -129,55 +129,109 @@ export const getMonthlyTrend = async (req, res) => {
 export const getRecentActivity = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 20;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+    const fetchCount = page * limit;
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    // Pull enough rows from each collection so merged pagination stays correct.
+    const [totalFiles, totalCodes, recentFiles, recentCodes] = await Promise.all([
+      FileHistory.countDocuments({ sentAt: { $gte: oneDayAgo } }),
+      CodeHistory.countDocuments({ sentAt: { $gte: oneDayAgo } }),
+      FileHistory.find()
+        .where("sentAt")
+        .gte(oneDayAgo)
+        .sort({ sentAt: -1 })
+        .limit(fetchCount)
+        .lean(),
+      CodeHistory.find()
+        .where("sentAt")
+        .gte(oneDayAgo)
+        .sort({ sentAt: -1 })
+        .limit(fetchCount)
+        .lean(),
+    ]);
+
+    const total = totalFiles + totalCodes;
+    const pages = Math.max(1, Math.ceil(total / limit));
 
     // File history
-    const recentFiles = await FileHistory.find()
-      .sort({ sentAt: -1 })
-      .limit(limit)
-      .lean();
+    const filesActivity = recentFiles.map((file) => {
+      const resolvedStatus =
+        file.status === "pending" &&
+        (file.receivedAt || file.receiverName || file.receiverEmail)
+          ? "received"
+          : file.status;
 
-    const filesActivity = recentFiles.map(file => ({
-      type: "file",
-      id: file._id,
-      code: file.code,
-      fileName: file.originalName,
-      sender: file.senderEmail || "Guest",
-      senderName: file.senderName || "Guest",
-      receiver: file.receiverEmail || "Not received",
-      receiverName: file.receiverName || "Not received",
-      status: file.status,
-      isExpired: file.isExpired,
-      isDeleted: file.isFileDeleted,
-      date: file.sentAt
-    }));
+      const senderLabel = file.senderName || file.senderEmail || "Guest User";
+      const receiverLabel =
+        file.receiverName ||
+        file.receiverEmail ||
+        (file.receiverType === "guest" && resolvedStatus === "received"
+          ? "Guest User"
+          : "Not received");
+
+      return {
+        type: "file",
+        id: file._id,
+        code: file.code,
+        fileName: file.originalName,
+        sender: senderLabel,
+        senderName: senderLabel,
+        receiver: receiverLabel,
+        receiverName: receiverLabel,
+        status: resolvedStatus,
+        isExpired: file.isExpired,
+        isDeleted: file.isFileDeleted,
+        date: file.sentAt,
+      };
+    });
 
     // Code history
-    const recentCodes = await CodeHistory.find()
-      .sort({ sentAt: -1 })
-      .limit(limit)
-      .lean();
+    const codesActivity = recentCodes.map((code) => {
+      const resolvedStatus =
+        code.status === "pending" &&
+        (code.receivedAt || code.receiverName || code.receiverEmail)
+          ? "received"
+          : code.status;
 
-    const codesActivity = recentCodes.map(code => ({
-      type: "code",
-      id: code._id,
-      code: code.code,
-      sender: code.senderEmail || "Guest",
-      senderName: code.senderName || "Guest",
-      receiver: code.receiverEmail || "Not received",
-      receiverName: code.receiverName || "Not received",
-      status: code.status,
-      isExpired: code.isExpired,
-      isDeleted: code.isContentDeleted,
-      date: code.sentAt
-    }));
+      const senderLabel = code.senderName || code.senderEmail || "Guest User";
+      const receiverLabel =
+        code.receiverName ||
+        code.receiverEmail ||
+        (code.receiverType === "guest" && resolvedStatus === "received"
+          ? "Guest User"
+          : "Not received");
+
+      return {
+        type: "code",
+        id: code._id,
+        code: code.code,
+        sender: senderLabel,
+        senderName: senderLabel,
+        receiver: receiverLabel,
+        receiverName: receiverLabel,
+        status: resolvedStatus,
+        isExpired: code.isExpired,
+        isDeleted: code.isContentDeleted,
+        date: code.sentAt,
+      };
+    });
 
     const allActivity = [...filesActivity, ...codesActivity]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, limit);
+      .slice(skip, skip + limit);
 
     return res.json({
       success: true,
-      activity: allActivity
+      activity: allActivity,
+      pagination: {
+        total,
+        page,
+        pages,
+        limit,
+        hasMore: page < pages,
+      },
     });
 
   } catch (error) {
@@ -192,9 +246,14 @@ export const getRecentActivity = async (req, res) => {
 export const getUsersList = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+    const total = await User.countDocuments();
+    const pages = Math.max(1, Math.ceil(total / limit));
 
     const users = await User.find()
       .sort({ createdAt: -1 })
+      .skip(skip)
       .limit(limit)
       .select("name email authProvider createdAt")
       .lean();
@@ -232,7 +291,13 @@ export const getUsersList = async (req, res) => {
     return res.json({
       success: true,
       users: usersWithStats,
-      total: await User.countDocuments(),
+      pagination: {
+        total,
+        page,
+        pages,
+        limit,
+        hasMore: page < pages,
+      },
     });
   } catch (error) {
     console.error("Error fetching users list:", error);

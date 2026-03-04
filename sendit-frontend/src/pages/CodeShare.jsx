@@ -235,7 +235,10 @@ function CodeShare() {
           <section className="code-result">
             <div className="result-card">
               <div className="result-header">
-                <h3>✨ Your Share Code</h3>
+                <div className="result-title-group">
+                  <h3>Your Share Code</h3>
+                  <p className="result-subtitle">Share this 4-digit code with receiver</p>
+                </div>
                 <button
                   onClick={handleReset}
                   className="btn-close-result"
@@ -285,3 +288,4 @@ function CodeShare() {
 }
 
 export default CodeShare;
+

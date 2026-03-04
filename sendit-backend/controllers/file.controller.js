@@ -110,20 +110,24 @@ export const receiveFile = async (req, res) => {
       await fileBundle.save();
     }
 
-    // Update history if user is authenticated
-    if (req.user) {
-      await FileHistory.updateMany(
-        { fileId: fileBundle._id },
-        {
+    // Update history for both authenticated and guest receivers.
+    const receiverUpdate = req.user
+      ? {
           receiverId: req.user.id,
           receiverEmail: req.user.email,
           receiverName: req.user.name,
           receiverType: "authenticated",
           receivedAt: new Date(),
           status: "received",
-        },
-      );
-    }
+        }
+      : {
+          receiverName: "Guest User",
+          receiverType: "guest",
+          receivedAt: new Date(),
+          status: "received",
+        };
+
+    await FileHistory.updateMany({ fileId: fileBundle._id }, receiverUpdate);
 
     const decryptedPath = `uploads/tmp-${Date.now()}`;
     await decryptFile(file.encryptedPath, decryptedPath);

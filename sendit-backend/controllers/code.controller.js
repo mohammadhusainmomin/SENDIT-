@@ -1,58 +1,6 @@
 import Code from "../models/Code.js";
 import CodeHistory from "../models/CodeHistory.js";
-import crypto from "crypto";
-
-const algorithm = "aes-256-cbc";
-
-const getSecretKey = () => {
-  if (!process.env.CODE_SECRET) {
-    throw new Error("CODE_SECRET is missing in environment variables");
-  }
-
-  return crypto
-    .createHash("sha256")
-    .update(String(process.env.CODE_SECRET))
-    .digest();
-};
-
-const encryptText = (text) => {
-  try {
-    const secretKey = getSecretKey();
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
-
-    let encrypted = cipher.update(text, "utf8", "hex");
-    encrypted += cipher.final("hex");
-
-    // Prepend IV to encrypted data for storage
-    const combinedData = iv.toString("hex") + ":" + encrypted;
-
-    return combinedData;
-  } catch (err) {
-    console.error("Encryption error:", err);
-    throw err;
-  }
-};
-
-const decryptText = (combinedData) => {
-  try {
-    const secretKey = getSecretKey();
-
-    // Extract IV and encrypted data
-    const [ivHex, encrypted] = combinedData.split(":");
-    const iv = Buffer.from(ivHex, "hex");
-
-    const decipher = crypto.createDecipheriv(algorithm, secretKey, iv);
-
-    let decrypted = decipher.update(encrypted, "hex", "utf8");
-    decrypted += decipher.final("utf8");
-
-    return decrypted;
-  } catch (err) {
-    console.error("Decryption error:", err);
-    throw err;
-  }
-};
+import { encryptText, decryptText } from "../utils/encryption.utils.js";
 
 /* ================= SEND CODE ================= */
 export const sendCode = async (req, res) => {
@@ -69,7 +17,7 @@ export const sendCode = async (req, res) => {
 
     const encryptedContent = encryptText(content);
 
-    // 🔥 IMPORTANT FIX
+
     const senderId = req.user?._id || null;
     const senderEmail = req.user?.email || null;
     const senderName = req.user?.name || "Guest User";
@@ -133,20 +81,32 @@ export const receiveCode = async (req, res) => {
       await data.save();
     }
 
-    // Update history if user is authenticated
-    if (req.user) {
-      await CodeHistory.updateMany(
-        { codeId: data._id, receivedAt: { $exists: false } },
-        {
+    // Update history for both authenticated and guest receivers.
+    const receiverUpdate = req.user
+      ? {
           receiverId: req.user._id,
           receiverEmail: req.user.email,
           receiverName: req.user.name,
           receiverType: "authenticated",
           receivedAt: new Date(),
-          status: "received"
+          status: "received",
         }
-      );
-    }
+      : {
+          receiverName: "Guest User",
+          receiverType: "guest",
+          receivedAt: new Date(),
+          status: "received",
+        };
+
+    await CodeHistory.updateMany(
+      {
+        $and: [
+          { $or: [{ codeId: data._id }, { code }] },
+          { $or: [{ receivedAt: { $exists: false } }, { receivedAt: null }] },
+        ],
+      },
+      receiverUpdate
+    );
 
     res.json({ content: decryptedContent });
 

@@ -12,11 +12,11 @@ import { useEffect } from "react";
  * @param {Object} props.structuredData - Structured data object (JSON-LD)
  */
 export default function SEO({
-  title = "SendIt - Share Files Online | Secure File & Code Sharing Platform",
+  title = "SendIt - Secure File Share with 4-Digit Code",
   description = "Secure file and code sharing platform. Share files free with 4-digit codes. No links, no accounts. Fast, safe, and instant.",
   keywords = "share files online, send files free, secure file transfer, code sharing, anonymous file sharing, sendit, best file sharing site",
-  url = "https://senditsystem.netlify.app",
-  image = "https://senditsystem.netlify.app/images/sendit svg.ico",
+  url = "https://senditsystem.netlify.app/",
+  image = "https://senditsystem.netlify.app/images/Sendit_logo.png",
   type = "website",
   structuredData = null,
 }) {
@@ -41,7 +41,7 @@ export default function SEO({
     // Standard meta tags
     updateMetaTag("description", description);
     updateMetaTag("keywords", keywords);
-    updateMetaTag("theme-color", "#000000");
+    updateMetaTag("theme-color", "#0d6efd");
     updateMetaTag("robots", "index, follow");
     updateMetaTag("revisit-after", "7 days");
 

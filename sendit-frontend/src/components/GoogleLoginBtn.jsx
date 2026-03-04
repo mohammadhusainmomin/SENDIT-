@@ -1,4 +1,4 @@
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import api from "../services/api";
@@ -29,11 +29,13 @@ function GoogleLoginBtn({ closeModal }) {
   };
 
   return (
-    <GoogleLogin
-      onSuccess={handleSuccess}
-      onError={() => showError("Google Login Failed")}
-      useOneTap={false}
-    />
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <GoogleLogin
+        onSuccess={handleSuccess}
+        onError={() => showError("Google Login Failed")}
+        useOneTap={false}
+      />
+    </GoogleOAuthProvider>
   );
 }
 
