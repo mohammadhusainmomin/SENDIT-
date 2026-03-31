@@ -1,6 +1,7 @@
 import Code from "../models/Code.js";
 import CodeHistory from "../models/CodeHistory.js";
 import { encryptText, decryptText } from "../utils/encryption.utils.js";
+import { generateUniqueCode } from "../utils/codeGenerator.utils.js";
 
 /* ================= SEND CODE ================= */
 export const sendCode = async (req, res) => {
@@ -11,7 +12,7 @@ export const sendCode = async (req, res) => {
       return res.status(400).json({ message: "Code is required" });
     }
 
-    const shareCode = Math.floor(1000 + Math.random() * 9000).toString();
+    const shareCode = await generateUniqueCode();
     const expirationTime = parseInt(expiresIn) || 10;
     const expiresAtTime = new Date(Date.now() + expirationTime * 60 * 1000);
 

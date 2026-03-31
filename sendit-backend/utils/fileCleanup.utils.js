@@ -73,15 +73,19 @@ export const cleanupExpiredFiles = async () => {
  */
 export const startCleanupScheduler = async (intervalMinutes = 5) => {
   console.log(
-    `Starting file cleanup scheduler (every ${intervalMinutes} minutes)`,
+    `Starting cleanup scheduler (every ${intervalMinutes} minutes)`,
   );
 
   // Run immediately on startup
   await cleanupExpiredFiles();
   await cleanupExpiredCodes();
-  // Then run periodically
+
+  // Then run both cleanup tasks periodically
   const intervalMs = intervalMinutes * 60 * 1000;
-  return setInterval(cleanupExpiredFiles, intervalMs);
+  return setInterval(async () => {
+    await cleanupExpiredFiles();
+    await cleanupExpiredCodes();
+  }, intervalMs);
 };
 
 /**

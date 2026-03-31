@@ -100,9 +100,9 @@
 }
 
 .status-sent {
-  background-color: #e0f2fe;
-  color: #0369a1;
-  border: 1px solid #0ea5e933;
+  background-color: rgba(1, 174, 223, 0.1);
+  color: #01aedf;
+  border: 1px solid rgba(1, 174, 223, 0.2);
 }
 
 .table-empty-message {

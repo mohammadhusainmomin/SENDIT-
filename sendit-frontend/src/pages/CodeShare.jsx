@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { FiCode, FiSend, FiTrash2,  FiCopy, FiRefreshCw,  } from "react-icons/fi";
 import SEO from "../components/SEO";
 import CountdownTimer from "../components/CountdownTimer";
+import TimeStepper from "../components/TimeStepper";
 
 function CodeShare() {
   const [rawCode, setRawCode] = useState("");
@@ -167,39 +168,24 @@ function CodeShare() {
           </div>
 
           <div className="expiration-time-selector">
-            <label>Code expires in:</label>
-            <div className="time-selectors">
-              <div className="time-group">
-                <label htmlFor="code-hours-select">Hours</label>
-                <select
-                  id="code-hours-select"
-                  value={expiresInHours}
-                  onChange={(e) => setExpiresInHours(e.target.value)}
-                  disabled={loading}
-                >
-                  {hourOptions.map((hour) => (
-                    <option key={hour} value={hour}>
-                      {hour}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="time-group">
-                <label htmlFor="code-minutes-select">Minutes</label>
-                <select
-                  id="code-minutes-select"
-                  value={expiresInMinutes}
-                  onChange={(e) => setExpiresInMinutes(e.target.value)}
-                  disabled={loading}
-                >
-                  {minuteOptions.map((minute) => (
-                    <option key={minute} value={minute}>
-                      {minute}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <h3 className="expiration-title">⏱️ Code expires in:</h3>
+            <div className="time-steppers-wrapper">
+              <TimeStepper
+                label="Hours"
+                value={expiresInHours}
+                onChange={setExpiresInHours}
+                max={24}
+                step={1}
+                disabled={loading}
+              />
+              <TimeStepper
+                label="Minutes"
+                value={expiresInMinutes}
+                onChange={setExpiresInMinutes}
+                max={55}
+                step={5}
+                disabled={loading}
+              />
             </div>
 
             {isMaxTimeExceeded() && (
@@ -288,4 +274,3 @@ function CodeShare() {
 }
 
 export default CodeShare;
-

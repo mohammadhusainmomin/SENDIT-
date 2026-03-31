@@ -6,6 +6,7 @@ import { formatFileSize } from "../utils/formatFileSize";
 import { FaWhatsapp } from "react-icons/fa";
 import { FiUploadCloud, FiFile, FiRefreshCw, FiSend, FiCopy, FiCheck,  } from "react-icons/fi";
 import CountdownTimer from "./CountdownTimer";
+import TimeStepper from "./TimeStepper";
 
 function FileUpload() {
   const [files, setFiles] = useState([]);
@@ -204,39 +205,24 @@ https://senditsystem.netlify.app/
             {error && <div className="error-message">{error}</div>}
 
             <div className="expiration-time-container">
-              <label>File expires in:</label>
-              <div className="time-selectors">
-                <div className="time-group">
-                  <label htmlFor="hours-select">Hours</label>
-                  <select
-                    id="hours-select"
-                    value={expiresInHours}
-                    onChange={(e) => setExpiresInHours(e.target.value)}
-                    disabled={loading}
-                  >
-                    {hourOptions.map((hour) => (
-                      <option key={hour} value={hour}>
-                        {hour}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="time-group">
-                  <label htmlFor="minutes-select">Minutes</label>
-                  <select
-                    id="minutes-select"
-                    value={expiresInMinutes}
-                    onChange={(e) => setExpiresInMinutes(e.target.value)}
-                    disabled={loading}
-                  >
-                    {minuteOptions.map((minute) => (
-                      <option key={minute} value={minute}>
-                        {minute}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <h3 className="expiration-title">⏱️ File expires in:</h3>
+              <div className="time-steppers-wrapper">
+                <TimeStepper
+                  label="Hours"
+                  value={expiresInHours}
+                  onChange={setExpiresInHours}
+                  max={24}
+                  step={1}
+                  disabled={loading}
+                />
+                <TimeStepper
+                  label="Minutes"
+                  value={expiresInMinutes}
+                  onChange={setExpiresInMinutes}
+                  max={55}
+                  step={5}
+                  disabled={loading}
+                />
               </div>
 
               {isMaxTimeExceeded() && (

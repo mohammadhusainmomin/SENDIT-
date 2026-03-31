@@ -3,7 +3,7 @@
 .sidebar-container {
   width: 280px;
   height: 100%;
-  background: linear-gradient(180deg, var(--bg-primary) 0%, #fafbfe 100%);
+  background: #ffffff;
   border-right: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
@@ -28,12 +28,12 @@
 }
 
 .sidebar-container::-webkit-scrollbar-thumb {
-  background: rgba(0, 102, 204, 0.2);
+  background: rgba(1, 174, 223, 0.2);
   border-radius: 3px;
 }
 
 .sidebar-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 102, 204, 0.4);
+  background: rgba(1, 174, 223, 0.4);
 }
 
 /* Sidebar Header */
@@ -115,7 +115,7 @@
 }
 
 .sidebar-nav-section::-webkit-scrollbar-thumb {
-  background: rgba(0, 102, 204, 0.15);
+  background: rgba(1, 174, 223, 0.15);
   border-radius: 2px;
 }
 
@@ -204,14 +204,14 @@
 }
 
 .sidebar-user-item:hover {
-  background-color: rgba(0, 102, 204, 0.08);
+  background-color: rgba(1, 174, 223, 0.08);
 }
 
 .user-avatar-badge {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  background: #01aedf;
   color: white;
   display: flex;
   align-items: center;
@@ -219,7 +219,7 @@
   font-weight: 700;
   font-size: 14px;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+  box-shadow: 0 2px 8px rgba(1, 174, 223, 0.2);
 }
 
 .user-email-text {

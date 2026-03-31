@@ -187,7 +187,7 @@
   border-radius: 0.75rem;
   font-size: 14px;
   transition: all 0.3s ease;
-  background-color: #fafbfe;
+  background-color: #ffffff;
   color: var(--text-primary);
   font-family: inherit;
 }
@@ -198,9 +198,9 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: #01aedf;
   background-color: var(--bg-primary);
-  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+  box-shadow: 0 0 0 4px rgba(1, 174, 223, 0.1);
 }
 
 .error-message {
@@ -227,7 +227,7 @@
 .login-button {
   width: 100%;
   padding: 13px 24px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  background: #01aedf;
   color: white;
   border: none;
   border-radius: 0.75rem;
@@ -236,7 +236,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 8px;
-  box-shadow: 0 8px 20px rgba(0, 102, 204, 0.2);
+  box-shadow: 0 8px 20px rgba(1, 174, 223, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -250,7 +250,7 @@
 
 .login-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(0, 102, 204, 0.3);
+  box-shadow: 0 12px 30px rgba(1, 174, 223, 0.3);
 }
 
 .login-button:hover:not(:disabled) .button-icon {

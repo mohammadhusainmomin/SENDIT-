@@ -21,17 +21,17 @@
 }
 
 .nav-icon:hover {
-  background-color: rgba(0, 102, 204, 0.1);
+  background-color: rgba(1, 174, 223, 0.1);
   color: var(--primary-color);
   transform: translateX(2px);
 }
 
 .nav-icon.active {
-  background-color: rgba(0, 102, 204, 0.15);
+  background-color: rgba(1, 174, 223, 0.15);
   color: var(--primary-color);
   border-left-color: var(--primary-color);
   font-weight: 600;
-  box-shadow: inset 0 0 0 1px rgba(0, 102, 204, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(1, 174, 223, 0.2);
 }
 
 .nav-icon.collapsed {
@@ -42,11 +42,11 @@
 }
 
 .nav-icon.collapsed:hover {
-  background-color: rgba(0, 102, 204, 0.12);
+  background-color: rgba(1, 174, 223, 0.12);
 }
 
 .nav-icon.collapsed.active {
-  background-color: rgba(0, 102, 204, 0.15);
+  background-color: rgba(1, 174, 223, 0.15);
   border-radius: 8px;
 }
 
@@ -79,13 +79,13 @@
 }
 
 .nav-icon.active .nav-icon-symbol svg {
-  stroke: #0066cc;
-  color: #0066cc;
+  stroke: #01aedf;
+  color: #01aedf;
 }
 
 .nav-icon:hover .nav-icon-symbol svg {
-  stroke: #0066cc;
-  color: #0066cc;
+  stroke: #01aedf;
+  color: #01aedf;
 }
 
 /* Icon Label */

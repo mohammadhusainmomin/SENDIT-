@@ -4,10 +4,7 @@
   border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 24px;
-  background:
-    radial-gradient(circle at 12% 12%, rgba(14, 165, 233, 0.08), transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(245, 158, 11, 0.08), transparent 45%),
-    var(--bg-primary);
+  background: #ffffff;
   box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
 }
 
@@ -73,7 +70,7 @@
 }
 
 .ring-segment.files {
-  stroke: #0ea5e9;
+  stroke: #01aedf;
 }
 
 .ring-segment.codes {
@@ -118,13 +115,13 @@
 .dist-card {
   border: 1px solid var(--border-light);
   border-radius: 12px;
-  background: var(--bg-secondary);
+  background: #ffffff;
   padding: 14px 16px;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .dist-card.active {
-  border-color: rgba(14, 165, 233, 0.5);
+  border-color: rgba(1, 174, 223, 0.5);
   transform: translateY(-2px);
   box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
 }
@@ -151,7 +148,7 @@
 }
 
 .files-dot {
-  background: #0ea5e9;
+  background: #01aedf;
 }
 
 .codes-dot {
@@ -208,7 +205,7 @@
 }
 
 .ratio-fill.files-fill {
-  background: linear-gradient(90deg, #38bdf8, #0284c7);
+  background: linear-gradient(90deg, #01aedf, #0096bb);
 }
 
 .ratio-fill.codes-fill {

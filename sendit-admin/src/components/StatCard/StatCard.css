@@ -1,5 +1,5 @@
 .stat-card {
-  background: linear-gradient(135deg, var(--bg-primary) 0%, #fafbfe 100%);
+  background: #ffffff;
   border-radius: 0.875rem;
   padding: 24px;
   box-shadow: var(--shadow-sm);
@@ -27,7 +27,7 @@
   right: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(0, 102, 204, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(1, 174, 223, 0.05) 0%, transparent 70%);
   pointer-events: none;
 }
 

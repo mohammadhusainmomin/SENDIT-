@@ -2,7 +2,12 @@ import mongoose from "mongoose";
 
 const codeSchema = new mongoose.Schema(
   {
-    code: String,
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+      sparse: true
+    },
     content: String,      // Encrypted content (includes IV in format: iv_hex:encrypted_hex)
     expiresAt: Date,
     expiresIn: {

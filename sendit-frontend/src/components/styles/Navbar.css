@@ -1,14 +1,14 @@
 .navbar {
-  background: linear-gradient(180deg, var(--bg-primary) 0%, rgba(255, 255, 255, 0.98) 100%);
+  background: linear-gradient(180deg, var(--bg-primary) 0%, rgba(255, 255, 255, 0.99) 100%);
   opacity: 0.99;
-  border-bottom: 1px solid var(--border-light);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1.5px solid var(--border-light);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(0, 102, 204, 0.08);
-  height: 70px;
+  box-shadow: 0 4px 16px rgba(13, 71, 161, 0.08), 0 2px 8px rgba(13, 71, 161, 0.04);
+  height: 72px;
   display: flex;
   align-items: center;
   animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -28,9 +28,9 @@
 
 /* Dark mode navbar styling */
 [data-theme='dark'] .navbar {
-  background: linear-gradient(180deg, var(--bg-primary) 0%, rgba(15, 23, 42, 0.95) 100%);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(59, 130, 246, 0.1);
+  background: linear-gradient(180deg, var(--bg-primary) 0%, rgba(15, 23, 42, 0.98) 100%);
+  border-bottom: 1.5px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(30, 136, 229, 0.1);
 }
 
 .navbar-container {
@@ -48,27 +48,32 @@
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 12px;
   will-change: transform, background;
 }
 
 .navbar-brand:hover {
-  transform: scale(1.04) translateY(-1px);
-  background: linear-gradient(135deg, rgba(0, 102, 204, 0.1) 0%, rgba(0, 168, 232, 0.1) 100%);
-  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.12);
+  transform: scale(1.03) translateY(-2px);
+  background: linear-gradient(135deg, rgba(13, 71, 161, 0.08) 0%, rgba(30, 136, 229, 0.08) 100%);
+  box-shadow: 0 6px 16px rgba(13, 71, 161, 0.12);
 }
 
 .brand-mascot {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   animation: float 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover .brand-mascot {
+  transform: scale(1.1);
 }
 
 @keyframes float {
@@ -76,29 +81,31 @@
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
   }
 }
 
 .navbar-brand h3 {
   margin: 0;
-  font-size: 1.4rem;
-  background: linear-gradient(135deg, #0066cc 0%, #00a8e8 100%);
+  font-size: 1.45rem;
+  background: linear-gradient(135deg, var(--primary-main) 0%, var(--secondary-main) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 900;
-  letter-spacing: 1.2px;
+  letter-spacing: 1.4px;
   text-transform: uppercase;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
 }
 
 .navbar-brand:hover h3 {
-  text-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+  filter: drop-shadow(0 2px 6px rgba(13, 71, 161, 0.2));
 }
 
 [data-theme='dark'] .navbar-brand h3 {
-  background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 100%);
+  background: linear-gradient(135deg, #42a5f5 0%, #26c6da 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -115,26 +122,26 @@
   background: linear-gradient(135deg, var(--bg-tertiary) 0%, rgba(240, 245, 255, 1) 100%);
   border: 1.5px solid var(--border-color);
   color: var(--text-primary);
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   margin-right: 0.75rem;
   padding: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05), 0 0 1px rgba(0, 102, 204, 0.1);
-  font-size: 1.3rem;
+  box-shadow: 0 3px 10px rgba(13, 71, 161, 0.08), 0 1px 4px rgba(13, 71, 161, 0.04);
+  font-size: 1.35rem;
   will-change: transform, background;
 }
 
 .theme-toggle:hover {
-  background: linear-gradient(135deg, #0066cc 0%, #00a8e8 100%);
+  background: linear-gradient(135deg, var(--primary-main) 0%, var(--secondary-main) 100%);
   color: white;
-  transform: rotate(20deg) scale(1.12);
-  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.35), 0 0 15px rgba(0, 102, 204, 0.15);
+  transform: rotate(20deg) scale(1.1);
+  box-shadow: 0 8px 22px rgba(13, 71, 161, 0.28), 0 2px 8px rgba(13, 71, 161, 0.12);
   border-color: transparent;
 }
 
@@ -146,11 +153,11 @@
 /* Nav Links */
 .nav-link {
   color: var(--text-secondary);
-  padding: 0.65rem 1.25rem;
+  padding: 0.7rem 1.35rem;
   border-radius: 8px;
   font-size: 0.9rem;
-  font-weight: 600;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-weight: 650;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -163,15 +170,15 @@
 .nav-link::before {
   content: '';
   position: absolute;
-  bottom: -2px;
-  left: 1.25rem;
-  right: 1.25rem;
-  height: 2px;
-  background: linear-gradient(90deg, #0066cc, #00a8e8);
+  bottom: -3px;
+  left: 1.35rem;
+  right: 1.35rem;
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--primary-main), var(--secondary-main));
   transform: scaleX(0);
   transform-origin: right;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border-radius: 1px;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 2px;
 }
 
 .nav-link:hover::before {
@@ -181,14 +188,14 @@
 
 .nav-link:hover {
   color: var(--primary-main);
-  background: linear-gradient(135deg, rgba(0, 102, 204, 0.08) 0%, rgba(0, 168, 232, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(13, 71, 161, 0.06) 0%, rgba(30, 136, 229, 0.06) 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+  box-shadow: 0 4px 12px rgba(13, 71, 161, 0.08);
 }
 
 .nav-link.active {
   color: var(--primary-main);
-  background: rgba(0, 102, 204, 0.1);
+  background: rgba(13, 71, 161, 0.08);
 }
 
 .nav-link.active::before {
@@ -201,7 +208,7 @@
 
 [data-theme='dark'] .nav-link:hover {
   color: var(--primary-light);
-  background: rgba(96, 165, 250, 0.15);
+  background: rgba(30, 136, 229, 0.15);
 }
 
 [data-theme='dark'] .nav-link.active {
@@ -233,7 +240,7 @@
   left: 1rem;
   right: 1rem;
   height: 2px;
-  background: linear-gradient(90deg, #0066cc, #00a8e8);
+  background: linear-gradient(90deg, #1e40af, #3b82f6);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -246,7 +253,7 @@
 }
 
 .nav-btn:hover {
-  background: rgba(0, 102, 204, 0.08);
+  background: rgba(30, 64, 175, 0.08);
   color: var(--primary-main);
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -263,15 +270,15 @@
 
 /* Login Button */
 .btn-login {
-  background: linear-gradient(135deg, #0066cc 0%, #00a8e8 100%);
+  background: linear-gradient(135deg, var(--primary-main) 0%, var(--secondary-main) 100%);
   color: white !important;
-  padding: 0.75rem 1.75rem;
+  padding: 0.8rem 1.9rem;
   border-radius: 8px;
-  font-weight: 700;
-  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3), 0 0 1px rgba(0, 102, 204, 0.5);
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-weight: 750;
+  box-shadow: 0 6px 18px rgba(13, 71, 161, 0.28), 0 2px 8px rgba(13, 71, 161, 0.12);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   border: none;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   letter-spacing: 0.3px;
   overflow: hidden;
   position: relative;
@@ -285,8 +292,8 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-  transition: left 0.6s;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-login:hover::before {
@@ -294,20 +301,20 @@
 }
 
 .btn-login:hover {
-  background: linear-gradient(135deg, #0052a3 0%, #0088cc 100%);
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%);
   color: white !important;
-  box-shadow: 0 12px 35px rgba(0, 102, 204, 0.45), 0 0 20px rgba(0, 102, 204, 0.2);
+  box-shadow: 0 12px 32px rgba(13, 71, 161, 0.35), 0 4px 16px rgba(13, 71, 161, 0.15);
   transform: translateY(-4px);
 }
 
 .btn-login:active {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.3);
+  box-shadow: 0 6px 20px rgba(13, 71, 161, 0.25);
 }
 
 [data-theme='dark'] .btn-login {
-  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, var(--secondary-main) 0%, var(--secondary-light) 100%);
+  box-shadow: 0 6px 18px rgba(30, 136, 229, 0.3);
 }
 
 /* Auth Section */
@@ -320,28 +327,28 @@
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 1rem 0.5rem 1.25rem;
+  gap: 0.85rem;
+  padding: 0.65rem 1.2rem 0.65rem 1.4rem;
   border-radius: 25px;
-  background: linear-gradient(135deg, rgba(0, 102, 204, 0.08) 0%, rgba(0, 168, 232, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(13, 71, 161, 0.07) 0%, rgba(30, 136, 229, 0.07) 100%);
   border: 1.5px solid var(--border-color);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 1px rgba(0, 102, 204, 0.08);
+  box-shadow: 0 3px 10px rgba(13, 71, 161, 0.06), 0 1px 4px rgba(13, 71, 161, 0.03);
   will-change: transform, background, box-shadow;
 }
 
 .user-menu:hover {
-  background: linear-gradient(135deg, rgba(0, 102, 204, 0.15) 0%, rgba(0, 168, 232, 0.15) 100%);
-  border-color: var(--primary-main);
-  box-shadow: 0 6px 16px rgba(0, 102, 204, 0.2), 0 0 15px rgba(0, 102, 204, 0.1);
+  background: linear-gradient(135deg, rgba(13, 71, 161, 0.12) 0%, rgba(30, 136, 229, 0.12) 100%);
+  border-color: var(--primary-light);
+  box-shadow: 0 8px 20px rgba(13, 71, 161, 0.15), 0 2px 8px rgba(13, 71, 161, 0.08);
   transform: translateY(-3px);
 }
 
 .user-name {
   color: var(--text-primary);
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.2px;
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: 0.3px;
 }
 
 [data-theme='dark'] .user-name {
@@ -349,32 +356,32 @@
 }
 
 [data-theme='dark'] .user-menu {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(96, 165, 250, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(30, 136, 229, 0.08) 0%, rgba(30, 136, 229, 0.08) 100%);
   border-color: var(--border-color);
 }
 
 [data-theme='dark'] .user-menu:hover {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(96, 165, 250, 0.15) 100%);
+  background: linear-gradient(135deg, rgba(30, 136, 229, 0.15) 0%, rgba(30, 136, 229, 0.15) 100%);
   border-color: var(--primary-light);
 }
 
 .btn-logout {
   background: transparent;
   color: var(--error-color);
-  padding: 0.4rem 0.9rem;
-  border-radius: 18px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.87rem;
+  font-weight: 700;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
 }
 
 .btn-logout:hover {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(198, 40, 40, 0.12);
   color: var(--error-color);
-  transform: scale(1.05);
+  transform: scale(1.05) translateY(-1px);
   border-color: var(--error-color);
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.15);
 }
 
 /* ============ MOBILE MENU TOGGLE ============ */
@@ -389,17 +396,19 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.06);
 }
 
 .mobile-menu-toggle:hover {
-  background: var(--primary-main);
+  background: linear-gradient(135deg, var(--primary-main) 0%, var(--secondary-main) 100%);
   color: white;
-  border-color: var(--primary-main);
-  transform: scale(1.1);
+  border-color: transparent;
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(13, 71, 161, 0.2);
 }
 
 [data-theme='dark'] .mobile-menu-toggle {
@@ -409,7 +418,7 @@
 }
 
 [data-theme='dark'] .mobile-menu-toggle:hover {
-  background: var(--primary-light);
+  background: linear-gradient(135deg, var(--secondary-main) 0%, var(--secondary-light) 100%);
 }
 
 /* ============ RESPONSIVE DESIGN ============ */

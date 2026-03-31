@@ -17,7 +17,7 @@
 
 .chart-section:hover {
   box-shadow: var(--shadow-md);
-  border-color: rgba(0, 102, 204, 0.2);
+  border-color: rgba(1, 174, 223, 0.2);
   transition: all 0.3s ease;
 }
 

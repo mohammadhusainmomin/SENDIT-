@@ -37,12 +37,8 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--purple-color)
-  );
-  color: black;
+  background: #01aedf;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,7 +46,7 @@
   font-size: 18px;
   letter-spacing: 1px;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(1, 174, 223, 0.3);
   border: 2px solid rgba(255, 255, 255, 0.15);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -93,8 +89,8 @@
 }
 
 .auth-badge.local {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: rgba(1, 174, 223, 0.1);
+  color: #01aedf;
 }
 
 .user-stats {

@@ -2,6 +2,7 @@ import fs from "fs";
 import File from "../models/File.js";
 import FileHistory from "../models/FileHistory.js";
 import { encryptFile, decryptFile } from "../utils/encryption.utils.js";
+import { generateUniqueCode } from "../utils/codeGenerator.utils.js";
 
 /* ================= SEND FILE ================= */
 export const sendFile = async (req, res) => {
@@ -13,7 +14,7 @@ export const sendFile = async (req, res) => {
       return res.status(400).json({ message: "No files provided" });
     }
 
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    const code = await generateUniqueCode();
     const expiresIn = parseInt(req.query.expiresIn) || 10;
 
     // Encrypt all files and prepare file objects

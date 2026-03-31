@@ -1,15 +1,21 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Mascot from "../components/Mascot";
 import {
   FileTransferIllustration,
   SecurityIllustration,
+  UploadIllustration,
+  DownloadIllustration,
 } from "../components/Illustrations";
+import FileUpload from "../components/FileUpload";
+import CodeInput from "../components/CodeInput";
 import SEO from "../components/SEO";
-import { FiUploadCloud, FiDownload, FiSmartphone, FiUserPlus, FiArrowRight, FiUser, FiClock, FiRepeat } from "react-icons/fi";
+import { FiUploadCloud, FiDownload, FiSmartphone, FiUserPlus, FiArrowRight, FiUser, FiClock, FiRepeat, FiX } from "react-icons/fi";
 import "../styles/Home.css";
 
 function Home() {
   const navigate = useNavigate();
+  const [openModal, setOpenModal] = useState(null);
 
   const homeStructuredData = {
     "@context": "https://schema.org",
@@ -62,12 +68,12 @@ function Home() {
 
           {/* CTA Buttons */}
           <div className="cta-buttons">
-            <button className="btn-primary" onClick={() => navigate("/send")}>
+            <button className="btn-primary" onClick={() => setOpenModal("send")}>
               <FiUploadCloud size={20} />
               <span>Send File</span>
             </button>
 
-            <button className="btn-secondary" onClick={() => navigate("/receive")}>
+            <button className="btn-secondary" onClick={() => setOpenModal("receive")}>
               <FiDownload size={20} />
               <span>Receive File</span>
             </button>
@@ -207,6 +213,54 @@ function Home() {
           </div>
         </section>
       </div>
+
+      {/* Send File Modal */}
+      {openModal === "send" && (
+        <div className="modal-overlay" onClick={() => setOpenModal(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setOpenModal(null)}>
+              <FiX size={24} />
+            </button>
+
+            <section className="send-header">
+              <div className="header-icon"><FiUploadCloud /></div>
+              <h2>Send File</h2>
+              <p>Share any file with just a 4-digit code</p>
+            </section>
+
+            <section className="send-form-section">
+              <div className="form-illustration">
+                <UploadIllustration />
+              </div>
+              <FileUpload />
+            </section>
+          </div>
+        </div>
+      )}
+
+      {/* Receive File Modal */}
+      {openModal === "receive" && (
+        <div className="modal-overlay" onClick={() => setOpenModal(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setOpenModal(null)}>
+              <FiX size={24} />
+            </button>
+
+            <section className="receive-header">
+              <div className="header-icon"><FiDownload /></div>
+              <h2>Receive File</h2>
+              <p>Enter the 4-digit code to download</p>
+            </section>
+
+            <section className="receive-form-section">
+              <div className="form-illustration">
+                <DownloadIllustration />
+              </div>
+              <CodeInput />
+            </section>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

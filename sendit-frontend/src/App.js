@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import ToastContainer from "./components/ToastContainer";
 import { ToastProvider } from "./context/ToastContext";
 import "./styles/global.css";
@@ -45,6 +46,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+        <Footer />
       </BrowserRouter>
     </ToastProvider>
   );

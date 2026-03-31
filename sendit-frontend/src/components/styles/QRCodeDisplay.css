@@ -28,16 +28,16 @@
 }
 
 .btn-download-qr {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, var(--primary-main) 0%, #00a8e8 100%);
+  padding: 0.85rem 1.65rem;
+  background: linear-gradient(135deg, var(--primary-main) 0%, var(--secondary-main) 100%);
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 750;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.4);
+  box-shadow: 0 6px 16px rgba(13, 71, 161, 0.18);
   margin-top: 1rem;
   width: 100%;
   display: flex;
@@ -48,7 +48,8 @@
 
 .btn-download-qr:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 102, 204, 0.6);
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%);
+  box-shadow: 0 8px 20px rgba(13, 71, 161, 0.25);
 }
 
 .btn-download-qr:active {
