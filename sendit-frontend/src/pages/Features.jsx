@@ -10,8 +10,9 @@ export default function Features() {
   return (
     <>
       <SEO
-        title="SendIt Features - Secure File & Code Sharing"
-        description="Discover SendIt's powerful features: encrypted file transfer, code sharing with syntax highlighting, temporary links, and more."
+        title="SendIt Features | Secure File Sharing and Code Sharing Tools"
+        description="Explore SendIt features for secure file sharing, code sharing, temporary access codes, fast retrieval, and a modern transfer workflow."
+        keywords="sendit features, secure file sharing features, code sharing features, temporary access codes"
         url="https://senditsystem.netlify.app/features"
       />
 

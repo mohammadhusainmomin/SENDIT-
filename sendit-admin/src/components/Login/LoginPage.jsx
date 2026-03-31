@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { FiArrowRight, FiLock, FiMail, FiShield } from "react-icons/fi";
 import Mascot from "../Mascot";
 import "./LoginPage.css";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 function LoginPage({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -39,21 +39,34 @@ function LoginPage({ onLogin }) {
   return (
     <div className="login-container">
       <div className="login-wrapper">
-        {/* Left side - Illustration */}
         <div className="login-visual">
-          <div className="mascot-wrapper">
-            <Mascot size="large" />
-          </div>
-          <div className="visual-text">
-            <h2>Welcome to SendIt Admin</h2>
-            <p>Manage your file and code sharing platform with ease</p>
+          <div className="login-visual-card">
+            <div className="login-visual-copy">
+              <span className="login-kicker">SENDIT CONTROL LAYER</span>
+              <h2>Admin command center for the SendIt platform.</h2>
+              <p>
+                Review platform activity, monitor sharing flows, and manage operational
+                visibility from a cleaner secure workspace.
+              </p>
+            </div>
+
+            <div className="login-pill-row">
+              <span className="login-info-pill">Controlled access</span>
+              <span className="login-info-pill">Live records</span>
+              <span className="login-info-pill">Protected admin entry</span>
+            </div>
+
+            <div className="mascot-wrapper">
+              <Mascot size="large" />
+            </div>
           </div>
         </div>
 
-        {/* Right side - Login Form */}
         <div className="login-card">
           <div className="login-header">
-            <div className="brand-icon">📤</div>
+            <div className="brand-icon">
+              <FiShield />
+            </div>
             <h1 className="login-title">SendIt</h1>
             <p className="login-subtitle">Admin Access</p>
           </div>
@@ -62,7 +75,9 @@ function LoginPage({ onLogin }) {
             <div className="form-group">
               <label htmlFor="email">Email Address</label>
               <div className="input-wrapper">
-                <span className="input-icon">✉️</span>
+                <span className="input-icon">
+                  <FiMail />
+                </span>
                 <input
                   type="email"
                   id="email"
@@ -77,13 +92,15 @@ function LoginPage({ onLogin }) {
             <div className="form-group">
               <label htmlFor="password">Password</label>
               <div className="input-wrapper">
-                <span className="input-icon">🔐</span>
+                <span className="input-icon">
+                  <FiLock />
+                </span>
                 <input
                   type="password"
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Enter your admin password"
                   required
                 />
               </div>
@@ -92,18 +109,19 @@ function LoginPage({ onLogin }) {
             {error && <div className="error-message">{error}</div>}
 
             <button type="submit" className="login-button" disabled={loading}>
-              <span className="button-icon">→</span>
+              <span className="button-icon">
+                <FiArrowRight />
+              </span>
               {loading ? "Logging in..." : "Access Dashboard"}
             </button>
           </form>
 
           <div className="login-footer">
-            <p>🔒 Secure admin access to SendIt platform</p>
+            <p>Secure admin access to the SendIt platform</p>
           </div>
         </div>
       </div>
 
-      {/* Background decorations */}
       <div className="login-bg-decoration decoration-1"></div>
       <div className="login-bg-decoration decoration-2"></div>
       <div className="login-bg-decoration decoration-3"></div>

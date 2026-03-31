@@ -1,6 +1,6 @@
-import NavIcon from "./NavIcon";
+import { FiActivity, FiLogOut } from "react-icons/fi";
 import Mascot from "./Mascot";
-import { FiLogOut } from "react-icons/fi";
+import NavIcon from "./NavIcon";
 
 function Sidebar({
   isOpen,
@@ -8,22 +8,23 @@ function Sidebar({
   selectedTab,
   onTabChange,
   user,
+  backendConnected,
   onLogout,
   navigationItems = [],
 }) {
   return (
     <aside className={`sidebar-container ${isOpen ? "open" : "closed"}`}>
-      {/* Sidebar Header */}
       <div className="sidebar-header-section">
-        <div
-          className="sidebar-brand-section"
-          onClick={onToggle}
-          style={{ cursor: "pointer" }}
-        >
+        <div className="sidebar-brand-section" onClick={onToggle} style={{ cursor: "pointer" }}>
           <div className="sidebar-mascot-wrapper">
             <Mascot size="small" />
           </div>
-          {isOpen && <span className="sidebar-brand-text">SendIt</span>}
+          {isOpen && (
+            <div className="sidebar-brand-copy">
+              <span className="sidebar-brand-text">SendIt</span>
+              <span className="sidebar-brand-subtext">Admin control layer</span>
+            </div>
+          )}
         </div>
         <button
           className="sidebar-close-btn"
@@ -31,11 +32,12 @@ function Sidebar({
           aria-label="Close sidebar"
           title="Close"
         >
-          ✕
+          x
         </button>
       </div>
 
-      {/* Navigation Items */}
+      {isOpen && <div className="sidebar-section-label">Command center</div>}
+
       <nav className="sidebar-nav-section">
         {navigationItems.map((item) => (
           <NavIcon
@@ -50,22 +52,34 @@ function Sidebar({
         ))}
       </nav>
 
-      {/* Sidebar Footer */}
       <div className="sidebar-footer-section">
-        {/* User Profile */}
-        <div className="sidebar-user-item">
-          <div className="user-avatar-badge">
-            {user?.charAt(0).toUpperCase()}
+        <div
+          className={`sidebar-status-item ${backendConnected ? "connected" : "disconnected"}`}
+          title={backendConnected ? "Backend connected" : "Backend disconnected"}
+        >
+          <div className={`status-badge ${backendConnected ? "connected" : "disconnected"}`}>
+            <span className="status-pulse" />
+            {isOpen ? (
+              <span className="status-label">
+                {backendConnected ? "System online" : "Connection issue"}
+              </span>
+            ) : (
+              <FiActivity />
+            )}
           </div>
-          {isOpen && <span className="user-email-text">{user}</span>}
         </div>
 
-        {/* Logout Button */}
-        <button
-          className="sidebar-logout-btn"
-          onClick={onLogout}
-          title="Logout"
-        >
+        <div className="sidebar-user-item">
+          <div className="user-avatar-badge">{user?.charAt(0).toUpperCase()}</div>
+          {isOpen && (
+            <div className="sidebar-user-copy">
+              <span className="user-role-text">Administrator</span>
+              <span className="user-email-text">{user}</span>
+            </div>
+          )}
+        </div>
+
+        <button className="sidebar-logout-btn" onClick={onLogout} title="Logout">
           <span className="logout-icon">
             <FiLogOut />
           </span>

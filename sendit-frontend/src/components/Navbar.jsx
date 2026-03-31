@@ -1,18 +1,25 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { FiChevronDown, FiClock, FiFileText, FiLock, FiLogOut, FiMenu, FiMoon, FiSun, FiX } from "react-icons/fi";
 import { AuthContext } from "../context/AuthContext";
 import AuthModal from "./AuthModel";
-import { Link, useNavigate } from "react-router-dom";
-import Mascot from "./Mascot";
-import { FiCode, FiDownload, FiFileText, FiClock, FiLock, FiLogOut, FiMenu, FiX, FiSun, FiMoon } from "react-icons/fi";
-import "./styles/Navbar.css";
 
+const primaryLinks = [
+  { to: "/", label: "Home" },
+  { to: "/send", label: "Send File" },
+  { to: "/receive", label: "Receive File" },
+  { to: "/code/send", label: "Send Code" },
+  { to: "/code/receive", label: "Receive Code" },
+  { to: "/about", label: "About Us" },
+];
 
 function Navbar() {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-  const navigate = useNavigate();
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -20,94 +27,152 @@ function Navbar() {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prev => (prev === "light" ? "dark" : "light"));
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
   const handleLogout = () => {
     logout();
     navigate("/");
     setMobileMenuOpen(false);
+    setUserMenuOpen(false);
   };
+
+  const closeMenu = () => setMobileMenuOpen(false);
 
   return (
     <>
-      <nav className="navbar">
-        <div className="navbar-container">
-          <div className="navbar-brand" onClick={() => {
-            navigate("/");
-            setMobileMenuOpen(false);
-          }}>
-          <div className="brand-mascot">
-            <Mascot size="small" />
-          </div>
-          <h3>SENDIT</h3>
-        </div>
-
-        {/* Mobile Menu Toggle */}
-        <button className="mobile-menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-          {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-        </button>
-
-        <div className={`navbar-menu ${mobileMenuOpen ? 'mobile-active' : ''}`}>
-          <button className="theme-toggle" onClick={toggleTheme} title="Toggle Theme">
-            {theme === "light" ? <FiMoon /> : <FiSun />}
-          </button>
-
-          <Link className="nav-link" to="/code/send" onClick={() => setMobileMenuOpen(false)}>
-            <FiCode /> Send Code
-          </Link>
-
-          <Link className="nav-link" to="/code/receive" onClick={() => setMobileMenuOpen(false)}>
-            <FiDownload /> Receive Code
-          </Link>
-
-          <Link className="nav-link" to="/about" onClick={() => setMobileMenuOpen(false)}>
-            About Us
-          </Link>
-  {user && (
-    <>
-      <Link
-        className="nav-link"
-        to="/my-files"
-        onClick={() => {
-          setMobileMenuOpen(false);
-        }}
-      >
-        <FiFileText /> My Files
-      </Link>
-
-      <Link className="nav-link" to="/code/history" onClick={() => setMobileMenuOpen(false)}>
-        <FiClock /> Code History
-      </Link>
-    </>
-  )}
-           
-            <div className="navbar-auth">
-              {user ? (
-                <div className="user-menu">
-                  <span className="user-name">{user.name}</span>
-                  <button
-                    className="nav-btn btn-logout"
-                    onClick={handleLogout}
-                  >
-                    <FiLogOut /> Logout
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className="nav-btn btn-login"
-                  onClick={() => {
-                    setOpen(true);
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  <FiLock /> Login / Register
-                </button>
-              )}
+      <header className="si-navbar">
+        <div className="si-navbar-inner">
+          <div className="si-brand" onClick={() => { navigate("/"); closeMenu(); }}>
+            
+            <div>
+              <div className="si-brand-wordmark">SendIt</div>
+              <div className="si-meta-label">Secure Motion</div>
             </div>
           </div>
+
+          <nav className="si-nav-links">
+            {primaryLinks.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.to === "/"}
+                className={({ isActive }) =>
+                  `si-nav-link${isActive ? " active" : ""}`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="si-nav-actions">
+            <button className="si-theme-toggle" onClick={toggleTheme} type="button" aria-label="Toggle theme">
+              {theme === "light" ? <FiMoon /> : <FiSun />}
+            </button>
+
+            {user ? (
+              <>
+                <div className="si-user-menu-wrap">
+                  <button
+                    className="si-user-menu-trigger"
+                    onClick={() => setUserMenuOpen((prev) => !prev)}
+                    type="button"
+                  >
+                    <span className="si-nav-user">{user.name}</span>
+                    <FiChevronDown className={userMenuOpen ? "is-open" : ""} />
+                  </button>
+
+                  {userMenuOpen && (
+                    <div className="si-user-dropdown">
+                      <NavLink
+                        to="/my-files"
+                        className={({ isActive }) =>
+                          `si-user-dropdown-link${isActive ? " active" : ""}`
+                        }
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <FiFileText /> My Files
+                      </NavLink>
+                      <NavLink
+                        to="/code/history"
+                        className={({ isActive }) =>
+                          `si-user-dropdown-link${isActive ? " active" : ""}`
+                        }
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <FiClock /> My Codes
+                      </NavLink>
+                    </div>
+                  )}
+                </div>
+                <button className="si-button-ghost" onClick={handleLogout} type="button">
+                  <FiLogOut /> Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <button className="si-button-ghost" onClick={() => setOpen(true)} type="button">
+                  Login
+                </button>
+                <button className="si-button" onClick={() => navigate("/send")} type="button">
+                  Get Started
+                </button>
+              </>
+            )}
+
+            <button
+              className="si-theme-toggle si-mobile-toggle"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              type="button"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <FiX /> : <FiMenu />}
+            </button>
+          </div>
         </div>
-      </nav>
+
+        {mobileMenuOpen && (
+          <div className="si-mobile-menu">
+            {primaryLinks.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.to === "/"}
+                className={({ isActive }) =>
+                  `si-nav-link${isActive ? " active" : ""}`
+                }
+                onClick={closeMenu}
+              >
+                {link.label}
+              </NavLink>
+            ))}
+            {user && (
+              <>
+                <NavLink to="/my-files" className="si-nav-link" onClick={closeMenu}>My Files</NavLink>
+                <NavLink to="/code/history" className="si-nav-link" onClick={closeMenu}>Code History</NavLink>
+              </>
+            )}
+            <button className="si-button-ghost" onClick={toggleTheme} type="button">
+              {theme === "light" ? <FiMoon /> : <FiSun />} {theme === "light" ? "Dark Mode" : "Light Mode"}
+            </button>
+            {user ? (
+              <button className="si-button-ghost" onClick={handleLogout} type="button">
+                <FiLogOut /> Logout
+              </button>
+            ) : (
+              <>
+                <button className="si-button-ghost" onClick={() => { setOpen(true); closeMenu(); }} type="button">
+                  <FiLock /> Login
+                </button>
+                <button className="si-button" onClick={() => { navigate("/send"); closeMenu(); }} type="button">
+                  Get Started
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </header>
 
       <AuthModal isOpen={open} closeModal={() => setOpen(false)} />
     </>

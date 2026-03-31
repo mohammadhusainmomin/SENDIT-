@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { FiCode, FiCopy, FiRefreshCw, FiTrash2, FiUser, FiZap } from "react-icons/fi";
 import api from "../services/api";
-import { formatCode } from "../utils/formatCode";
-import { useToast } from "../context/ToastContext";
-import { useAuth } from "../context/AuthContext";
-import { FiCode, FiSend, FiTrash2,  FiCopy, FiRefreshCw,  } from "react-icons/fi";
-import SEO from "../components/SEO";
 import CountdownTimer from "../components/CountdownTimer";
+import SEO from "../components/SEO";
 import TimeStepper from "../components/TimeStepper";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
+import { formatCode } from "../utils/formatCode";
 
 function CodeShare() {
   const [rawCode, setRawCode] = useState("");
@@ -20,24 +20,6 @@ function CodeShare() {
   const { success, error } = useToast();
   const { user } = useAuth();
 
-  // Generate hour options (0-24)
-  const hourOptions = Array.from({ length: 25 }, (_, i) => i);
-
-  // Generate minute options (0, 5, 10, 15, ..., 55)
-  const minuteOptions = Array.from({ length: 12 }, (_, i) => i * 5);
-
-  const calculateTotalMinutes = () => {
-    const hours = parseInt(expiresInHours) || 0;
-    const minutes = parseInt(expiresInMinutes) || 0;
-    return hours * 60 + minutes;
-  };
-
-  const isMaxTimeExceeded = () => {
-    const totalMinutes = calculateTotalMinutes();
-    return totalMinutes > 1440; // 1 day = 1440 minutes
-  };
-
-  // Format code with debounce as user types
   useEffect(() => {
     if (formatTimeoutRef.current) {
       clearTimeout(formatTimeoutRef.current);
@@ -50,20 +32,22 @@ function CodeShare() {
 
     formatTimeoutRef.current = setTimeout(() => {
       try {
-        const formatted = formatCode(rawCode);
-        setFormattedCode(formatted);
+        setFormattedCode(formatCode(rawCode));
       } catch (err) {
-        console.error("Format error:", err);
         setFormattedCode(rawCode);
       }
-    }, 500);
+    }, 400);
 
-    return () => {
-      if (formatTimeoutRef.current) {
-        clearTimeout(formatTimeoutRef.current);
-      }
-    };
+    return () => clearTimeout(formatTimeoutRef.current);
   }, [rawCode]);
+
+  const calculateTotalMinutes = () => {
+    const hours = parseInt(expiresInHours, 10) || 0;
+    const minutes = parseInt(expiresInMinutes, 10) || 0;
+    return hours * 60 + minutes;
+  };
+
+  const isMaxTimeExceeded = () => calculateTotalMinutes() > 1440;
 
   const handleSend = async () => {
     if (!rawCode.trim()) {
@@ -84,25 +68,19 @@ function CodeShare() {
     setLoading(true);
     try {
       const expiresIn = calculateTotalMinutes();
-      const res = await api.post("/code/send", {
+      const response = await api.post("/code/send", {
         content: formattedCode || rawCode,
-        expiresIn
+        expiresIn,
       });
 
-      setShareCode(res.data.code);
+      setShareCode(response.data.code);
       setTotalExpiryMinutes(expiresIn);
-      success(`✨ Code encrypted & ready! Share: ${res.data.code}`);
+      success(`Code encrypted and ready: ${response.data.code}`);
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Failed to generate code";
-      error(errorMsg);
+      error(err.response?.data?.message || "Failed to generate code");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleCopyCode = () => {
-    navigator.clipboard.writeText(shareCode);
-    success("Code copied to clipboard!");
   };
 
   const handleReset = () => {
@@ -112,163 +90,160 @@ function CodeShare() {
     setTotalExpiryMinutes(0);
   };
 
-  const getDisplayTime = () => {
-    const totalMinutes = calculateTotalMinutes();
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    if (hours === 0) return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
-    if (minutes === 0) return `${hours} hour${hours !== 1 ? "s" : ""}`;
-    return `${hours}h ${minutes}m`;
+  const handleCopyCode = async () => {
+    await navigator.clipboard.writeText(shareCode);
+    success("Code copied to clipboard");
   };
 
   return (
-    <div className="code-share-container">
+    <div className="page-shell">
       <SEO
-        title="Share Code Online - SendIt Code Snippet Sharing"
-        description="Share code snippets securely with syntax highlighting. Send code for free with 4-digit access codes. Supports multiple languages."
-        keywords="share code online, code snippet sharing, secure code sharing, syntax highlighting sharing"
+        title="Send Code - SendIt Secure Snippet Sharing"
+        description="Paste code, format it, and generate a secure access code using SendIt."
         url="https://senditsystem.netlify.app/code/send"
       />
-      <div className="code-share-content">
-        <section className="code-share-header">
-          <div className="header-icon"><FiCode /></div>
-          <h2>Share Code</h2>
-          <p>Paste any code here - it will be automatically formatted</p>
-          {!user && <p className="guest-badge">👤 Guest Mode - No login required</p>}
-        </section>
 
-        <section className="code-share-form">
-          <div className="form-input-area">
-            <div className="textarea-wrapper">
-              <label className="textarea-label">📝 Original Code</label>
-              <textarea
-                rows="14"
-                placeholder="Paste any code here (JavaScript, Python, Java, HTML, CSS, etc.)"
-                value={rawCode}
-                onChange={(e) => setRawCode(e.target.value)}
-                className="code-textarea"
-              />
+      <section className="page-section">
+        <header style={{ marginBottom: "2rem" }}>
+          <span className="si-chip">Precision Logistics for Developers</span>
+          <h1 className="si-title" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+            Secure Snippet Sharing.
+          </h1>
+          <p className="si-subtitle">
+            Paste your code, let SendIt format it, choose an expiry, and generate the working share code from your existing backend.
+          </p>
+          {!user && (
+            <div className="si-nav-link active" style={{ marginTop: "1rem", width: "fit-content" }}>
+              <FiUser /> Guest Mode Enabled
+            </div>
+          )}
+        </header>
+
+        <div className="work-grid">
+          <div className="work-main">
+            <div className="code-editor-shell">
+              <div className="editor-toolbar">
+                <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+                  <div className="editor-dots" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <span className="si-chip" style={{ padding: "0.4rem 0.7rem" }}>
+                    <FiCode /> Live Editor
+                  </span>
+                </div>
+                <span className="si-footer-copy">Auto format preview below</span>
+              </div>
+              <div style={{ padding: "0 1.4rem 1.4rem" }}>
+                <textarea
+                  rows={16}
+                  value={rawCode}
+                  onChange={(e) => setRawCode(e.target.value)}
+                  placeholder="Paste any JavaScript, Python, HTML, CSS, TypeScript, or backend code here..."
+                  style={{
+                    minHeight: "360px",
+                    margin: 0,
+                    borderRadius: "1.5rem",
+                    background: "#11181f",
+                    color: "#dce6f2",
+                    fontFamily: '"Courier New", monospace',
+                    border: "1px solid rgba(255,255,255,0.06)",
+                  }}
+                />
+              </div>
             </div>
 
             {formattedCode && (
-              <div className="textarea-wrapper formatted-preview">
-                <label className="textarea-label">
-                  ✨ Formatted Code
-                  <span className="preview-note">(This will be sent)</span>
-                </label>
-                <textarea
-                  rows="14"
-                  value={formattedCode}
-                  readOnly
-                  className="code-textarea code-textarea-formatted"
-                />
+              <div className="code-editor-shell">
+                <div className="editor-toolbar">
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+                    <div className="editor-dots" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                    <span className="si-chip">Formatted Preview</span>
+                    <span className="si-footer-copy">Formatted-Snippet.js</span>
+                  </div>
+                  <span className="si-footer-copy">This version is sent to backend</span>
+                </div>
+                <div className="viewer-canvas" style={{ margin: "0 1.4rem 1.4rem" }}>
+                  <pre>{formattedCode}</pre>
+                </div>
               </div>
             )}
           </div>
 
-          <div className="expiration-time-selector">
-            <h3 className="expiration-title">⏱️ Code expires in:</h3>
-            <div className="time-steppers-wrapper">
-              <TimeStepper
-                label="Hours"
-                value={expiresInHours}
-                onChange={setExpiresInHours}
-                max={24}
-                step={1}
-                disabled={loading}
-              />
-              <TimeStepper
-                label="Minutes"
-                value={expiresInMinutes}
-                onChange={setExpiresInMinutes}
-                max={55}
-                step={5}
-                disabled={loading}
-              />
+          <aside className="work-sidebar">
+            <div className="settings-card si-card">
+              <h3> Settings</h3>
+              <div className="wheel-panel" style={{ marginTop: "1rem" }}>
+                <div className="wheel-column">
+                  <div className="si-meta-label">Hours</div>
+                  <div className="wheel-value">
+                    <strong>{String(expiresInHours).padStart(2, "0")}</strong>
+                    <TimeStepper label="" value={expiresInHours} onChange={setExpiresInHours} max={24} step={1} disabled={loading} />
+                  </div>
+                </div>
+                <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--si-primary)" }}>:</div>
+                <div className="wheel-column">
+                  <div className="si-meta-label">Minutes</div>
+                  <div className="wheel-value">
+                    <strong>{String(expiresInMinutes).padStart(2, "0")}</strong>
+                    <TimeStepper label="" value={expiresInMinutes} onChange={setExpiresInMinutes} max={55} step={5} disabled={loading} />
+                  </div>
+                </div>
+              </div>
+
+             
             </div>
 
-            {isMaxTimeExceeded() && (
-              <p className="time-warning">⚠️ Maximum time is 1 day (24 hours)</p>
-            )}
-
-            {calculateTotalMinutes() > 0 && !isMaxTimeExceeded() && (
-              <p className="time-display">Total: {getDisplayTime()}</p>
-            )}
-          </div>
-
-          <div className="button-group">
-            <button
-              onClick={handleSend}
-              disabled={loading || !rawCode.trim() || isMaxTimeExceeded()}
-              className="btn-primary"
-            >
-              <FiSend /> {loading ? "Generating..." : "Generate Share Code"}
+            <button className="si-button" onClick={handleSend} disabled={loading || !rawCode.trim() || isMaxTimeExceeded()} type="button">
+              <FiZap /> {loading ? "Generating..." : "Generate Share Code"}
             </button>
-            {rawCode && (
-              <button
-                onClick={handleReset}
-                className="btn-secondary"
-              >
-                <FiTrash2 /> Clear
+
+            {rawCode && !shareCode && (
+              <button className="si-button-secondary" onClick={handleReset} type="button">
+                <FiTrash2 /> Clear Editor
               </button>
             )}
-          
-          </div>
-        </section>
 
-        {shareCode && (
-          <section className="code-result">
-            <div className="result-card">
-              <div className="result-header">
-                <div className="result-title-group">
-                  <h3>Your Share Code</h3>
-                  <p className="result-subtitle">Share this 4-digit code with receiver</p>
-                </div>
-                <button
-                  onClick={handleReset}
-                  className="btn-close-result"
-                  title="Close"
-                >
-                  <FiTrash2 />
-                </button>
-              </div>
-
-              <div className="result-body">
-                <div className="code-display-wrapper">
-                  <p className="access-code">{shareCode}</p>
-                  <button
-                    onClick={handleCopyCode}
-                    className="btn-copy-compact"
-                    title="Copy code"
-                  >
-                    <FiCopy />
-                  </button>
-                </div>
+            {shareCode && (
+              <div className="si-card" style={{ padding: "1.5rem" }}>
+                <div className="si-meta-label text-center-redesign">Your Share Code</div>
+                <div className="big-share-code">{shareCode}</div>
 
                 {totalExpiryMinutes > 0 && (
                   <CountdownTimer
                     expiresInMinutes={totalExpiryMinutes}
                     onExpire={() => {
-                      error("Code has expired!");
+                      error("Code has expired");
                       handleReset();
                     }}
                   />
                 )}
-              </div>
 
-              <div className="result-footer">
-                <button
-                  onClick={handleReset}
-                  className="btn-send-another-compact"
-                >
-                  <FiRefreshCw /> Share Another
-                </button>
+                <div style={{ display: "grid", gap: "0.8rem", marginTop: "1rem" }}>
+                  <button className="si-button-secondary" onClick={handleCopyCode} type="button">
+                    <FiCopy /> Copy Code
+                  </button>
+                  <button className="si-button-secondary" onClick={handleReset} type="button">
+                    <FiRefreshCw /> Share Another
+                  </button>
+                </div>
               </div>
+            )}
+
+            <div className="info-note">
+              <strong>Enterprise Compliance</strong>
+              <p className="si-footer-copy" style={{ marginTop: "0.5rem" }}>
+                Snippets remain temporary and respect your expiry policy. UI changed, backend logic preserved.
+              </p>
             </div>
-          </section>
-        )}
-      </div>
+          </aside>
+        </div>
+      </section>
     </div>
   );
 }

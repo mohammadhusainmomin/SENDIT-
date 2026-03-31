@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 import ToastContainer from "./components/ToastContainer";
 import { ToastProvider } from "./context/ToastContext";
 import "./styles/global.css";
-import "./styles/CodeShare.css";
+import "./styles/Redesign.css";
 
 const Home = lazy(() => import("./pages/Home"));
 const Send = lazy(() => import("./pages/Send"));
@@ -26,27 +26,29 @@ function App() {
   return (
     <ToastProvider>
       <BrowserRouter>
-        <Navbar />
-        <ToastContainer />
+        <div className="app-shell">
+          <Navbar />
+          <ToastContainer />
 
-        <Suspense fallback={<div className="route-loading">Loading...</div>}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/send" element={<Send />} />
-            <Route path="/receive" element={<Receive />} />
-            <Route path="/my-files" element={<MyFiles />} />
-            <Route path="/code/send" element={<CodeShare />} />
-            <Route path="/code/receive" element={<CodeReceive />} />
-            <Route path="/code/history" element={<CodeHistory />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/features" element={<Features />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-        <Footer />
+          <Suspense fallback={<div className="route-loading">Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/send" element={<Send />} />
+              <Route path="/receive" element={<Receive />} />
+              <Route path="/my-files" element={<MyFiles />} />
+              <Route path="/code/send" element={<CodeShare />} />
+              <Route path="/code/receive" element={<CodeReceive />} />
+              <Route path="/code/history" element={<CodeHistory />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/features" element={<Features />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+          <Footer />
+        </div>
       </BrowserRouter>
     </ToastProvider>
   );

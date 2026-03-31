@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
+import "./AdminRedesign.css";
 import Sidebar from "./components/Sidebar";
 import "./components/styles/NavIcon.css";
 import "./components/styles/Sidebar.css";
@@ -9,7 +10,7 @@ import FilesPage from "./components/Files/FilesPage";
 import CodesPage from "./components/Codes/CodesPage";
 import UsersPage from "./components/Users/UsersPage";
 import ActivityPage from "./components/Activity/ActivityPage";
-import { FiGrid, FiFile, FiCode, FiUsers, FiTrendingUp } from "react-icons/fi";
+import { FiActivity, FiCode, FiFile, FiGrid, FiServer, FiTrendingUp, FiUsers } from "react-icons/fi";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const PAGE_LIMIT = 10;
@@ -275,13 +276,27 @@ function Dashboard({ user, onLogout }) {
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-label="Toggle sidebar"
           >
-            <span></span>
-            <span></span>
-            <span></span>
+            <span />
+            <span />
+            <span />
           </button>
+
           <div className="header-title">
             <h1>SendIt Admin Dashboard</h1>
-            <p className="header-subtitle">Complete system management</p>
+            <p className="header-subtitle">
+              Operational overview for files, codes, users, and platform activity
+            </p>
+          </div>
+
+          <div className="user-section">
+            <div className={`connection-status ${backendConnected ? "connected" : "disconnected"}`}>
+              <span className="status-dot" />
+              <span>{backendConnected ? "Backend Connected" : "Backend Disconnected"}</span>
+            </div>
+            <div className="admin-pill">
+              <FiServer />
+              <span>{user}</span>
+            </div>
           </div>
         </div>
       </header>
@@ -296,31 +311,11 @@ function Dashboard({ user, onLogout }) {
           backendConnected={backendConnected}
           onLogout={onLogout}
           navigationItems={[
-            {
-              id: "overview",
-              icon: <FiGrid />,
-              label: "Overview",
-            },
-            {
-              id: "files",
-              icon: <FiFile />,
-              label: "Files",
-            },
-            {
-              id: "codes",
-              icon: <FiCode />,
-              label: "Codes",
-            },
-            {
-              id: "users",
-              icon: <FiUsers />,
-              label: "Users",
-            },
-            {
-              id: "activity",
-              icon: <FiTrendingUp />,
-              label: "Activity",
-            },
+            { id: "overview", icon: <FiGrid />, label: "Overview" },
+            { id: "files", icon: <FiFile />, label: "Files" },
+            { id: "codes", icon: <FiCode />, label: "Codes" },
+            { id: "users", icon: <FiUsers />, label: "Users" },
+            { id: "activity", icon: <FiTrendingUp />, label: "Activity" },
           ]}
         />
 
@@ -328,7 +323,7 @@ function Dashboard({ user, onLogout }) {
           {!backendConnected ? (
             <div className="error-container">
               <div className="error-box">
-                <div className="error-icon">⚠️</div>
+                <div className="error-icon"><FiActivity /></div>
                 <h2>Backend Connection Error</h2>
                 <p>Unable to connect to the API server.</p>
                 <p className="error-hint">
@@ -414,14 +409,10 @@ function App() {
     localStorage.removeItem("adminUser");
   };
 
-  return (
-    <>
-      {!isLoggedIn ? (
-        <LoginPage onLogin={handleLogin} />
-      ) : (
-        <Dashboard user={userEmail} onLogout={handleLogout} />
-      )}
-    </>
+  return !isLoggedIn ? (
+    <LoginPage onLogin={handleLogin} />
+  ) : (
+    <Dashboard user={userEmail} onLogout={handleLogout} />
   );
 }
 

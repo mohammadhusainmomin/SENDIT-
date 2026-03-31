@@ -12,13 +12,14 @@ import { useEffect } from "react";
  * @param {Object} props.structuredData - Structured data object (JSON-LD)
  */
 export default function SEO({
-  title = "SendIt - Secure File Share with 4-Digit Code",
-  description = "Secure file and code sharing platform. Share files free with 4-digit codes. No links, no accounts. Fast, safe, and instant.",
-  keywords = "share files online, send files free, secure file transfer, code sharing, anonymous file sharing, sendit, best file sharing site",
+  title = "SendIt - Secure File Sharing and Code Sharing Platform",
+  description = "SendIt is a secure file sharing and code sharing platform for sending files online with temporary access codes and a clean receive flow.",
+  keywords = "sendit, sendit file sharing, secure file sharing, send files online, file sharing platform, code sharing platform, receive files with code, temporary access code, share code online",
   url = "https://senditsystem.netlify.app/",
   image = "https://senditsystem.netlify.app/images/Sendit_logo.png",
   type = "website",
   structuredData = null,
+  robots = "index, follow",
 }) {
   useEffect(() => {
     // Update title
@@ -42,8 +43,9 @@ export default function SEO({
     updateMetaTag("description", description);
     updateMetaTag("keywords", keywords);
     updateMetaTag("theme-color", "#0d6efd");
-    updateMetaTag("robots", "index, follow");
+    updateMetaTag("robots", robots);
     updateMetaTag("revisit-after", "7 days");
+    updateMetaTag("author", "SendIt");
 
     // Open Graph meta tags
     updateMetaTag("og:title", title, true);
@@ -52,12 +54,14 @@ export default function SEO({
     updateMetaTag("og:url", url, true);
     updateMetaTag("og:image", image, true);
     updateMetaTag("og:site_name", "SendIt", true);
+    updateMetaTag("og:image:alt", "SendIt secure file sharing platform", true);
 
     // Twitter Card meta tags
     updateMetaTag("twitter:card", "summary_large_image");
     updateMetaTag("twitter:title", title);
     updateMetaTag("twitter:description", description);
     updateMetaTag("twitter:image", image);
+    updateMetaTag("twitter:image:alt", "SendIt secure file sharing platform");
 
     // Canonical URL
     let canonical = document.querySelector("link[rel='canonical']");
@@ -69,20 +73,41 @@ export default function SEO({
     canonical.setAttribute("href", url);
 
     // Structured Data (JSON-LD)
-    if (structuredData) {
-      let scriptTag = document.querySelector('script[type="application/ld+json"]');
-      if (!scriptTag) {
-        scriptTag = document.createElement("script");
-        scriptTag.setAttribute("type", "application/ld+json");
-        document.head.appendChild(scriptTag);
-      }
-      scriptTag.textContent = JSON.stringify(structuredData);
-    }
+    const existingManagedSchemas = document.querySelectorAll('script[data-seo-schema="true"]');
+    existingManagedSchemas.forEach((node) => node.remove());
+
+    const defaultSchema = {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: title,
+      description,
+      url,
+      isPartOf: {
+        "@type": "WebSite",
+        name: "SendIt",
+        url: "https://senditsystem.netlify.app/",
+      },
+    };
+
+    const schemas = structuredData
+      ? Array.isArray(structuredData)
+        ? [defaultSchema, ...structuredData]
+        : [defaultSchema, structuredData]
+      : [defaultSchema];
+
+    schemas.forEach((schema) => {
+      const scriptTag = document.createElement("script");
+      scriptTag.setAttribute("type", "application/ld+json");
+      scriptTag.setAttribute("data-seo-schema", "true");
+      scriptTag.textContent = JSON.stringify(schema);
+      document.head.appendChild(scriptTag);
+    });
 
     return () => {
-      // Cleanup is optional here - we keep meta tags for consistency
+      const managedSchemas = document.querySelectorAll('script[data-seo-schema="true"]');
+      managedSchemas.forEach((node) => node.remove());
     };
-  }, [title, description, keywords, url, image, type, structuredData]);
+  }, [title, description, keywords, url, image, type, structuredData, robots]);
 
   return null;
 }

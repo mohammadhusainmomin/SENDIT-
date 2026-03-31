@@ -1,24 +1,20 @@
-import { useEffect, useState, useRef } from "react";
-import "./styles/CountdownTimer.css";
+import { useEffect, useRef, useState } from "react";
 
 function CountdownTimer({ expiresInMinutes, onExpire }) {
-  const [timeLeft, setTimeLeft] = useState(expiresInMinutes * 60); // Convert to seconds
+  const [timeLeft, setTimeLeft] = useState(expiresInMinutes * 60);
   const timerRef = useRef(null);
   const onExpireRef = useRef(onExpire);
 
-  // Update ref when onExpire changes
   useEffect(() => {
     onExpireRef.current = onExpire;
   }, [onExpire]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (timeLeft <= 0) {
       onExpireRef.current && onExpireRef.current();
-      return;
+      return undefined;
     }
 
-    // Create timer only once and keep it running
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -39,26 +35,16 @@ function CountdownTimer({ expiresInMinutes, onExpire }) {
   const hours = Math.floor(timeLeft / 3600);
   const minutes = Math.floor((timeLeft % 3600) / 60);
   const seconds = timeLeft % 60;
-
-  const isLowTime = timeLeft < 300; // Less than 5 minutes
+  const isLowTime = timeLeft < 300;
 
   return (
-    <div className={`countdown-container ${isLowTime ? "low-time" : ""}`}>
-      <div className="countdown-label">⏰ Expires in:</div>
-      <div className="countdown-display">
-        {hours > 0 && (
-          <>
-            <span className="time-unit">{String(hours).padStart(2, "0")}</span>
-            <span className="time-separator">:</span>
-          </>
-        )}
-        <span className="time-unit">{String(minutes).padStart(2, "0")}</span>
-        <span className="time-separator">:</span>
-        <span className="time-unit">{String(seconds).padStart(2, "0")}</span>
+    <div className="countdown-redesign">
+      <div className="si-meta-label">Expires In</div>
+      <div style={{ marginTop: "0.35rem", fontSize: "1.3rem", fontWeight: 800, fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+        {hours > 0 ? `${String(hours).padStart(2, "0")}:` : ""}
+        {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
       </div>
-      {isLowTime && (
-        <p className="expire-warning">⚠️ Code expiring soon!</p>
-      )}
+      {isLowTime ? <div className="si-footer-copy" style={{ marginTop: "0.35rem" }}>Code expiring soon</div> : null}
     </div>
   );
 }

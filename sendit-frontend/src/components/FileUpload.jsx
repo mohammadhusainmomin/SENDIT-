@@ -1,40 +1,64 @@
-import { useState } from "react";
-import "./styles/FileUpload.css";
+import { useEffect, useRef, useState } from "react";
+import { FaWhatsapp } from "react-icons/fa";
+import { FiCheck, FiCopy, FiFile, FiRefreshCw, FiSend, FiUploadCloud } from "react-icons/fi";
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
 import { formatFileSize } from "../utils/formatFileSize";
-import { FaWhatsapp } from "react-icons/fa";
-import { FiUploadCloud, FiFile, FiRefreshCw, FiSend, FiCopy, FiCheck,  } from "react-icons/fi";
 import CountdownTimer from "./CountdownTimer";
 import TimeStepper from "./TimeStepper";
 
-function FileUpload() {
+function FileUpload({ onStateChange }) {
   const [files, setFiles] = useState([]);
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const [expiresInHours, setExpiresInHours] = useState("0");
   const [expiresInMinutes, setExpiresInMinutes] = useState("10");
   const [totalExpiryMinutes, setTotalExpiryMinutes] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const inputRef = useRef(null);
   const { success, error: showError } = useToast();
 
-  // Generate hour options (0-24)
-  const hourOptions = Array.from({ length: 25 }, (_, i) => i);
-
-  // Generate minute options (0, 5, 10, 15, ..., 55)
-  const minuteOptions = Array.from({ length: 12 }, (_, i) => i * 5);
-
   const calculateTotalMinutes = () => {
-    const hours = parseInt(expiresInHours) || 0;
-    const minutes = parseInt(expiresInMinutes) || 0;
+    const hours = parseInt(expiresInHours, 10) || 0;
+    const minutes = parseInt(expiresInMinutes, 10) || 0;
     return hours * 60 + minutes;
   };
 
-  const isMaxTimeExceeded = () => {
-    const totalMinutes = calculateTotalMinutes();
-    return totalMinutes > 1440; // 1 day = 1440 minutes
+  const isMaxTimeExceeded = () => calculateTotalMinutes() > 1440;
+  const totalSize = files.reduce((total, file) => total + file.size, 0);
+
+  useEffect(() => {
+    if (!onStateChange) return;
+
+    onStateChange({
+      files,
+      code,
+      loading,
+      uploadProgress,
+      totalSize,
+      totalExpiryMinutes,
+      expiresInHours,
+      expiresInMinutes,
+    });
+  }, [
+    code,
+    expiresInHours,
+    expiresInMinutes,
+    files,
+    loading,
+    onStateChange,
+    totalExpiryMinutes,
+    totalSize,
+    uploadProgress,
+  ]);
+
+  const handleFileChange = (event) => {
+    const selectedFiles = Array.from(event.target.files || []);
+    if (selectedFiles.length > 0) {
+      setFiles(selectedFiles);
+      setCode("");
+    }
   };
 
   const handleSend = async () => {
@@ -56,18 +80,16 @@ function FileUpload() {
     try {
       setLoading(true);
       setUploadProgress(0);
-      setError("");
 
       const token = localStorage.getItem("token");
       const expiresIn = calculateTotalMinutes();
-
-      // Create FormData with all files
       const formData = new FormData();
+
       files.forEach((file) => {
         formData.append("files", file);
       });
 
-      const res = await api.post(
+      const response = await api.post(
         `${token ? "/send-auth" : "/send"}?expiresIn=${expiresIn}`,
         formData,
         {
@@ -81,232 +103,200 @@ function FileUpload() {
         }
       );
 
-      setCode(res.data.code);
+      setCode(response.data.code);
       setTotalExpiryMinutes(expiresIn);
       setUploadProgress(0);
-      success(`🎉 ${files.length} file(s) uploaded successfully!`);
+      success(`${files.length} file(s) uploaded successfully`);
     } catch (err) {
-      console.error("UPLOAD ERROR:", err.response?.data || err.message);
-      showError("Upload failed. Please try again.");
+      showError(err.response?.data?.message || "Upload failed. Please try again.");
       setUploadProgress(0);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    if (selectedFiles.length > 0) {
-      setFiles(selectedFiles);
-      setError("");
-      setCode("");
-    }
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    success("✓ Code copied to clipboard!");
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const shareOnWhatsApp = () => {
-    const totalMinutes = calculateTotalMinutes();
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    let timeText = "";
-    if (hours > 0) timeText += `${hours}h `;
-    if (minutes > 0) timeText += `${minutes}m`;
-
-    const message = `📁 SENDIT – Fast & Secure File Share
-
-🔐 Access Code:
-👉 ${code}
-
-📦 Files: ${files.length} file${files.length !== 1 ? "s" : ""}
-⏰ Valid for: ${timeText || "just now"}
-
-🌐 Download your files here:
-https://senditsystem.netlify.app/
-
-🔒 Secure • No links • One-time access`;
-
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
-  };
-
   const handleReset = () => {
     setFiles([]);
     setCode("");
-    setError("");
     setCopied(false);
+    setUploadProgress(0);
+    setTotalExpiryMinutes(0);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
   };
 
-  const getDisplayTime = () => {
-    const totalMinutes = calculateTotalMinutes();
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    if (hours === 0) return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
-    if (minutes === 0) return `${hours} hour${hours !== 1 ? "s" : ""}`;
-    return `${hours}h ${minutes}m`;
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(code);
+    setCopied(true);
+    success("Code copied to clipboard");
+    setTimeout(() => setCopied(false), 1800);
   };
+
+  const shareOnWhatsApp = () => {
+    const message = `SendIt access code: ${code}\nFiles: ${files.length}\nOpen SendIt and enter this 4-digit code to download.`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
+  if (code) {
+    return (
+      <div className="si-card" style={{ padding: "1.5rem" }}>
+        <div className="code-display-redesign">
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", justifyContent: "center" }}>
+            <span className="si-chip" style={{ padding: "0.45rem 0.8rem" }}>
+              <FiCheck /> Ready
+            </span>
+          </div>
+
+          <div className="upload-list-preview">
+            {files.map((file, index) => (
+              <div key={`${file.name}-${index}`} className="upload-preview-item">
+                <span style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}>
+                  <FiFile className="inline-icon" />
+                  {file.name}
+                </span>
+                <span className="si-footer-copy">{formatFileSize(file.size)}</span>
+              </div>
+            ))}
+          </div>
+
+          <div>
+            <div className="si-meta-label text-center-redesign">Share this code</div>
+            <div className="big-share-code">{code}</div>
+          </div>
+
+          {totalExpiryMinutes > 0 && (
+            <CountdownTimer
+              expiresInMinutes={totalExpiryMinutes}
+              onExpire={() => {
+                showError("Code has expired");
+                handleReset();
+              }}
+            />
+          )}
+
+          <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap", justifyContent: "center" }}>
+            <button className="si-button-secondary" onClick={copyToClipboard} type="button">
+              {copied ? <FiCheck /> : <FiCopy />} {copied ? "Copied" : "Copy Code"}
+            </button>
+            <button className="si-button-secondary" onClick={shareOnWhatsApp} type="button">
+              <FaWhatsapp /> WhatsApp
+            </button>
+            <button className="si-button" onClick={handleReset} type="button">
+              <FiRefreshCw /> Send More
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div className="file-upload-container">
-        {!code ? (
-          <>
-            <div className="upload-area">
-              <label className="file-input-label">
-                <input
-                  type="file"
-                  multiple
-                  onChange={handleFileChange}
-                  disabled={loading}
-                  className="file-input-hidden"
-                />
-                <div className="upload-box">
-                  {files.length > 0 ? (
-                    <div className="file-preview">
-                      <div className="file-icon"><FiFile /></div>
-                      <p className="file-name">
-                        {files.length === 1 ? files[0].name : `${files.length} files selected`}
-                      </p>
-                      <p className="file-size">
-                        {formatFileSize(files.reduce((total, f) => total + f.size, 0))}
-                      </p>
-                      <button
-                        type="button"
-                        className="btn-change-file"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          document.querySelector(".file-input-hidden").click();
-                        }}
-                      >
-                        <FiRefreshCw /> Change Files
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="upload-prompt">
-                      <div className="upload-icon"><FiUploadCloud /></div>
-                      <p className="upload-text">
-                        Click to select files or drag and drop
-                      </p>
-                      <p className="upload-hint">
-                        Select one or multiple files, up to 500MB each
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </label>
+    <div className="si-grid">
+      <div className="upload-dropzone">
+        <label className="upload-dropzone-inner" htmlFor="sendit-upload-input">
+          <input
+            ref={inputRef}
+            id="sendit-upload-input"
+            type="file"
+            multiple
+            onChange={handleFileChange}
+            disabled={loading}
+            style={{ display: "none" }}
+          />
+
+          <div>
+            <div
+              style={{
+                width: "84px",
+                height: "84px",
+                margin: "0 auto 1rem",
+                borderRadius: "999px",
+                display: "grid",
+                placeItems: "center",
+                background: "rgba(255,255,255,0.9)",
+              }}
+            >
+              <FiUploadCloud className="inline-icon" size={36} />
             </div>
+            <h3>Drop your files here</h3>
+            <p className="si-footer-copy">
+              Or browse files on your device. Current backend supports working file upload with share code generation.
+            </p>
+            <div className="si-meta-label" style={{ marginTop: "1rem" }}>
+              Support for multiple files up to backend limits
+            </div>
+          </div>
+        </label>
+      </div>
 
-            {error && <div className="error-message">{error}</div>}
-
-            <div className="expiration-time-container">
-              <h3 className="expiration-title">⏱️ File expires in:</h3>
-              <div className="time-steppers-wrapper">
-                <TimeStepper
-                  label="Hours"
-                  value={expiresInHours}
-                  onChange={setExpiresInHours}
-                  max={24}
-                  step={1}
-                  disabled={loading}
-                />
-                <TimeStepper
-                  label="Minutes"
-                  value={expiresInMinutes}
-                  onChange={setExpiresInMinutes}
-                  max={55}
-                  step={5}
-                  disabled={loading}
-                />
+      {files.length > 0 && (
+        <div className="si-card" style={{ padding: "1.3rem" }}>
+          <div className="upload-list-preview">
+            {files.map((file, index) => (
+              <div key={`${file.name}-${index}`} className="upload-preview-item">
+                <span style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}>
+                  <FiFile className="inline-icon" />
+                  {file.name}
+                </span>
+                <span className="si-footer-copy">{formatFileSize(file.size)}</span>
               </div>
+            ))}
+          </div>
+          <div className="si-footer-copy" style={{ marginTop: "0.9rem" }}>
+            Total size: {formatFileSize(totalSize)}
+          </div>
+        </div>
+      )}
 
-              {isMaxTimeExceeded() && (
-                <p className="time-warning">⚠️ Maximum time is 1 day (24 hours)</p>
-              )}
-
-              {calculateTotalMinutes() > 0 && !isMaxTimeExceeded() && (
-                <p className="time-display">Total: {getDisplayTime()}</p>
-              )}
+      <div className="si-card" style={{ padding: "1.5rem" }}>
+        <div className="wheel-panel">
+          <div className="wheel-column">
+            <div className="si-meta-label">Hours</div>
+            <div className="wheel-value">
+              <strong>{String(expiresInHours).padStart(2, "0")}</strong>
+              <TimeStepper label="" value={expiresInHours} onChange={setExpiresInHours} max={24} step={1} disabled={loading} />
             </div>
+          </div>
 
-            <div className="button-container">
-              <button
-                className="btn-send"
-                onClick={handleSend}
-                disabled={files.length === 0 || loading || isMaxTimeExceeded()}
-              >
-                <FiSend />
-                {loading ? `Uploading... ${uploadProgress}%` : `Send ${files.length === 1 ? "File" : "Files"}`}
-              </button>
-              {loading && uploadProgress > 0 && (
-                <div className="progress-bar-container">
-                  <div className="progress-bar" style={{ width: `${uploadProgress}%` }} />
-                </div>
-              )}
+          <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--si-primary)" }}>:</div>
+
+          <div className="wheel-column">
+            <div className="si-meta-label">Minutes</div>
+            <div className="wheel-value">
+              <strong>{String(expiresInMinutes).padStart(2, "0")}</strong>
+              <TimeStepper label="" value={expiresInMinutes} onChange={setExpiresInMinutes} max={55} step={5} disabled={loading} />
             </div>
-          </>
-        ) : (
-          <div className="code-success-container">
-            <div className="success-icon"><FiCheck /></div>
-            <h3>Woohoo! Files Uploaded!</h3>
+          </div>
+        </div>
 
-            <div className="files-list">
-              {files.map((file, index) => (
-                <div key={index} className="file-item">
-                  <span className="file-item-icon"><FiFile /></span>
-                  <span className="file-item-name">{file.name}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="code-display">
-              <p className="code-label">Share this code:</p>
-              <div className="code-box">
-                <span className="access-code">{code}</span>
-
-                <button
-                  className="btn-copy"
-                  onClick={copyToClipboard}
-                  title="Copy code"
-                >
-                  {copied ? <FiCheck /> : <FiCopy />} {copied ? "Copied" : "Copy"}
-                </button>
-
-                <button
-                  className="btn-whatsapp"
-                  onClick={shareOnWhatsApp}
-                  title="Share on WhatsApp"
-                >
-                  <FaWhatsapp size={18} />
-                  WhatsApp
-                </button>
-              </div>
-            </div>
-
-            {totalExpiryMinutes > 0 && (
-              <CountdownTimer
-                expiresInMinutes={totalExpiryMinutes}
-                onExpire={() => {
-                  showError("Code has expired!");
-                  handleReset();
-                }}
-              />
-            )}
-
-            <div className="button-group">
-              <button className="btn-send-another" onClick={handleReset}>
-                <FiRefreshCw /> Send More Files
-              </button>
-            </div>
+        {calculateTotalMinutes() > 0 && !isMaxTimeExceeded() && (
+          <div className="si-footer-copy" style={{ marginTop: "1rem" }}>
+            Share code valid for {calculateTotalMinutes()} minute(s)
           </div>
         )}
       </div>
-    </>
+
+      <div className="action-block">
+        <div className="si-meta-label" style={{ color: "rgba(255,255,255,0.72)" }}>Ready to dispatch?</div>
+        <h3 style={{ color: "#fff", marginTop: "0.5rem" }}>Secure link code will be generated instantly.</h3>
+        <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap", marginTop: "1rem" }}>
+          <button className="si-button-secondary" onClick={handleSend} disabled={files.length === 0 || loading || isMaxTimeExceeded()} type="button">
+            <FiSend /> {loading ? `Uploading ${uploadProgress}%` : "Initialize Dispatch"}
+          </button>
+          {files.length > 0 && (
+            <button className="si-button-ghost" onClick={handleReset} type="button" style={{ color: "#fff" }}>
+              <FiRefreshCw /> Reset
+            </button>
+          )}
+        </div>
+        {loading && uploadProgress > 0 && (
+          <div className="progress-track" style={{ marginTop: "1rem", background: "rgba(255,255,255,0.18)" }}>
+            <div className="progress-fill" style={{ width: `${uploadProgress}%`, background: "#fff" }} />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

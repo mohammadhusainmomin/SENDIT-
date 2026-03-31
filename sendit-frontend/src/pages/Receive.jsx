@@ -1,70 +1,53 @@
 import CodeInput from "../components/CodeInput";
-import { DownloadIllustration } from "../components/Illustrations";
 import SEO from "../components/SEO";
-import { FiDownload, FiUser, FiClock, FiRotateCcw } from "react-icons/fi";
-import "../styles/Receive.css";
 
 function Receive() {
   return (
-    <div className="receive-container">
+    <div className="page-shell">
       <SEO
-        title="Receive Files Online - SendIt Secure Download"
-        description="Receive files securely using a 4-digit access code. Download shared files instantly, for free, and with no registration required."
-        keywords="receive files online, download files, secure file download, 4-digit code sharing"
+        title="Receive Shared Files | SendIt Access Code Retrieval"
+        description="Receive shared files with SendIt by entering the access code and downloading files through a clean secure retrieval flow."
+        keywords="receive shared files, file retrieval with code, sendit receive files, secure file download"
         url="https://senditsystem.netlify.app/receive"
       />
-      <div className="receive-content">
-        <section className="receive-header">
-          <div className="header-icon"><FiDownload /></div>
-          <h2>Receive File</h2>
-          <p>Enter the 4-digit code to download</p>
-        </section>
 
-        <section className="receive-form-section">
-          <div className="form-illustration">
-            <DownloadIllustration />
+      <section className="page-section">
+        <div className="work-grid">
+          <div className="work-main">
+            <div>
+              <span className="si-chip">Secure Retrieval</span>
+              <h1 className="si-title" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+                Access Your Shared Files
+              </h1>
+              <p className="si-subtitle">
+                Enter the 4-digit access code and retrieve the files your sender shared. If multiple files are available,
+                the UI will show a clean download list.
+              </p>
+            </div>
+            <CodeInput />
           </div>
-          <CodeInput />
-        </section>
 
-        <section className="receive-info">
-          <h3>How to Receive</h3>
-          <div className="steps">
-            <div className="receive-step">
-              <div className="step-badge">1</div>
-              <h4>Get the Code</h4>
-              <p>Ask your friend for the 4-digit access code</p>
+          <aside className="work-sidebar">
+            <div className="si-card" style={{ padding: "1.5rem" }}>
+              <h3>How it works</h3>
+              <div className="muted-list" style={{ marginTop: "1rem" }}>
+                <div className="muted-list-item"><span className="si-chip">1</span><span>Get the sender's 4-digit code.</span></div>
+                <div className="muted-list-item"><span className="si-chip">2</span><span>Enter the code in the input box.</span></div>
+                <div className="muted-list-item"><span className="si-chip">3</span><span>Download one file or pick from the available list.</span></div>
+              </div>
             </div>
-            <div className="step-divider"></div>
-            <div className="receive-step">
-              <div className="step-badge">2</div>
-              <h4>Enter Code</h4>
-              <p>Type the code into the input field below</p>
-            </div>
-            <div className="step-divider"></div>
-            <div className="receive-step">
-              <div className="step-badge">3</div>
-              <h4>Download</h4>
-              <p>Click download and the file will be saved</p>
-            </div>
-          </div>
-        </section>
 
-        <section className="receive-notes">
-          <div className="note-item">
-            <span className="note-icon"><FiUser /></span>
-            <p>Guest access available - no login required</p>
-          </div>
-          <div className="note-item">
-            <span className="note-icon"><FiClock /></span>
-            <p>Codes expire based on sender's selected time</p>
-          </div>
-          <div className="note-item">
-            <span className="note-icon"><FiRotateCcw /></span>
-            <p>Each code can be used multiple times until expired</p>
-          </div>
-        </section>
-      </div>
+            <div className="si-card" style={{ padding: "1.5rem" }}>
+              <h3>Transfer notes</h3>
+              <div className="muted-list" style={{ marginTop: "1rem" }}>
+                <div className="muted-list-item">Guest access supported</div>
+                <div className="muted-list-item">Codes expire based on sender settings</div>
+                <div className="muted-list-item">Working with your current backend receive API</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
     </div>
   );
 }

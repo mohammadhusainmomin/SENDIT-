@@ -5,6 +5,12 @@
     <link rel="icon" href="/images/sendit svg.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://lh3.googleusercontent.com https://senditsystem.netlify.app; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:; frame-src https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta
       name="google-site-verification"
       content="X7nI3MCRkCXwa51GSxIe7EyQ79oz_11IUil8Dr9RMR4"
     />
@@ -12,11 +18,11 @@
     <meta name="theme-color" content="#0d6efd" />
     <meta
       name="description"
-      content="SendIt - Secure file and code sharing. Share files free with 4-digit codes. No links, no accounts. Fast, safe, and instant."
+      content="SendIt is a secure file sharing and code sharing platform for sending files online with temporary access codes, fast retrieval, and a clean modern interface."
     />
     <meta
       name="keywords"
-      content="share files online, send files free, secure file transfer, code sharing, online file share, send large files, anonymous file sharing, best file sharing site, sendit"
+      content="sendit, sendit file sharing, sendit netlify, secure file sharing, send files online, file transfer, code sharing, temporary access code"
     />
     <meta name="robots" content="index, follow" />
     <meta http-equiv="content-language" content="en" />
@@ -27,11 +33,11 @@
     <meta property="og:type" content="website" />
     <meta
       property="og:title"
-      content="SendIt - Secure File Share with 4-Digit Code"
+      content="SendIt - Secure File Sharing and Code Sharing Platform"
     />
     <meta
       property="og:description"
-      content="Share files and code snippets securely with a 4-digit code. No links or registration needed. Fast, free, and secure."
+      content="Send files online and share code snippets with temporary access codes, clean transfer flows, and fast retrieval."
     />
     <meta property="og:url" content="https://senditsystem.netlify.app/" />
     <meta property="og:site_name" content="SendIt" />
@@ -42,10 +48,10 @@
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="SendIt - Secure File Share with 4-Digit Code" />
+    <meta name="twitter:title" content="SendIt - Secure File Sharing and Code Sharing Platform" />
     <meta
       name="twitter:description"
-      content="Share files and code snippets securely with encrypted links."
+      content="Send files online and share code snippets with temporary access codes and a clean retrieval flow."
     />
     <meta
       name="twitter:image"
@@ -75,7 +81,7 @@
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "SendIt",
-        "description": "Secure file and code sharing platform. Share files free with 4-digit codes.",
+        "description": "Secure file sharing and code sharing platform for sending files online with temporary access codes.",
         "url": "https://senditsystem.netlify.app",
         "applicationCategory": "UtilityApplication",
         "operatingSystem": "All",
@@ -100,14 +106,32 @@
         "name": "SendIt",
         "url": "https://senditsystem.netlify.app",
         "logo": "https://senditsystem.netlify.app/images/sendit svg.ico",
-        "description": "Secure file and code sharing platform with simple 4-digit code access"
+        "description": "File and code sharing platform with temporary access codes"
       }
     </script>
 
-    <title>SendIt - Secure File Share with 4-Digit Code</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "SendIt",
+        "url": "https://senditsystem.netlify.app/",
+        "description": "Secure file sharing and code sharing platform for sending files online.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "SendIt"
+        }
+      }
+    </script>
+
+    <title>SendIt - Secure File Sharing and Code Sharing Platform</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>
+      SendIt is a secure file sharing and code sharing platform. You can send files online, receive
+      shared files with an access code, share code snippets, and explore SendIt features, FAQ,
+      privacy policy, and terms. JavaScript is required to use the interactive application.
+    </noscript>
     <div id="root"></div>
   </body>
 </html>
