@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FiChevronDown, FiClock, FiFileText, FiLock, FiLogOut, FiMenu, FiMoon, FiSun, FiX } from "react-icons/fi";
+import { FiArrowUpRight, FiChevronDown, FiClock, FiFileText, FiLock, FiLogOut, FiMenu, FiMoon, FiSun, FiX } from "react-icons/fi";
 import { AuthContext } from "../context/AuthContext";
 import AuthModal from "./AuthModel";
 
@@ -112,11 +112,11 @@ function Navbar() {
               </>
             ) : (
               <>
-                <button className="si-button-ghost" onClick={() => setOpen(true)} type="button">
-                  Login
+                <button className="si-button-ghost si-auth-login" onClick={() => setOpen(true)} type="button">
+                  <FiLock /> Login
                 </button>
-                <button className="si-button" onClick={() => navigate("/send")} type="button">
-                  Get Started
+                <button className="si-button si-auth-start" onClick={() => navigate("/send")} type="button">
+                  Get Started <FiArrowUpRight />
                 </button>
               </>
             )}
@@ -162,11 +162,11 @@ function Navbar() {
               </button>
             ) : (
               <>
-                <button className="si-button-ghost" onClick={() => { setOpen(true); closeMenu(); }} type="button">
+                <button className="si-button-ghost si-auth-login" onClick={() => { setOpen(true); closeMenu(); }} type="button">
                   <FiLock /> Login
                 </button>
-                <button className="si-button" onClick={() => { navigate("/send"); closeMenu(); }} type="button">
-                  Get Started
+                <button className="si-button si-auth-start" onClick={() => { navigate("/send"); closeMenu(); }} type="button">
+                  Get Started <FiArrowUpRight />
                 </button>
               </>
             )}

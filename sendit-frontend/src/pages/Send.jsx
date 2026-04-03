@@ -42,7 +42,7 @@ function Send() {
           </div>
 
           <aside className="work-sidebar">
-            <div className="si-card" style={{ padding: "1.5rem" }}>
+            <div className="si-card" style={{ padding: "1.5rem", marginTop: "10.0rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", alignItems: "center" }}>
                 <h3 style={{ margin: 0 }}>Active Uploads</h3>
                 <span className="si-chip" style={{ padding: "0.4rem 0.7rem" }}>
@@ -107,33 +107,6 @@ function Send() {
                 <div className="upload-status-item" style={{ marginTop: "1rem" }}>
                   <div className="si-meta-label"><FiHash style={{ marginRight: "0.35rem" }} /> Share Code</div>
                   <strong style={{ letterSpacing: "0.25em" }}>{uploadState.code}</strong>
-                </div>
-              )}
-            </div>
-
-            <div
-              className="promo-card"
-              style={{
-                padding: "1.5rem",
-                minHeight: "280px",
-                background: "linear-gradient(180deg, rgba(13,110,253,0.92), rgba(0,87,205,0.96))",
-                color: "#fff",
-              }}
-            >
-              <div className="si-meta-label" style={{ color: "rgba(255,255,255,0.72)" }}>Live Summary</div>
-              <h3 style={{ color: "#fff", marginTop: "0.6rem" }}>
-                {hasCompletedUpload ? "Dispatch completed." : hasFiles ? "Ready for dispatch." : "Waiting for files."}
-              </h3>
-              <p style={{ color: "rgba(255,255,255,0.8)" }}>
-                {hasCompletedUpload
-                  ? `Your files are uploaded and the real share code ${uploadState.code} is ready to use.`
-                  : hasFiles
-                  ? `${uploadState.files.length} selected file(s) totaling ${formatFileSize(uploadState.totalSize)} are ready to upload.`
-                  : "Select files from the left panel and this card will update with real upload state."}
-              </p>
-              {uploadState.loading && (
-                <div className="progress-track" style={{ marginTop: "1rem", background: "rgba(255,255,255,0.18)" }}>
-                  <div className="progress-fill" style={{ width: `${uploadState.uploadProgress}%`, background: "#fff" }} />
                 </div>
               )}
             </div>

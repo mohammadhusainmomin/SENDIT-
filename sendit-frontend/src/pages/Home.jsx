@@ -43,7 +43,7 @@ function Home() {
                 Start Sending <FiArrowRight />
               </button>
               <button className="si-button-secondary" onClick={() => navigate("/code/receive")} type="button">
-                Enter Code
+                Recive File
               </button>
             </div>
 
@@ -71,7 +71,22 @@ function Home() {
                 className="hero-visual-image"
               />
             </div>
-           
+            <div className="hero-floating-card">
+              <div className="hero-floating-top">
+                <span className="si-chip">Transfer Snapshot</span>
+                <span className="hero-floating-status">Online</span>
+              </div>
+              <div className="hero-floating-metrics">
+                <div>
+                  <div className="si-meta-label">Active Flow</div>
+                  <strong>File + Code</strong>
+                </div>
+                <div>
+                  <div className="si-meta-label">Expiry Mode</div>
+                  <strong>Time-Limited</strong>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

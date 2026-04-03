@@ -36,6 +36,7 @@
 /* Tabs */
 .tabs-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-color);
@@ -55,6 +56,8 @@
   align-items: center;
   gap: 0.5rem;
   box-shadow: none;
+  flex: 1 1 200px;
+  min-width: 0;
 }
 
 .tab-btn:hover {
@@ -126,12 +129,14 @@
   margin-bottom: 0.75rem;
   font-weight: 600;
   color: var(--text-primary);
+  overflow-wrap: anywhere;
 }
 
 .meta-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
   padding: 0.5rem 0.75rem;
   background: var(--bg-secondary);
   border-radius: 0.5rem;
@@ -148,6 +153,8 @@
   color: var(--primary-main);
   font-size: 0.85rem;
   font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .file-card-footer {
@@ -178,8 +185,35 @@
   background: rgba(0, 102, 204, 0.05);
 }
 
+@media (max-width: 768px) {
+  .meta-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .meta-value {
+    text-align: left;
+  }
+}
+
 @media (max-width: 480px) {
+  .my-files-container {
+    padding: 1rem 0.75rem;
+  }
+
+  .tabs-container {
+    gap: 0.4rem;
+  }
+
+  .tab-btn {
+    flex: 1 1 100%;
+  }
+
   .files-grid {
     grid-template-columns: 1fr;
+  }
+
+  .file-card-footer {
+    flex-direction: column;
   }
 }

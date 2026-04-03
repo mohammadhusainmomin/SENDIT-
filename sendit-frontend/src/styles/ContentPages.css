@@ -4,6 +4,7 @@
   min-height: calc(100vh - 70px);
   background: var(--bg-secondary);
   padding: 40px 20px;
+  overflow-x: hidden;
 }
 
 .content-container {
@@ -15,6 +16,7 @@
   padding: 50px 40px;
   animation: slideUp 0.5s ease-out;
   border: 1px solid var(--border-light);
+  overflow: hidden;
 }
 
 @keyframes slideUp {
@@ -55,6 +57,7 @@
   font-size: 1rem;
   color: var(--text-secondary);
   margin-bottom: 15px;
+  overflow-wrap: anywhere;
 }
 
 .content-section ul {
@@ -70,6 +73,7 @@
   padding-left: 25px;
   list-style: none;
   position: relative;
+  overflow-wrap: anywhere;
 }
 
 .content-section li:before {
@@ -146,6 +150,11 @@
   color: var(--text-primary);
   transition: all 0.3s ease;
   text-align: left;
+  gap: 0.8rem;
+}
+
+.faq-icon {
+  flex-shrink: 0;
 }
 
 .faq-question:hover {
@@ -169,6 +178,10 @@
 /* Responsive Design */
 
 @media (max-width: 768px) {
+  .content-page-wrapper {
+    padding: 28px 14px;
+  }
+
   .content-container {
     padding: 30px 20px;
   }
@@ -186,6 +199,15 @@
   .content-section li {
     font-size: 0.95rem;
   }
+
+  .faq-question {
+    font-size: 1rem;
+    padding: 16px;
+  }
+
+  .faq-answer {
+    padding: 16px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -201,5 +223,13 @@
   .page-title {
     font-size: 1.5rem;
     padding-bottom: 15px;
+  }
+
+  .content-section h2 {
+    font-size: 1.25rem;
+  }
+
+  .content-section li {
+    padding-left: 20px;
   }
 }

@@ -3,7 +3,7 @@ import { FiCode, FiCopy, FiRefreshCw, FiTrash2, FiUser, FiZap } from "react-icon
 import api from "../services/api";
 import CountdownTimer from "../components/CountdownTimer";
 import SEO from "../components/SEO";
-import TimeStepper from "../components/TimeStepper";
+import ScrollValuePicker from "../components/ScrollValuePicker";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { formatCode } from "../utils/formatCode";
@@ -19,6 +19,8 @@ function CodeShare() {
   const formatTimeoutRef = useRef(null);
   const { success, error } = useToast();
   const { user } = useAuth();
+  const hourOptions = Array.from({ length: 25 }, (_, index) => index);
+  const minuteOptions = Array.from({ length: 12 }, (_, index) => index * 5);
 
   useEffect(() => {
     if (formatTimeoutRef.current) {
@@ -46,6 +48,13 @@ function CodeShare() {
     const minutes = parseInt(expiresInMinutes, 10) || 0;
     return hours * 60 + minutes;
   };
+
+  const selectedDurationLabel = [
+    parseInt(expiresInHours, 10) ? `${parseInt(expiresInHours, 10)}h` : null,
+    parseInt(expiresInMinutes, 10) ? `${parseInt(expiresInMinutes, 10)}m` : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const isMaxTimeExceeded = () => calculateTotalMinutes() > 1440;
 
@@ -177,26 +186,45 @@ function CodeShare() {
 
           <aside className="work-sidebar">
             <div className="settings-card si-card">
-              <h3> Settings</h3>
+              <h3>Settings</h3>
               <div className="wheel-panel" style={{ marginTop: "1rem" }}>
                 <div className="wheel-column">
-                  <div className="si-meta-label">Hours</div>
                   <div className="wheel-value">
                     <strong>{String(expiresInHours).padStart(2, "0")}</strong>
-                    <TimeStepper label="" value={expiresInHours} onChange={setExpiresInHours} max={24} step={1} disabled={loading} />
+                    <ScrollValuePicker
+                      label="Hours"
+                      options={hourOptions}
+                      value={expiresInHours}
+                      onChange={setExpiresInHours}
+                      disabled={loading}
+                    />
                   </div>
                 </div>
                 <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--si-primary)" }}>:</div>
                 <div className="wheel-column">
-                  <div className="si-meta-label">Minutes</div>
                   <div className="wheel-value">
                     <strong>{String(expiresInMinutes).padStart(2, "0")}</strong>
-                    <TimeStepper label="" value={expiresInMinutes} onChange={setExpiresInMinutes} max={55} step={5} disabled={loading} />
+                    <ScrollValuePicker
+                      label="Minutes"
+                      options={minuteOptions}
+                      value={expiresInMinutes}
+                      onChange={setExpiresInMinutes}
+                      disabled={loading}
+                    />
                   </div>
                 </div>
               </div>
-
-             
+              <div className="expiry-summary-card">
+                <div>
+                  <div className="si-meta-label">Selected Window</div>
+                  <strong>{selectedDurationLabel || "Choose expiry"}</strong>
+                </div>
+                <span className="expiry-summary-note">
+                  {calculateTotalMinutes() > 0
+                    ? `${calculateTotalMinutes()} minute access window`
+                    : "Temporary access helps keep code private"}
+                </span>
+              </div>
             </div>
 
             <button className="si-button" onClick={handleSend} disabled={loading || !rawCode.trim() || isMaxTimeExceeded()} type="button">

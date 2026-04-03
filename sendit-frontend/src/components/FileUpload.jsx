@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
-import { FiCheck, FiCopy, FiFile, FiRefreshCw, FiSend, FiUploadCloud } from "react-icons/fi";
+import { FiCheck, FiCopy, FiRefreshCw, FiSend, FiUploadCloud } from "react-icons/fi";
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
-import { formatFileSize } from "../utils/formatFileSize";
 import CountdownTimer from "./CountdownTimer";
-import TimeStepper from "./TimeStepper";
+import ScrollValuePicker from "./ScrollValuePicker";
 
 function FileUpload({ onStateChange }) {
   const [files, setFiles] = useState([]);
@@ -18,6 +17,8 @@ function FileUpload({ onStateChange }) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const inputRef = useRef(null);
   const { success, error: showError } = useToast();
+  const hourOptions = Array.from({ length: 25 }, (_, index) => index);
+  const minuteOptions = Array.from({ length: 12 }, (_, index) => index * 5);
 
   const calculateTotalMinutes = () => {
     const hours = parseInt(expiresInHours, 10) || 0;
@@ -27,7 +28,6 @@ function FileUpload({ onStateChange }) {
 
   const isMaxTimeExceeded = () => calculateTotalMinutes() > 1440;
   const totalSize = files.reduce((total, file) => total + file.size, 0);
-
   useEffect(() => {
     if (!onStateChange) return;
 
@@ -138,6 +138,8 @@ function FileUpload({ onStateChange }) {
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
   };
 
+ 
+
   if (code) {
     return (
       <div className="si-card" style={{ padding: "1.5rem" }}>
@@ -148,17 +150,7 @@ function FileUpload({ onStateChange }) {
             </span>
           </div>
 
-          <div className="upload-list-preview">
-            {files.map((file, index) => (
-              <div key={`${file.name}-${index}`} className="upload-preview-item">
-                <span style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}>
-                  <FiFile className="inline-icon" />
-                  {file.name}
-                </span>
-                <span className="si-footer-copy">{formatFileSize(file.size)}</span>
-              </div>
-            ))}
-          </div>
+        
 
           <div>
             <div className="si-meta-label text-center-redesign">Share this code</div>
@@ -229,72 +221,48 @@ function FileUpload({ onStateChange }) {
           </div>
         </label>
       </div>
-
-      {files.length > 0 && (
-        <div className="si-card" style={{ padding: "1.3rem" }}>
-          <div className="upload-list-preview">
-            {files.map((file, index) => (
-              <div key={`${file.name}-${index}`} className="upload-preview-item">
-                <span style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}>
-                  <FiFile className="inline-icon" />
-                  {file.name}
-                </span>
-                <span className="si-footer-copy">{formatFileSize(file.size)}</span>
+      <div className="upload-action-layout">
+        <div className="si-card expiry-card">
+          <div className="wheel-panel compact-wheel-panel">
+            <div className="wheel-column">
+              <div className="wheel-value">
+                <ScrollValuePicker
+                  label="Hours"
+                  options={hourOptions}
+                  value={expiresInHours}
+                  onChange={setExpiresInHours}
+                  disabled={loading}
+                />
               </div>
-            ))}
-          </div>
-          <div className="si-footer-copy" style={{ marginTop: "0.9rem" }}>
-            Total size: {formatFileSize(totalSize)}
-          </div>
-        </div>
-      )}
+            </div>
 
-      <div className="si-card" style={{ padding: "1.5rem" }}>
-        <div className="wheel-panel">
-          <div className="wheel-column">
-            <div className="si-meta-label">Hours</div>
-            <div className="wheel-value">
-              <strong>{String(expiresInHours).padStart(2, "0")}</strong>
-              <TimeStepper label="" value={expiresInHours} onChange={setExpiresInHours} max={24} step={1} disabled={loading} />
+            <div className="wheel-separator">:</div>
+
+            <div className="wheel-column">
+              <div className="wheel-value">
+                <ScrollValuePicker
+                  label="Minutes"
+                  options={minuteOptions}
+                  value={expiresInMinutes}
+                  onChange={setExpiresInMinutes}
+                  disabled={loading}
+                />
+              </div>
             </div>
           </div>
 
-          <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--si-primary)" }}>:</div>
-
-          <div className="wheel-column">
-            <div className="si-meta-label">Minutes</div>
-            <div className="wheel-value">
-              <strong>{String(expiresInMinutes).padStart(2, "0")}</strong>
-              <TimeStepper label="" value={expiresInMinutes} onChange={setExpiresInMinutes} max={55} step={5} disabled={loading} />
+          {calculateTotalMinutes() > 0 && !isMaxTimeExceeded() && (
+            <div className="si-footer-copy expiry-copy">
+              Share code valid for {calculateTotalMinutes()} minute(s)
             </div>
-          </div>
-        </div>
-
-        {calculateTotalMinutes() > 0 && !isMaxTimeExceeded() && (
-          <div className="si-footer-copy" style={{ marginTop: "1rem" }}>
-            Share code valid for {calculateTotalMinutes()} minute(s)
-          </div>
-        )}
-      </div>
-
-      <div className="action-block">
-        <div className="si-meta-label" style={{ color: "rgba(255,255,255,0.72)" }}>Ready to dispatch?</div>
-        <h3 style={{ color: "#fff", marginTop: "0.5rem" }}>Secure link code will be generated instantly.</h3>
-        <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap", marginTop: "1rem" }}>
-          <button className="si-button-secondary" onClick={handleSend} disabled={files.length === 0 || loading || isMaxTimeExceeded()} type="button">
-            <FiSend /> {loading ? `Uploading ${uploadProgress}%` : "Initialize Dispatch"}
-          </button>
-          {files.length > 0 && (
-            <button className="si-button-ghost" onClick={handleReset} type="button" style={{ color: "#fff" }}>
-              <FiRefreshCw /> Reset
-            </button>
           )}
-        </div>
-        {loading && uploadProgress > 0 && (
-          <div className="progress-track" style={{ marginTop: "1rem", background: "rgba(255,255,255,0.18)" }}>
-            <div className="progress-fill" style={{ width: `${uploadProgress}%`, background: "#fff" }} />
+
+          <div className="expiry-actions">
+            <button className="si-button expiry-send-button" onClick={handleSend} disabled={files.length === 0 || loading || isMaxTimeExceeded()} type="button">
+              <FiSend /> {loading ? `Uploading ${uploadProgress}%` : "Send File"}
+            </button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

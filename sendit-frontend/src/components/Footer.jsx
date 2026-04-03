@@ -13,13 +13,13 @@ function Footer() {
             Temporary file and snippet sharing with a cleaner UI, focused transfer steps, and the current SendIt backend flow.
           </p>
           <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.25rem" }}>
-            <a className="si-nav-link" href="https://github.com" target="_blank" rel="noreferrer">
+            <a className="si-nav-link" href="https://github.com/mohammadhusainmomin" target="_blank" rel="noreferrer">
               <FiGithub />
             </a>
-            <a className="si-nav-link" href="mailto:support@sendit.com">
+            <a className="si-nav-link" href="mailto:senditsystem786@gmail.com">
               <FiMail />
             </a>
-            <a className="si-nav-link" href="https://wa.me/" target="_blank" rel="noreferrer">
+            <a className="si-nav-link" href="https://wa.me/919725686429" target="_blank" rel="noreferrer">
               <FiMessageCircle />
             </a>
           </div>
