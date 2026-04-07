@@ -33,12 +33,6 @@ function CodesPage({ codes, totalCount, hasMore, isLoading, onLoadMore }) {
       ),
     },
     {
-      key: "contentPreview",
-      label: "Preview",
-      className: "preview-cell",
-      title: (row) => row.contentPreview,
-    },
-    {
       key: "sentAt",
       label: "Sent",
       className: "time-cell",

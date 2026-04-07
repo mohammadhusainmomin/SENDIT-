@@ -1,4 +1,5 @@
 import fs from "fs";
+import crypto from "crypto";
 import File from "../models/File.js";
 import FileHistory from "../models/FileHistory.js";
 import { encryptFile, decryptFile } from "../utils/encryption.utils.js";
@@ -22,7 +23,7 @@ export const sendFile = async (req, res) => {
     const fileObjects = [];
 
     for (const file of uploadedFiles) {
-      const encryptedPath = `uploads/encrypted-${Date.now()}-${Math.random()}`;
+      const encryptedPath = `uploads/encrypted-${Date.now()}-${crypto.randomUUID()}`;
       await encryptFile(file.path, encryptedPath);
 
       // Delete the original plaintext file after encryption
@@ -136,7 +137,7 @@ export const receiveFile = async (req, res) => {
 
     await FileHistory.updateMany({ fileId: fileBundle._id }, receiverUpdate);
 
-    const decryptedPath = `uploads/tmp-${Date.now()}`;
+    const decryptedPath = `uploads/tmp-${Date.now()}-${crypto.randomUUID()}`;
     await decryptFile(file.encryptedPath, decryptedPath);
 
     res.setHeader("X-Filename", encodeURIComponent(file.originalName));
@@ -154,7 +155,12 @@ export const receiveFile = async (req, res) => {
       });
     });
   } catch (err) {
-    console.error("RECEIVE ERROR:", err);
+    console.error("RECEIVE ERROR:", {
+      message: err.message,
+      stack: err.stack,
+      code: req.body?.code,
+      fileIndex: req.body?.fileIndex,
+    });
     if (!res.headersSent) {
       res.status(500).json({ message: "An error occurred during file retrieval" });
     }

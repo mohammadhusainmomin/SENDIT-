@@ -49,23 +49,36 @@ export const encryptFile = (inputPath, outputPath) => {
 
 export const decryptFile = (inputPath, outputPath) => {
   return new Promise((resolve, reject) => {
-    const secretKey = getFileSecretKey();
-    const input = fs.createReadStream(inputPath);
+    try {
+      const secretKey = getFileSecretKey();
 
-    input.once("readable", () => {
-      const iv = input.read(16);
+      if (!fs.existsSync(inputPath)) {
+        reject(new Error(`Encrypted file not found: ${inputPath}`));
+        return;
+      }
+
+      const fileHandle = fs.openSync(inputPath, "r");
+      const iv = Buffer.alloc(16);
+      const bytesRead = fs.readSync(fileHandle, iv, 0, 16, 0);
+      fs.closeSync(fileHandle);
+
+      if (bytesRead !== 16) {
+        reject(new Error(`Encrypted file header is invalid: ${inputPath}`));
+        return;
+      }
+
       const decipher = crypto.createDecipheriv(algorithm, secretKey, iv);
-
+      const input = fs.createReadStream(inputPath, { start: 16 });
       const output = fs.createWriteStream(outputPath);
 
-      input
-        .pipe(decipher)
-        .pipe(output)
-        .on("finish", resolve)
-        .on("error", reject);
-    });
+      input.on("error", reject);
+      output.on("error", reject);
+      decipher.on("error", reject);
 
-    input.on("error", reject);
+      input.pipe(decipher).pipe(output).on("finish", resolve);
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 
