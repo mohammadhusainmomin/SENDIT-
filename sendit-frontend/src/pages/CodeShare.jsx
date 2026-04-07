@@ -12,6 +12,7 @@ function CodeShare() {
   const [rawCode, setRawCode] = useState("");
   const [formattedCode, setFormattedCode] = useState("");
   const [shareCode, setShareCode] = useState("");
+  const [expiresAt, setExpiresAt] = useState("");
   const [loading, setLoading] = useState(false);
   const [totalExpiryMinutes, setTotalExpiryMinutes] = useState(0);
   const [expiresInHours, setExpiresInHours] = useState("0");
@@ -84,6 +85,7 @@ function CodeShare() {
 
       setShareCode(response.data.code);
       setTotalExpiryMinutes(expiresIn);
+      setExpiresAt(response.data.expiresAt || "");
       success(`Code encrypted and ready: ${response.data.code}`);
     } catch (err) {
       error(err.response?.data?.message || "Failed to generate code");
@@ -96,6 +98,7 @@ function CodeShare() {
     setRawCode("");
     setFormattedCode("");
     setShareCode("");
+    setExpiresAt("");
     setTotalExpiryMinutes(0);
   };
 
@@ -244,6 +247,7 @@ function CodeShare() {
 
                 {totalExpiryMinutes > 0 && (
                   <CountdownTimer
+                    expiresAt={expiresAt}
                     expiresInMinutes={totalExpiryMinutes}
                     onExpire={() => {
                       error("Code has expired");

@@ -1,24 +1,48 @@
 import { useEffect, useRef, useState } from "react";
 
-function CountdownTimer({ expiresInMinutes, onExpire }) {
-  const [timeLeft, setTimeLeft] = useState(expiresInMinutes * 60);
+function CountdownTimer({ expiresInMinutes = 0, expiresAt, onExpire }) {
+  const [timeLeft, setTimeLeft] = useState(() =>
+    expiresAt
+      ? Math.max(0, Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000))
+      : Math.max(0, expiresInMinutes * 60)
+  );
   const timerRef = useRef(null);
   const onExpireRef = useRef(onExpire);
+  const hasExpiredRef = useRef(false);
 
   useEffect(() => {
     onExpireRef.current = onExpire;
   }, [onExpire]);
 
   useEffect(() => {
+    setTimeLeft(
+      expiresAt
+        ? Math.max(0, Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000))
+        : Math.max(0, expiresInMinutes * 60)
+    );
+    hasExpiredRef.current = false;
+  }, [expiresAt, expiresInMinutes]);
+
+  useEffect(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
     if (timeLeft <= 0) {
-      onExpireRef.current && onExpireRef.current();
+      if (!hasExpiredRef.current) {
+        hasExpiredRef.current = true;
+        onExpireRef.current && onExpireRef.current();
+      }
       return undefined;
     }
 
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          onExpireRef.current && onExpireRef.current();
+          if (!hasExpiredRef.current) {
+            hasExpiredRef.current = true;
+            onExpireRef.current && onExpireRef.current();
+          }
           return 0;
         }
         return prev - 1;
@@ -30,7 +54,7 @@ function CountdownTimer({ expiresInMinutes, onExpire }) {
         clearInterval(timerRef.current);
       }
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [timeLeft]);
 
   const hours = Math.floor(timeLeft / 3600);
   const minutes = Math.floor((timeLeft % 3600) / 60);

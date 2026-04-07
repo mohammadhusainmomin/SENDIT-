@@ -16,6 +16,7 @@ export const sendFile = async (req, res) => {
 
     const code = await generateUniqueCode();
     const expiresIn = parseInt(req.query.expiresIn) || 10;
+    const expiresAt = new Date(Date.now() + expiresIn * 60 * 1000);
 
     // Encrypt all files and prepare file objects
     const fileObjects = [];
@@ -33,6 +34,7 @@ export const sendFile = async (req, res) => {
         encryptedPath,
         originalName: file.originalname,
         mimeType: file.mimetype,
+        size: file.size,
       });
     }
 
@@ -41,7 +43,7 @@ export const sendFile = async (req, res) => {
       code,
       files: fileObjects,
       expiresIn,
-      expiresAt: new Date(Date.now() + expiresIn * 60 * 1000),
+      expiresAt,
       senderId: req.user?.id,
     });
 
@@ -59,7 +61,7 @@ export const sendFile = async (req, res) => {
         senderType: req.user ? "authenticated" : "guest",
 
         sentAt: new Date(),
-        expiresAt: new Date(Date.now() + expiresIn * 60 * 1000),
+        expiresAt,
         expiresIn,
         status: "pending",
       });
@@ -68,6 +70,7 @@ export const sendFile = async (req, res) => {
     res.json({
       code,
       expiresIn,
+      expiresAt: expiresAt.toISOString(),
       filesCount: fileObjects.length,
     });
   } catch (err) {
@@ -84,7 +87,8 @@ export const receiveFile = async (req, res) => {
     const fileBundle = await File.findOne({ code });
     if (!fileBundle) return res.status(404).json({ message: "Invalid code" });
 
-    if (new Date() > fileBundle.expiresAt) {
+    const expiresAt = fileBundle.expiresAt ? new Date(fileBundle.expiresAt) : null;
+    if (expiresAt && Date.now() >= expiresAt.getTime()) {
       return res.status(410).json({ message: "Code expired" });
     }
 
@@ -92,10 +96,12 @@ export const receiveFile = async (req, res) => {
     if (fileIndex === undefined) {
       return res.json({
         filesCount: fileBundle.files.length,
+        expiresAt: expiresAt?.toISOString() || null,
         files: fileBundle.files.map((f, idx) => ({
           index: idx,
           name: f.originalName,
           mimeType: f.mimeType,
+          size: f.size,
         })),
       });
     }

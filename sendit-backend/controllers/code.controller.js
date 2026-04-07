@@ -51,7 +51,11 @@ export const sendCode = async (req, res) => {
       status: "pending"
     });
 
-    res.json({ code: shareCode, expiresIn: expirationTime });
+    res.json({
+      code: shareCode,
+      expiresIn: expirationTime,
+      expiresAt: expiresAtTime.toISOString(),
+    });
 
   } catch (err) {
     console.error("SEND CODE ERROR:", err);
@@ -69,7 +73,8 @@ export const receiveCode = async (req, res) => {
       return res.status(404).json({ message: "Invalid code" });
     }
 
-    if (new Date() > data.expiresAt) {
+    const expiresAt = data.expiresAt ? new Date(data.expiresAt) : null;
+    if (expiresAt && Date.now() >= expiresAt.getTime()) {
       return res.status(410).json({ message: "Code expired" });
     }
 

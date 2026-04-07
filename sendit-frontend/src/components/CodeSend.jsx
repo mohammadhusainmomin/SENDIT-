@@ -10,6 +10,7 @@ import "./styles/CodeSend.css";
 function CodeSend() {
   const [codeText, setCodeText] = useState("");
   const [shareCode, setShareCode] = useState("");
+  const [expiresAt, setExpiresAt] = useState("");
   const [loading, setLoading] = useState(false);
   const [expiresInHours, setExpiresInHours] = useState("0");
   const [expiresInMinutes, setExpiresInMinutes] = useState("10");
@@ -59,6 +60,7 @@ function CodeSend() {
 
       setShareCode(res.data.code);
       setTotalExpiryMinutes(expiresIn);
+      setExpiresAt(res.data.expiresAt || "");
       setCopied(false);
       success("Code encrypted & ready! Scan or share the code.");
     } catch (err) {
@@ -79,6 +81,7 @@ function CodeSend() {
   const handleReset = () => {
     setCodeText("");
     setShareCode("");
+    setExpiresAt("");
     setTotalExpiryMinutes(0);
     setExpiresInHours("0");
     setExpiresInMinutes("10");
@@ -170,6 +173,7 @@ function CodeSend() {
               {totalExpiryMinutes > 0 && (
                 <div className="timer-display">
                   <CountdownTimer
+                    expiresAt={expiresAt}
                     expiresInMinutes={totalExpiryMinutes}
                     onExpire={() => {
                       showError("Code has expired!");

@@ -9,6 +9,7 @@ import ScrollValuePicker from "./ScrollValuePicker";
 function FileUpload({ onStateChange }) {
   const [files, setFiles] = useState([]);
   const [code, setCode] = useState("");
+  const [expiresAt, setExpiresAt] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [expiresInHours, setExpiresInHours] = useState("0");
@@ -34,6 +35,7 @@ function FileUpload({ onStateChange }) {
     onStateChange({
       files,
       code,
+      expiresAt,
       loading,
       uploadProgress,
       totalSize,
@@ -43,6 +45,7 @@ function FileUpload({ onStateChange }) {
     });
   }, [
     code,
+    expiresAt,
     expiresInHours,
     expiresInMinutes,
     files,
@@ -58,6 +61,7 @@ function FileUpload({ onStateChange }) {
     if (selectedFiles.length > 0) {
       setFiles(selectedFiles);
       setCode("");
+      setExpiresAt("");
     }
   };
 
@@ -105,6 +109,7 @@ function FileUpload({ onStateChange }) {
 
       setCode(response.data.code);
       setTotalExpiryMinutes(expiresIn);
+      setExpiresAt(response.data.expiresAt || "");
       setUploadProgress(0);
       success(`${files.length} file(s) uploaded successfully`);
     } catch (err) {
@@ -118,6 +123,7 @@ function FileUpload({ onStateChange }) {
   const handleReset = () => {
     setFiles([]);
     setCode("");
+    setExpiresAt("");
     setCopied(false);
     setUploadProgress(0);
     setTotalExpiryMinutes(0);
@@ -159,6 +165,7 @@ function FileUpload({ onStateChange }) {
 
           {totalExpiryMinutes > 0 && (
             <CountdownTimer
+              expiresAt={expiresAt}
               expiresInMinutes={totalExpiryMinutes}
               onExpire={() => {
                 showError("Code has expired");

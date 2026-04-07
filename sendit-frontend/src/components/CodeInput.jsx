@@ -9,6 +9,7 @@ function CodeInput() {
   const [loading, setLoading] = useState(false);
   const [filesList, setFilesList] = useState([]);
   const [showFileList, setShowFileList] = useState(false);
+  const [expiresAt, setExpiresAt] = useState("");
   const { success: showSuccess, error: showError } = useToast();
 
   const handleGetFiles = async () => {
@@ -28,11 +29,15 @@ function CodeInput() {
 
       const files = response.data.files || [];
       setFilesList(files);
+      setExpiresAt(response.data.expiresAt || "");
+      setShowFileList(false);
 
       if (files.length === 1) {
-        handleDownloadFile(0, files);
+        await handleDownloadFile(0, files);
       } else if (files.length > 1) {
         setShowFileList(true);
+      } else {
+        showError("No files found for this code.");
       }
     } catch (err) {
       if (err.response?.status === 410) {
@@ -95,7 +100,13 @@ function CodeInput() {
       window.URL.revokeObjectURL(url);
       showSuccess("File downloaded successfully");
     } catch (err) {
-      showError("Download failed. Please try again.");
+      if (err.response?.status === 410) {
+        showError("This code has expired. Please ask for a new code");
+      } else if (err.response?.status === 404) {
+        showError("Requested file was not found");
+      } else {
+        showError("Download failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -104,6 +115,7 @@ function CodeInput() {
   const handleReset = () => {
     setCode("");
     setFilesList([]);
+    setExpiresAt("");
     setShowFileList(false);
   };
 
@@ -124,7 +136,7 @@ function CodeInput() {
           </button>
         </div>
         <div className="si-footer-copy" style={{ marginTop: "1rem" }}>
-          Enter the sender's 4-digit code. The current backend API is unchanged, so this remains fully working.
+          Enter the sender's 4-digit code to fetch the current file bundle before it expires.
         </div>
       </div>
 
@@ -155,6 +167,12 @@ function CodeInput() {
               </button>
             ))}
           </div>
+
+          {expiresAt ? (
+            <div className="si-footer-copy" style={{ marginTop: "1rem" }}>
+              Valid until {new Date(expiresAt).toLocaleString()}
+            </div>
+          ) : null}
 
           <button className="si-button-secondary" onClick={handleReset} type="button" style={{ marginTop: "1rem" }}>
             Try Another Code

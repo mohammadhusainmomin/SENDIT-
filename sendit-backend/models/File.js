@@ -13,7 +13,8 @@ const fileSchema = new mongoose.Schema(
     {
       encryptedPath: String,
       originalName: String,
-      mimeType: String
+      mimeType: String,
+      size: Number
     }
   ],
 
