@@ -26,11 +26,7 @@ function BubbleChart({ stats }) {
       className="bubble-chart-container"
       aria-label="Share distribution summary"
     >
-      <header className="distribution-summary">
-        <p className="summary-kicker">Share Volume</p>
-        <p className="summary-total">{total.toLocaleString()}</p>
-        <p className="summary-caption">Total file + code shares</p>
-      </header>
+    
 
       <div className="distribution-layout" role="group" aria-label="Distribution overview">
         <figure

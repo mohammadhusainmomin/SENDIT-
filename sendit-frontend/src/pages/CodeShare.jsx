@@ -193,7 +193,6 @@ function CodeShare() {
               <div className="wheel-panel" style={{ marginTop: "1rem" }}>
                 <div className="wheel-column">
                   <div className="wheel-value">
-                    <strong>{String(expiresInHours).padStart(2, "0")}</strong>
                     <ScrollValuePicker
                       label="Hours"
                       options={hourOptions}
@@ -206,9 +205,8 @@ function CodeShare() {
                 <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--si-primary)" }}>:</div>
                 <div className="wheel-column">
                   <div className="wheel-value">
-                    <strong>{String(expiresInMinutes).padStart(2, "0")}</strong>
                     <ScrollValuePicker
-                      label="Minutes"
+                      label="Minutes" 
                       options={minuteOptions}
                       value={expiresInMinutes}
                       onChange={setExpiresInMinutes}

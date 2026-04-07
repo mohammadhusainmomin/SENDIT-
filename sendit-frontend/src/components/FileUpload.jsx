@@ -220,16 +220,35 @@ function FileUpload({ onStateChange }) {
             </div>
             <h3>Drop your files here</h3>
             <p className="si-footer-copy">
-              Or browse files on your device. Current backend supports working file upload with share code generation.
+              Or browse files on your device. Select files, choose expiry, then share the code with the receiver.
             </p>
             <div className="si-meta-label" style={{ marginTop: "1rem" }}>
-              Support for multiple files up to backend limits
+              Works with single and multiple files
             </div>
           </div>
         </label>
+
+        {files.length > 0 ? (
+          <div className="upload-list-preview" style={{ marginTop: "0.85rem" }}>
+            {files.map((file, index) => (
+              <div key={`${file.name}-${index}`} className="upload-preview-item">
+                <span>
+                  <strong style={{ display: "block" }}>{file.name}</strong>
+                  <span className="si-footer-copy">{Math.round(file.size / 1024)} KB</span>
+                </span>
+                <span className="si-chip" style={{ padding: "0.35rem 0.65rem" }}>
+                  Ready
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : null}
       </div>
       <div className="upload-action-layout">
         <div className="si-card expiry-card">
+          <div className="si-footer-copy" style={{ marginBottom: "0.8rem", textAlign: "center" }}>
+            Step 1: pick expiry. Step 2: send files. Step 3: share the generated code.
+          </div>
           <div className="wheel-panel compact-wheel-panel">
             <div className="wheel-column">
               <div className="wheel-value">

@@ -30,7 +30,7 @@ body {
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(194, 205, 223, 0.6);
   box-shadow: 0 12px 40px rgba(21, 29, 34, 0.05);
-  padding: 24px 32px;
+  padding: 18px 24px;
 }
 
 .header-content {
@@ -43,32 +43,33 @@ body {
 }
 
 .header-title h1 {
-  font-size: 2rem;
+  font-size: 1.65rem;
   font-weight: 800;
   letter-spacing: -0.04em;
   margin-bottom: 6px;
 }
 
 .header-subtitle {
-  font-size: 0.95rem;
+  font-size: 0.84rem;
   color: var(--admin-text-soft);
 }
 
 .user-section {
-  gap: 12px;
+  gap: 8px;
 }
 
 .connection-status,
 .admin-pill {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 0 16px;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 13px;
   border-radius: 999px;
   border: 1px solid var(--admin-border);
   background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 8px 24px rgba(21, 29, 34, 0.05);
+  font-size: 0.82rem;
   font-weight: 700;
 }
 
@@ -91,53 +92,59 @@ body {
 }
 
 .sidebar-toggle {
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   display: inline-flex;
-  border-radius: 16px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.76);
   border: 1px solid var(--admin-border);
   box-shadow: 0 10px 28px rgba(21, 29, 34, 0.05);
 }
 
 .sidebar-toggle span {
-  width: 18px;
+  width: 16px;
   background-color: var(--admin-blue-deep);
 }
 
 .dashboard-wrapper {
-  gap: 20px;
-  padding: 20px;
+  gap: 16px;
+  padding: 16px;
+  position: relative;
 }
 
 .dashboard-content {
   max-width: none;
   padding: 0;
+  min-width: 0;
+}
+
+.dashboard-overlay {
+  display: none;
 }
 
 .sidebar-container {
-  width: 300px;
+  width: 252px;
   margin: 0;
   border: 1px solid rgba(194, 205, 223, 0.65);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(245, 250, 255, 0.9));
   box-shadow: var(--admin-shadow-sm);
-  border-radius: 32px;
+  border-radius: 26px;
   backdrop-filter: blur(18px);
 }
 
 .sidebar-container.closed {
   width: 92px;
-  border-radius: 28px;
+  border-radius: 24px;
   box-shadow: 0 14px 32px rgba(21, 29, 34, 0.05);
 }
 
 .sidebar-header-section {
-  padding: 20px;
+  padding: 16px;
   border-bottom: 1px solid rgba(194, 205, 223, 0.45);
 }
 
 .sidebar-brand-section {
-  gap: 14px;
+  gap: 10px;
 }
 
 .sidebar-brand-copy {
@@ -148,49 +155,50 @@ body {
 
 .sidebar-brand-text {
   color: var(--admin-text);
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 800;
 }
 
 .sidebar-brand-subtext {
   color: var(--admin-text-soft);
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .sidebar-close-btn {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgba(237, 245, 252, 0.8);
   border: 1px solid rgba(194, 205, 223, 0.55);
 }
 
 .sidebar-section-label {
-  padding: 18px 20px 6px;
+  padding: 14px 16px 4px;
   color: var(--admin-text-soft);
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .sidebar-nav-section {
-  padding: 10px 14px 16px;
-  gap: 8px;
+  padding: 8px 10px 12px;
+  gap: 6px;
 }
 
 .nav-icon {
-  min-height: 54px;
-  padding: 14px 16px;
-  border-radius: 18px;
+  min-height: 46px;
+  padding: 11px 13px;
+  border-radius: 15px;
   border: 1px solid transparent;
   margin-left: 0;
+  font-size: 0.86rem;
   font-weight: 700;
   color: var(--admin-text-soft);
 }
@@ -211,8 +219,8 @@ body {
 }
 
 .nav-icon-symbol {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
 }
 
 .nav-icon-symbol svg,
@@ -222,29 +230,29 @@ body {
 }
 
 .nav-icon-indicator {
-  width: 8px;
-  height: 8px;
-  right: 16px;
+  width: 6px;
+  height: 6px;
+  right: 12px;
   background: var(--admin-blue);
 }
 
 .sidebar-footer-section {
-  padding: 14px;
-  gap: 10px;
+  padding: 10px;
+  gap: 8px;
   border-top: 1px solid rgba(194, 205, 223, 0.45);
 }
 
 .sidebar-status-item,
 .sidebar-user-item,
 .sidebar-logout-btn {
-  border-radius: 18px;
+  border-radius: 15px;
 }
 
 .status-badge,
 .sidebar-user-item,
 .sidebar-logout-btn {
-  min-height: 54px;
-  padding: 12px 14px;
+  min-height: 46px;
+  padding: 10px 12px;
   border: 1px solid rgba(194, 205, 223, 0.45);
   background: rgba(255, 255, 255, 0.72);
 }
@@ -260,12 +268,12 @@ body {
 }
 
 .status-pulse {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 .sidebar-user-item {
-  gap: 12px;
+  gap: 10px;
 }
 
 .sidebar-user-copy {
@@ -275,7 +283,7 @@ body {
 }
 
 .user-role-text {
-  font-size: 0.7rem;
+  font-size: 0.64rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -283,14 +291,15 @@ body {
 }
 
 .user-avatar-badge {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   background: linear-gradient(135deg, var(--admin-blue-deep), var(--admin-blue));
   box-shadow: 0 10px 24px rgba(13, 110, 253, 0.22);
 }
 
 .user-email-text {
   color: var(--admin-text);
+  font-size: 0.82rem;
   font-weight: 700;
 }
 
@@ -312,8 +321,8 @@ body {
 }
 
 .login-wrapper {
-  max-width: 1280px;
-  gap: 40px;
+  max-width: 900px;
+  gap: 20px;
   align-items: stretch;
 }
 
@@ -325,7 +334,7 @@ body {
 .login-visual-card,
 .login-card {
   height: 100%;
-  border-radius: 36px;
+  border-radius: 28px;
   border: 1px solid rgba(194, 205, 223, 0.65);
   backdrop-filter: blur(20px);
 }
@@ -334,7 +343,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 40px;
+  padding: 22px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(237, 245, 252, 0.9));
   box-shadow: var(--admin-shadow-lg);
 }
@@ -345,51 +354,51 @@ body {
 
 .login-kicker {
   display: inline-block;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   color: var(--admin-blue-deep);
-  font-size: 0.74rem;
+  font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .login-visual-copy h2 {
-  font-size: clamp(2.5rem, 4vw, 4.25rem);
-  line-height: 1;
+  font-size: clamp(1.65rem, 2.5vw, 2.5rem);
+  line-height: 1.02;
   letter-spacing: -0.06em;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
 }
 
 .login-visual-copy p {
   max-width: 540px;
   color: var(--admin-text-soft);
-  font-size: 1.05rem;
-  line-height: 1.8;
+  font-size: 0.86rem;
+  line-height: 1.65;
 }
 
 .login-pill-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 24px 0 8px;
+  gap: 8px;
+  margin: 18px 0 6px;
 }
 
 .login-info-pill {
   display: inline-flex;
   align-items: center;
-  min-height: 38px;
-  padding: 0 16px;
+  min-height: 30px;
+  padding: 0 12px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.75);
   border: 1px solid rgba(194, 205, 223, 0.65);
   color: var(--admin-blue-deep);
-  font-size: 0.85rem;
+  font-size: 0.72rem;
   font-weight: 700;
 }
 
 .login-card {
-  max-width: 520px;
-  padding: 40px;
+  max-width: 390px;
+  padding: 24px 22px;
   background: rgba(255, 255, 255, 0.84);
   box-shadow: var(--admin-shadow-lg);
 }
@@ -399,13 +408,13 @@ body {
 }
 
 .brand-icon {
-  width: 64px;
-  height: 64px;
-  margin-bottom: 20px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 22px;
+  border-radius: 18px;
   color: #ffffff;
   background: linear-gradient(135deg, var(--admin-blue-deep), var(--admin-blue));
   box-shadow: 0 18px 36px rgba(13, 110, 253, 0.24);
@@ -413,11 +422,11 @@ body {
 }
 
 .brand-icon svg {
-  font-size: 1.7rem;
+  font-size: 1.2rem;
 }
 
 .login-title {
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   background: none;
   -webkit-text-fill-color: initial;
   color: var(--admin-text);
@@ -425,10 +434,11 @@ body {
 
 .login-subtitle {
   color: var(--admin-text-soft);
+  font-size: 0.8rem;
 }
 
 .login-form {
-  gap: 20px;
+  gap: 14px;
 }
 
 .form-group label {
@@ -436,22 +446,22 @@ body {
 }
 
 .input-wrapper {
-  min-height: 58px;
+  min-height: 46px;
 }
 
 .input-icon {
-  left: 18px;
+  left: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--admin-blue-deep);
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .form-group input {
-  min-height: 58px;
-  padding: 14px 16px 14px 50px;
-  border-radius: 18px;
+  min-height: 46px;
+  padding: 10px 12px 10px 42px;
+  border-radius: 14px;
   border-color: rgba(194, 205, 223, 0.9);
   background: rgba(248, 251, 255, 0.9);
 }
@@ -462,7 +472,7 @@ body {
 }
 
 .login-button {
-  min-height: 58px;
+  min-height: 46px;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--admin-blue-deep), var(--admin-blue));
   box-shadow: 0 18px 36px rgba(13, 110, 253, 0.24);
@@ -471,6 +481,7 @@ body {
 .button-icon {
   display: inline-flex;
   align-items: center;
+  font-size: 0.9rem;
 }
 
 .login-footer {
@@ -484,7 +495,7 @@ body {
 .data-table-wrapper,
 .auth-item,
 .legend-card {
-  border-radius: 28px;
+  border-radius: 22px;
 }
 
 .chart-section,
@@ -500,7 +511,7 @@ body {
 
 .stat-card {
   background: rgba(255, 255, 255, 0.86);
-  border-radius: 26px;
+  border-radius: 22px;
   border: 1px solid rgba(194, 205, 223, 0.5);
   box-shadow: var(--admin-shadow-sm);
   border-left-width: 1px;
@@ -509,24 +520,24 @@ body {
 .stat-card:hover,
 .chart-section:hover,
 .user-card:hover {
-  transform: translateY(-6px);
+  transform: none;
 }
 
 .section-header {
-  padding: 22px 24px;
-  margin-bottom: 18px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
 }
 
 .section-header h2 {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   letter-spacing: -0.04em;
 }
 
 .section-count {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
-  padding: 0 14px;
+  min-height: 34px;
+  padding: 0 12px;
   border-radius: 999px;
   background: rgba(13, 110, 253, 0.08);
   color: var(--admin-blue-deep);
@@ -535,6 +546,16 @@ body {
 
 .table-container {
   overflow: hidden;
+}
+
+.data-table td,
+.data-table th,
+.section-header,
+.chart-section,
+.user-card,
+.activity-content,
+.legend-card {
+  min-width: 0;
 }
 
 .data-table {
@@ -562,13 +583,14 @@ body {
 .status-badge.status-active,
 .status-badge.status-pending {
   border-radius: 999px;
-  padding: 6px 12px;
+  padding: 5px 10px;
+  font-size: 0.74rem;
   font-weight: 800;
 }
 
 .error-box {
   border: 1px solid rgba(194, 205, 223, 0.7);
-  border-radius: 32px;
+  border-radius: 24px;
   background: rgba(255, 255, 255, 0.84);
 }
 
@@ -580,39 +602,106 @@ body {
   .login-card {
     max-width: 100%;
   }
+
+  .login-visual-card {
+    min-height: auto;
+  }
 }
 
 @media (max-width: 768px) {
   .dashboard-wrapper {
-    padding: 14px;
+    padding: 12px;
   }
 
   .dashboard-header {
-    padding: 16px 18px;
+    padding: 14px 16px;
   }
 
   .header-content {
     align-items: flex-start;
+    gap: 10px;
   }
 
   .header-title h1 {
-    font-size: 1.45rem;
+    font-size: 1.2rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .user-section {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .connection-status,
+  .admin-pill {
+    width: 100%;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 12px;
+    font-size: 0.8rem;
   }
 
   .sidebar-container {
-    top: 88px;
-    left: 14px;
-    height: calc(100vh - 102px);
-    border-radius: 28px;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: min(86vw, 320px);
+    border-radius: 0 28px 28px 0;
+    z-index: 110;
   }
 
   .login-visual-card,
   .login-card {
-    border-radius: 28px;
-    padding: 28px;
+    border-radius: 24px;
+    padding: 22px;
   }
 
   .login-visual-copy h2 {
-    font-size: 2.4rem;
+    font-size: 2rem;
+  }
+
+  .dashboard-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    border: 0;
+    background: rgba(15, 23, 42, 0.28);
+    backdrop-filter: blur(2px);
+    z-index: 100;
+  }
+
+  .sidebar-container.closed + .dashboard-overlay,
+  .sidebar-container.closed ~ .dashboard-overlay {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar-toggle {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+  }
+
+  .sidebar-nav-section {
+    padding: 10px 12px 14px;
+  }
+
+  .nav-icon {
+    min-height: 48px;
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+
+  .section-header {
+    padding: 18px 18px;
+  }
+
+  .section-header h2 {
+    font-size: 1.2rem;
   }
 }

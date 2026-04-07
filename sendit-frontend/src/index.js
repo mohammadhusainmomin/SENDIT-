@@ -46,27 +46,22 @@ root.render(
 
 );
 
-// Register service worker for PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js').then(
-      (registration) => {
-        console.log('Service Worker registered:', registration);
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+        registration.unregister();
+      });
+    });
+  });
+}
 
-        // Check for updates
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'activated') {
-              // New service worker is active
-              console.log('New Service Worker activated');
-            }
-          });
-        });
-      },
-      (error) => {
-        console.log('Service Worker registration failed:', error);
-      }
-    );
+if ('caches' in window) {
+  window.addEventListener('load', () => {
+    caches.keys().then((cacheNames) => {
+      cacheNames.forEach((cacheName) => {
+        caches.delete(cacheName);
+      });
+    });
   });
 }

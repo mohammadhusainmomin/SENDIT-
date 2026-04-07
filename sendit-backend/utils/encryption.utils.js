@@ -27,6 +27,17 @@ const getCodeSecretKey = () => {
     .digest();
 };
 
+const resolveEncryptedPath = (inputPath) => {
+  const normalizedPath = String(inputPath || "").trim();
+  const candidates = [
+    normalizedPath,
+    normalizedPath.replace(/^["']+|["',\s]+$/g, ""),
+    normalizedPath.replace(/[",\s]+$/g, ""),
+  ].filter(Boolean);
+
+  return candidates.find((candidate) => fs.existsSync(candidate)) || normalizedPath;
+};
+
 // ================= FILE ENCRYPTION =================
 export const encryptFile = (inputPath, outputPath) => {
   return new Promise((resolve, reject) => {
@@ -51,24 +62,25 @@ export const decryptFile = (inputPath, outputPath) => {
   return new Promise((resolve, reject) => {
     try {
       const secretKey = getFileSecretKey();
+      const resolvedInputPath = resolveEncryptedPath(inputPath);
 
-      if (!fs.existsSync(inputPath)) {
+      if (!fs.existsSync(resolvedInputPath)) {
         reject(new Error(`Encrypted file not found: ${inputPath}`));
         return;
       }
 
-      const fileHandle = fs.openSync(inputPath, "r");
+      const fileHandle = fs.openSync(resolvedInputPath, "r");
       const iv = Buffer.alloc(16);
       const bytesRead = fs.readSync(fileHandle, iv, 0, 16, 0);
       fs.closeSync(fileHandle);
 
       if (bytesRead !== 16) {
-        reject(new Error(`Encrypted file header is invalid: ${inputPath}`));
+        reject(new Error(`Encrypted file header is invalid: ${resolvedInputPath}`));
         return;
       }
 
       const decipher = crypto.createDecipheriv(algorithm, secretKey, iv);
-      const input = fs.createReadStream(inputPath, { start: 16 });
+      const input = fs.createReadStream(resolvedInputPath, { start: 16 });
       const output = fs.createWriteStream(outputPath);
 
       input.on("error", reject);

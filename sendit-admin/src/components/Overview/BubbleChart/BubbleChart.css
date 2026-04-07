@@ -1,11 +1,13 @@
 .bubble-chart-container {
   width: 100%;
-  max-width: 920px;
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 24px;
-  background: #ffffff;
-  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+  max-width: 100%;
+  border: 1px solid rgba(1, 174, 223, 0.12);
+  border-radius: 22px;
+  padding: 22px;
+  background:
+    radial-gradient(circle at top right, rgba(1, 174, 223, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 251, 255, 0.96));
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.07);
 }
 
 .distribution-summary {
@@ -37,7 +39,7 @@
 
 .distribution-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
   gap: 24px;
   align-items: center;
 }
@@ -110,20 +112,21 @@
 .distribution-cards {
   display: grid;
   gap: 14px;
+  align-content: start;
 }
 
 .dist-card {
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  background: #ffffff;
-  padding: 14px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 16px 18px;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .dist-card.active {
   border-color: rgba(1, 174, 223, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
 }
 
 .dist-card.codes.active {
@@ -138,6 +141,10 @@
 
 .dist-meta {
   margin: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: end;
 }
 
 .dot {
@@ -165,17 +172,18 @@
 
 .dist-value {
   margin: 8px 0 2px;
-  font-size: 26px;
+  font-size: 30px;
   line-height: 1;
   font-weight: 800;
   color: var(--text-primary);
 }
 
 .dist-percent {
-  margin: 0;
+  margin: 0 0 2px;
   font-size: 13px;
   color: var(--text-secondary);
   font-weight: 600;
+  justify-self: end;
 }
 
 .sr-only {
@@ -192,7 +200,7 @@
 
 .ratio-track {
   margin-top: 18px;
-  height: 10px;
+  height: 12px;
   border-radius: 999px;
   background: rgba(148, 163, 184, 0.15);
   overflow: hidden;
@@ -226,6 +234,7 @@
 @media (max-width: 480px) {
   .bubble-chart-container {
     padding: 16px;
+    border-radius: 18px;
   }
 
   .summary-total {
@@ -238,5 +247,13 @@
 
   .dist-value {
     font-size: 22px;
+  }
+
+  .dist-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .dist-percent {
+    justify-self: start;
   }
 }

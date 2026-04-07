@@ -4,6 +4,8 @@
   gap: 24px;
   width: 100%;
   margin-bottom: 32px;
+  overflow: visible;
+  padding-top: 4px;
 }
 
 @media (max-width: 1200px) {

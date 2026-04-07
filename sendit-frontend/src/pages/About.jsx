@@ -57,6 +57,9 @@ function About() {
             <img
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWt8ty5e6r6NsXjeWnxbl5g085AGdNmiswaaUvddsm3l4nFWmbpOxh9W9GdVOnWTEWlSnXXfD1ZbqSzdZoOMbiItu-BgMU6nU0HIUbJDaUJZu104n-AjKkGeTbT8E9M8hApWTDUIMnl4KMyUxobreUDTHxE-yCAbpr4WL0gD-SOjXIjQYxrKyjfZ6W6SISwBZFK41W18rk3UX63Pxv2c3exvFzKtA0QfbLAtKuEZ5Auo8PTBqqdUmNMcdxjtbIGNyh9A0xoaIXvGyF"
               alt="Digital infrastructure representation"
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
             />
             <div className="about-copy-overlay" />
           </div>
@@ -212,7 +215,14 @@ function About() {
             {teamMembers.map((member) => (
               <article className="about-copy-team-card" key={member.name}>
                 <div className="about-copy-team-image">
-                  <img src={member.image} alt={member.name} />
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    loading="lazy"
+                    decoding="async"
+                    width="320"
+                    height="320"
+                  />
                 </div>
                 <h4>{member.name}</h4>
                 <p className="about-copy-team-role">{member.role}</p>

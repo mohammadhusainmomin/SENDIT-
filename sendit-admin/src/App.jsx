@@ -41,6 +41,9 @@ function parsePagination(raw, fallbackPage) {
 }
 
 function Dashboard({ user, onLogout }) {
+  const getInitialSidebarState = () =>
+    typeof window === "undefined" ? true : window.innerWidth >= 1024;
+
   const [selectedTab, setSelectedTab] = useState(() => {
     const savedTab = localStorage.getItem(ADMIN_TAB_KEY);
     return VALID_TABS.has(savedTab) ? savedTab : "overview";
@@ -53,7 +56,7 @@ function Dashboard({ user, onLogout }) {
   const [codeHistory, setCodeHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(getInitialSidebarState);
 
   const [usersPagination, setUsersPagination] = useState(INITIAL_PAGINATION);
   const [filesPagination, setFilesPagination] = useState(INITIAL_PAGINATION);
@@ -114,6 +117,25 @@ function Dashboard({ user, onLogout }) {
   useEffect(() => {
     localStorage.setItem(ADMIN_TAB_KEY, selectedTab);
   }, [selectedTab]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setSidebarOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleTabChange = (tabId) => {
+    setSelectedTab(tabId);
+
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+  };
 
   const fetchOverviewData = async () => {
     try {
@@ -302,11 +324,20 @@ function Dashboard({ user, onLogout }) {
       </header>
 
       <div className="dashboard-wrapper">
+        {sidebarOpen && (
+          <button
+            type="button"
+            className="dashboard-overlay"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close sidebar overlay"
+          />
+        )}
+
         <Sidebar
           isOpen={sidebarOpen}
           onToggle={() => setSidebarOpen(!sidebarOpen)}
           selectedTab={selectedTab}
-          onTabChange={setSelectedTab}
+          onTabChange={handleTabChange}
           user={user}
           backendConnected={backendConnected}
           onLogout={onLogout}

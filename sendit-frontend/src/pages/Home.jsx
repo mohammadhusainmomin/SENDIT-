@@ -34,31 +34,30 @@ function Home() {
               <span className="si-gradient-text">Digital Assets.</span>
             </h1>
             <p className="si-subtitle">
-              A refined file and code sharing experience built on the current SendIt workflow,
-              with temporary access codes, clear transfer steps, and fast retrieval.
+              Send files or code with a short temporary code, clear steps, and a simple receive flow that even a new user can follow quickly.
             </p>
 
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "2rem" }}>
               <button className="si-button" onClick={() => navigate("/send")} type="button">
-                Start Sending <FiArrowRight />
+                Send Files <FiArrowRight />
               </button>
-              <button className="si-button-secondary" onClick={() => navigate("/code/receive")} type="button">
-                Recive File
+              <button className="si-button-secondary" onClick={() => navigate("/receive")} type="button">
+                Receive File
               </button>
             </div>
 
             <div className="si-stats-row">
               <div className="si-stat-card">
-                <div className="si-meta-label">Latency Floor</div>
-                <h3 style={{ marginTop: "0.45rem" }}>0.02s</h3>
+                <div className="si-meta-label">Steps</div>
+                <h3 style={{ marginTop: "0.35rem" }}>Send -&gt; Share -&gt; Receive</h3>
               </div>
               <div className="si-stat-card">
-                <div className="si-meta-label">Encryption</div>
+                <div className="si-meta-label">Security</div>
                 <h3 style={{ marginTop: "0.45rem" }}>AES-256</h3>
               </div>
               <div className="si-stat-card">
-                <div className="si-meta-label">Share Flow</div>
-                <h3 style={{ marginTop: "0.45rem" }}>Code Based</h3>
+                <div className="si-meta-label">Access</div>
+                <h3 style={{ marginTop: "0.45rem" }}>4-Digit Code</h3>
               </div>
             </div>
           </div>
@@ -69,6 +68,9 @@ function Home() {
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHiAKWfv_aUxG5RZjDRjN5v3tLpNZ_yenN_zcdHRuAR6uMV6nQoAZTyYcnSAqL-PLS-N0CKbEu7PesDaHfP0FMUFlAjkVdrC2Easkjmt0qUEHp5kFG2F4oO6A7pzA_KtyyDj_fHnnONakswjXRFsGuFOB9efWujT7eBUwQsgV0535jTHyWuPMAoVIPed2DknoImzCCzoU5uD-e0sYfh4kyyBYT2exsOjnYddtEpSAu7l2oqGasa91gEBCkeF8mJzST0uKhCnGoey4C"
                 alt="3D Abstract Core"
                 className="hero-visual-image"
+                loading="lazy"
+                decoding="async"
+                referrerPolicy="no-referrer"
               />
             </div>
             <div className="hero-floating-card">
@@ -117,8 +119,8 @@ function Home() {
 
           <div className="si-card span-2">
             <FiGrid className="inline-icon" size={34} />
-            <h3 style={{ marginTop: "1rem" }}>Visual Handshake</h3>
-            <p>Prepared for scan-based handoff flows and fast receive-side access.</p>
+            <h3 style={{ marginTop: "1rem" }}>Simple For New Users</h3>
+            <p>Pick files, choose expiry, copy the code, and the receiver downloads with the same short code.</p>
           </div>
 
           <div className="si-card span-4">
@@ -126,16 +128,16 @@ function Home() {
             <h3 style={{ marginTop: "1rem" }}>Node.js Performance Core</h3>
             <div className="si-stats-row" style={{ marginTop: "1rem" }}>
               <div>
-                <div className="si-meta-label">Latency</div>
-                <h3>0.02s</h3>
+                <div className="si-meta-label">Flow</div>
+                <h3>Easy Start</h3>
               </div>
               <div>
-                <div className="si-meta-label">Uptime SLA</div>
-                <h3>99.9%</h3>
+                <div className="si-meta-label">Expiry</div>
+                <h3>User Controlled</h3>
               </div>
               <div>
-                <div className="si-meta-label">Current Stack</div>
-                <h3>React + Node</h3>
+                <div className="si-meta-label">Retrieval</div>
+                <h3>Fast + Secure</h3>
               </div>
             </div>
           </div>
@@ -146,13 +148,13 @@ function Home() {
         <div className="si-panel status-strip">
           <div>
             <div className="si-meta-label">Live Status</div>
-            <h3 style={{ marginTop: "0.4rem" }}>Global Delivery Pulse</h3>
-            <p className="si-footer-copy">Network status: operational. File routes and code retrieval UI are ready.</p>
+            <h3 style={{ marginTop: "0.4rem" }}>Start In Seconds</h3>
+            <p className="si-footer-copy">Choose send or receive, use the temporary code, and finish the transfer without extra setup.</p>
           </div>
-          <div className="si-nav-link active" style={{ justifySelf: "start" }}>2.4k Active Users</div>
+          <div className="si-nav-link active" style={{ justifySelf: "start" }}>Quick code-based sharing</div>
           <div style={{ textAlign: "right" }}>
-            <div className="si-meta-label">Today</div>
-            <h3>14,209 TB</h3>
+            <div className="si-meta-label">Use Case</div>
+            <h3>Files + Code</h3>
           </div>
         </div>
       </section>
