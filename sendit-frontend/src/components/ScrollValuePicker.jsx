@@ -14,6 +14,7 @@ function ScrollValuePicker({
 }) {
   const viewportRef = useRef(null);
   const scrollTimeoutRef = useRef(null);
+  const isScrollSyncingRef = useRef(false);
 
   const normalizedOptions = useMemo(
     () =>
@@ -29,7 +30,7 @@ function ScrollValuePicker({
     const viewport = viewportRef.current;
     const selectedIndex = normalizedOptions.findIndex((option) => option.value === String(value));
 
-    if (!viewport || selectedIndex < 0) return;
+    if (!viewport || selectedIndex < 0 || isScrollSyncingRef.current) return;
 
     const targetTop = selectedIndex * ITEM_HEIGHT;
     if (Math.abs(viewport.scrollTop - targetTop) < 2) return;
@@ -45,36 +46,53 @@ function ScrollValuePicker({
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
+
+      isScrollSyncingRef.current = false;
     };
   }, []);
+
+  const getClosestIndex = (scrollTop) =>
+    Math.max(0, Math.min(normalizedOptions.length - 1, Math.round(scrollTop / ITEM_HEIGHT)));
+
+  const syncClosestValue = () => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const nextIndex = getClosestIndex(viewport.scrollTop);
+    const nextValue = normalizedOptions[nextIndex]?.value;
+
+    if (nextValue && nextValue !== String(value)) {
+      onChange(nextValue);
+    }
+  };
 
   const commitClosestValue = () => {
     const viewport = viewportRef.current;
     if (!viewport) return;
 
-    const nextIndex = Math.max(
-      0,
-      Math.min(normalizedOptions.length - 1, Math.round(viewport.scrollTop / ITEM_HEIGHT))
-    );
+    const nextIndex = getClosestIndex(viewport.scrollTop);
 
     viewport.scrollTo({
       top: nextIndex * ITEM_HEIGHT,
       behavior: "smooth",
     });
 
-    const nextValue = normalizedOptions[nextIndex]?.value;
-    if (nextValue && nextValue !== String(value)) {
-      onChange(nextValue);
-    }
+    syncClosestValue();
   };
 
   const handleScroll = () => {
+    if (disabled) return;
+
+    isScrollSyncingRef.current = true;
+    syncClosestValue();
+
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
 
     scrollTimeoutRef.current = setTimeout(() => {
       commitClosestValue();
+      isScrollSyncingRef.current = false;
     }, 90);
   };
 

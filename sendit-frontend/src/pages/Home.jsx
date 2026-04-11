@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { FiArrowRight, FiGrid, FiHash, FiLock, FiZap } from "react-icons/fi";
+import { FileTransferIllustration } from "../components/Illustrations";
 import SEO from "../components/SEO";
 
 function Home() {
@@ -64,14 +65,9 @@ function Home() {
 
           <div className="hero-visual">
             <div className="hero-visual-core">
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHiAKWfv_aUxG5RZjDRjN5v3tLpNZ_yenN_zcdHRuAR6uMV6nQoAZTyYcnSAqL-PLS-N0CKbEu7PesDaHfP0FMUFlAjkVdrC2Easkjmt0qUEHp5kFG2F4oO6A7pzA_KtyyDj_fHnnONakswjXRFsGuFOB9efWujT7eBUwQsgV0535jTHyWuPMAoVIPed2DknoImzCCzoU5uD-e0sYfh4kyyBYT2exsOjnYddtEpSAu7l2oqGasa91gEBCkeF8mJzST0uKhCnGoey4C"
-                alt="3D Abstract Core"
-                className="hero-visual-image"
-                loading="lazy"
-                decoding="async"
-                referrerPolicy="no-referrer"
-              />
+              <div className="hero-visual-illustration" aria-label="Animated file transfer illustration" role="img">
+                <FileTransferIllustration />
+              </div>
             </div>
             <div className="hero-floating-card">
               <div className="hero-floating-top">

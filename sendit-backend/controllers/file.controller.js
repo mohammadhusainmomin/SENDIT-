@@ -4,6 +4,7 @@ import File from "../models/File.js";
 import FileHistory from "../models/FileHistory.js";
 import { encryptFile, decryptFile } from "../utils/encryption.utils.js";
 import { generateUniqueCode } from "../utils/codeGenerator.utils.js";
+import { resolveExpiryWindow } from "../utils/expiry.utils.js";
 
 /* ================= SEND FILE ================= */
 export const sendFile = async (req, res) => {
@@ -16,8 +17,13 @@ export const sendFile = async (req, res) => {
     }
 
     const code = await generateUniqueCode();
-    const expiresIn = parseInt(req.query.expiresIn) || 10;
-    const expiresAt = new Date(Date.now() + expiresIn * 60 * 1000);
+    const { expiresIn, expiresAt, error: expiryError } = resolveExpiryWindow(
+      req.query.expiresIn,
+    );
+
+    if (expiryError) {
+      return res.status(400).json({ message: expiryError });
+    }
 
     // Encrypt all files and prepare file objects
     const fileObjects = [];

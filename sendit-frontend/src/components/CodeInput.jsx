@@ -1,16 +1,37 @@
 import { useState } from "react";
-import { FiArrowDown, FiDownload, FiFile, FiFolder } from "react-icons/fi";
+import {
+  FiClock,
+  FiDownload,
+  FiFile,
+  FiFolder,
+  FiHash,
+  FiLayers,
+  FiPackage,
+} from "react-icons/fi";
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
 import { formatFileSize } from "../utils/formatFileSize";
-
+  
 function CodeInput() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [filesList, setFilesList] = useState([]);
   const [showFileList, setShowFileList] = useState(false);
   const [expiresAt, setExpiresAt] = useState("");
+  const [activeDownloadIndex, setActiveDownloadIndex] = useState(null);
   const { success: showSuccess, error: showError } = useToast();
+
+  const totalBundleSize = filesList.reduce((total, file) => total + (file.size || 0), 0);
+
+  const getFileExtension = (fileName = "") => {
+    const nameParts = fileName.split(".").filter(Boolean);
+
+    if (nameParts.length <= 1) {
+      return "FILE";
+    }
+
+    return nameParts[nameParts.length - 1].slice(0, 4).toUpperCase();
+  };
 
   const handleGetFiles = async () => {
     if (code.length !== 4) {
@@ -31,6 +52,7 @@ function CodeInput() {
       setFilesList(files);
       setExpiresAt(response.data.expiresAt || "");
       setShowFileList(false);
+      setActiveDownloadIndex(null);
 
       if (files.length === 1) {
         await handleDownloadFile(0, files);
@@ -55,6 +77,7 @@ function CodeInput() {
   const handleDownloadFile = async (fileIndex, providedFiles = filesList) => {
     try {
       setLoading(true);
+      setActiveDownloadIndex(fileIndex);
       const token = localStorage.getItem("token");
       const response = await api.post(
         "/receive",
@@ -109,6 +132,7 @@ function CodeInput() {
       }
     } finally {
       setLoading(false);
+      setActiveDownloadIndex(null);
     }
   };
 
@@ -117,6 +141,7 @@ function CodeInput() {
     setFilesList([]);
     setExpiresAt("");
     setShowFileList(false);
+    setActiveDownloadIndex(null);
   };
 
   return (
@@ -141,40 +166,87 @@ function CodeInput() {
       </div>
 
       {showFileList && (
-        <div className="si-card" style={{ padding: "1.5rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}>
-            <FiFolder className="inline-icon" />
-            <h3 style={{ margin: 0 }}>{filesList.length} Files Available</h3>
+        <div className="si-card receive-bundle-card" style={{ padding: "1.5rem" }}>
+          <div className="receive-bundle-header">
+            <div className="receive-bundle-title">
+              <div className="receive-bundle-icon">
+                <FiFolder className="inline-icon" />
+              </div>
+              <div>
+                <div className="si-meta-label">Bundle Ready</div>
+                <h3 style={{ margin: 0 }}>{filesList.length} Files Available</h3>
+              </div>
+            </div>
+            <div className="receive-bundle-code">
+              <span className="si-meta-label">Access Code</span>
+              <strong>{code}</strong>
+            </div>
           </div>
 
-          <div className="download-file-list" style={{ marginTop: "1rem" }}>
+          <div className="receive-bundle-summary">
+            <div className="receive-bundle-stat">
+              <span className="si-meta-label">
+                <FiLayers /> Files
+              </span>
+              <strong>{filesList.length}</strong>
+            </div>
+            <div className="receive-bundle-stat">
+              <span className="si-meta-label">
+                <FiPackage /> Total Size
+              </span>
+              <strong>{formatFileSize(totalBundleSize)}</strong>
+            </div>
+            <div className="receive-bundle-stat">
+              <span className="si-meta-label">
+                <FiClock /> Valid Until
+              </span>
+              <strong>{expiresAt ? new Date(expiresAt).toLocaleString() : "Temporary"}</strong>
+            </div>
+          </div>
+
+          <div className="download-file-list receive-download-grid" style={{ marginTop: "1rem" }}>
             {filesList.map((file, index) => (
-              <button
-                key={`${file.name}-${index}`}
-                className="download-file-item"
-                onClick={() => handleDownloadFile(index)}
-                disabled={loading}
-                type="button"
-              >
-                <span style={{ display: "flex", alignItems: "center", gap: "0.7rem", color: "var(--si-text)" }}>
-                  <FiFile className="inline-icon" />
-                  <span>
-                    <strong style={{ display: "block" }}>{file.name}</strong>
-                    {file.size ? <span className="si-footer-copy">{formatFileSize(file.size)}</span> : null}
-                  </span>
-                </span>
-                <FiArrowDown className="inline-icon" />
-              </button>
+              <div key={`${file.name}-${index}`} className="download-file-item receive-file-card">
+                <div className="receive-file-main">
+                  <div className="receive-file-badge">{getFileExtension(file.name)}</div>
+                  <div className="receive-file-copy">
+                    <div className="receive-file-heading">
+                      <FiFile className="inline-icon" />
+                      <strong>{file.name}</strong>
+                    </div>
+                    <div className="receive-file-meta">
+                      <span className="receive-file-meta-chip">
+                        <FiHash /> File {index + 1}
+                      </span>
+                      {file.size ? (
+                        <span className="receive-file-meta-chip">
+                          <FiPackage /> {formatFileSize(file.size)}
+                        </span>
+                      ) : null}
+                      {file.mimeType ? <span className="si-footer-copy">{file.mimeType}</span> : null}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  className="si-button-secondary receive-download-button"
+                  onClick={() => handleDownloadFile(index)}
+                  disabled={loading}
+                  type="button"
+                >
+                  <FiDownload />
+                  {loading && activeDownloadIndex === index ? "Downloading..." : "Download File"}
+                </button>
+              </div>
             ))}
           </div>
 
-          {expiresAt ? (
-            <div className="si-footer-copy" style={{ marginTop: "1rem" }}>
-              Valid until {new Date(expiresAt).toLocaleString()}
-            </div>
-          ) : null}
-
-          <button className="si-button-secondary" onClick={handleReset} type="button" style={{ marginTop: "1rem" }}>
+          <button
+            className="si-button-secondary receive-bundle-reset"
+            onClick={handleReset}
+            type="button"
+            style={{ marginTop: "1rem" }}
+          >
             Try Another Code
           </button>
         </div>
