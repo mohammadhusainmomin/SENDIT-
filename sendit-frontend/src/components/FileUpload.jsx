@@ -4,22 +4,23 @@ import { FiCheck, FiCopy, FiRefreshCw, FiSend, FiUploadCloud } from "react-icons
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
 import CountdownTimer from "./CountdownTimer";
-import ScrollValuePicker from "./ScrollValuePicker";
 
-function FileUpload({ onStateChange }) {
+function FileUpload({
+  expiresInHours,
+  expiresInMinutes,
+  onExpiresInHoursChange,
+  onExpiresInMinutesChange,
+  onStateChange,
+}) {
   const [files, setFiles] = useState([]);
   const [code, setCode] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [expiresInHours, setExpiresInHours] = useState("0");
-  const [expiresInMinutes, setExpiresInMinutes] = useState("10");
   const [totalExpiryMinutes, setTotalExpiryMinutes] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
   const inputRef = useRef(null);
   const { success, error: showError } = useToast();
-  const hourOptions = Array.from({ length: 25 }, (_, index) => index);
-  const minuteOptions = Array.from({ length: 12 }, (_, index) => index * 5);
 
   const calculateTotalMinutes = () => {
     const hours = parseInt(expiresInHours, 10) || 0;
@@ -40,14 +41,10 @@ function FileUpload({ onStateChange }) {
       uploadProgress,
       totalSize,
       totalExpiryMinutes,
-      expiresInHours,
-      expiresInMinutes,
     });
   }, [
     code,
     expiresAt,
-    expiresInHours,
-    expiresInMinutes,
     files,
     loading,
     onStateChange,
@@ -127,6 +124,8 @@ function FileUpload({ onStateChange }) {
     setCopied(false);
     setUploadProgress(0);
     setTotalExpiryMinutes(0);
+    onExpiresInHoursChange("0");
+    onExpiresInMinutesChange("10");
     if (inputRef.current) {
       inputRef.current.value = "";
     }
@@ -191,8 +190,8 @@ function FileUpload({ onStateChange }) {
   }
 
   return (
-    <div className="si-grid">
-      <div className="upload-dropzone">
+    <div className="send-upload-flow">
+      <div className="upload-dropzone send-upload-dropzone">
         <label className="upload-dropzone-inner" htmlFor="sendit-upload-input">
           <input
             ref={inputRef}
@@ -205,25 +204,15 @@ function FileUpload({ onStateChange }) {
           />
 
           <div>
-            <div
-              style={{
-                width: "84px",
-                height: "84px",
-                margin: "0 auto 1rem",
-                borderRadius: "999px",
-                display: "grid",
-                placeItems: "center",
-                background: "rgba(255,255,255,0.9)",
-              }}
-            >
+            <div className="send-upload-icon-shell">
               <FiUploadCloud className="inline-icon" size={36} />
             </div>
-            <h3>Drop your files here</h3>
+            <h3>Drop files here or click to browse</h3>
             <p className="si-footer-copy">
-              Or browse files on your device. Select files, choose expiry, then share the code with the receiver.
+              You can upload one file or multiple files together.
             </p>
-            <div className="si-meta-label" style={{ marginTop: "1rem" }}>
-              Works with single and multiple files
+            <div className="send-upload-helper">
+              Files stay private and are shared with a temporary 4-digit code.
             </div>
           </div>
         </label>
@@ -243,51 +232,19 @@ function FileUpload({ onStateChange }) {
             ))}
           </div>
         ) : null}
-      </div>
-      <div className="upload-action-layout">
-        <div className="si-card expiry-card">
-          <div className="si-footer-copy" style={{ marginBottom: "0.8rem", textAlign: "center" }}>
-            Step 1: pick expiry. Step 2: send files. Step 3: share the generated code.
+
+        <div className="send-upload-actions">
+          <div className="si-footer-copy send-upload-note">
+            Pick the expiry from the right panel, then upload to get the share code.
           </div>
-          <div className="wheel-panel compact-wheel-panel">
-            <div className="wheel-column">
-              <div className="wheel-value">
-                <ScrollValuePicker
-                  label="Hours"
-                  options={hourOptions}
-                  value={expiresInHours}
-                  onChange={setExpiresInHours}
-                  disabled={loading}
-                />
-              </div>
-            </div>
-
-            <div className="wheel-separator">:</div>
-
-            <div className="wheel-column">
-              <div className="wheel-value">
-                <ScrollValuePicker
-                  label="Minutes"
-                  options={minuteOptions}
-                  value={expiresInMinutes}
-                  onChange={setExpiresInMinutes}
-                  disabled={loading}
-                />
-              </div>
-            </div>
-          </div>
-
-          {calculateTotalMinutes() > 0 && !isMaxTimeExceeded() && (
-            <div className="si-footer-copy expiry-copy">
-              Share code valid for {calculateTotalMinutes()} minute(s)
-            </div>
-          )}
-
-          <div className="expiry-actions">
-            <button className="si-button expiry-send-button" onClick={handleSend} disabled={files.length === 0 || loading || isMaxTimeExceeded()} type="button">
-              <FiSend /> {loading ? `Uploading ${uploadProgress}%` : "Send File"}
-            </button>
-          </div>
+          <button
+            className="si-button expiry-send-button send-upload-button"
+            onClick={handleSend}
+            disabled={files.length === 0 || loading || isMaxTimeExceeded()}
+            type="button"
+          >
+            <FiSend /> {loading ? `Uploading ${uploadProgress}%` : "Upload and Get Code"}
+          </button>
         </div>
       </div>
     </div>

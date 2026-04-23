@@ -12,43 +12,43 @@ export default function FAQ() {
   const faqs = [
     {
       question: "Is SendIt free to use?",
-      answer: "Yes, SendIt is completely free to use. You can share files and code without any subscription or hidden fees."
+      answer: "Yes. The public SendIt experience is free to use for sending files and code snippets through the current workflow.",
     },
     {
       question: "Do I need to create an account?",
-      answer: "No, you don't need to create an account. SendIt is designed to work without registration. However, creating an account allows you to track your file history and manage your transfers."
+      answer: "No. Basic sending and receiving can be used without registration. If account features are available, they help with history and transfer management.",
     },
     {
-      question: "How long are shared links valid?",
-      answer: "Shared links are valid for a period of time that you can customize (typically 24 hours by default). After expiration, the link will no longer be accessible."
+      question: "How long is shared content available?",
+      answer: "Availability depends on the expiry option selected during upload. After the selected time window ends, the file or code should no longer remain available through the normal receive flow.",
     },
     {
-      question: "Is my data encrypted?",
-      answer: "Yes, all file transfers are encrypted during transmission. We use industry-standard encryption protocols to ensure your data remains secure."
+      question: "How does SendIt control access?",
+      answer: "SendIt uses a temporary-code workflow and separate receive pages so the intended receiver can look up content using the shared code.",
     },
     {
       question: "What file types can I share?",
-      answer: "You can share any file type including documents, images, videos, code files, and more. There are no restrictions on file types."
+      answer: "People commonly share documents, images, PDFs, compressed folders, and other everyday files. Content must still follow our terms and applicable law.",
     },
     {
       question: "What is the file size limit?",
-      answer: "File size limits depend on your account type. Free users can typically upload files up to a certain size, while premium users may have higher limits."
+      answer: "The allowed size depends on the current backend and hosting limits configured for SendIt. If an upload exceeds the allowed limit, the app should show that during upload.",
     },
     {
-      question: "Can I delete a shared file before the link expires?",
-      answer: "Yes, you can delete shared files at any time. Once deleted, the shared link will no longer be accessible for download."
+      question: "Can I remove shared content early?",
+      answer: "If the active workflow exposes delete or cleanup controls for your account, you can use them. Otherwise the item should expire automatically when its retention window ends.",
     },
     {
       question: "How do I share code snippets?",
-      answer: "Use the 'Send Code' feature to paste your code. It will automatically apply syntax highlighting based on the programming language. Share the generated link with others."
+      answer: "Open the Send Code page, paste your snippet, create the share entry, and send the generated temporary code to the receiver.",
     },
     {
-      question: "Is there a bandwidth limit?",
-      answer: "We don't impose strict bandwidth limits, but we reserve the right to limit excessive usage. Normal usage is unlimited."
+      question: "Can I use SendIt on mobile?",
+      answer: "Yes. The frontend is responsive and the main send, receive, and support pages are designed to work on mobile browsers as well as desktop.",
     },
     {
-      question: "Can I set a password for shared links?",
-      answer: "Yes, you can set optional passwords for shared links to add an extra layer of security. Recipients must enter the password to access the file."
+      question: "Does SendIt show ads?",
+      answer: "The site may display ads in the future after policy review and approval. If ads are enabled, the privacy policy explains cookie and advertising disclosures.",
     },
   ];
 
@@ -60,26 +60,27 @@ export default function FAQ() {
     <>
       <SEO
         title="SendIt FAQ - Frequently Asked Questions"
-        description="Get answers to common questions about SendIt file sharing. Learn about features, security, limits, and how to use our platform."
+        description="Get answers to common questions about SendIt file sharing. Learn about features, expiry, support, and how to use the platform."
         url="https://senditsystem.netlify.app/faq"
       />
 
       <div className="content-page-wrapper">
         <div className="content-container">
           <h1 className="page-title">Frequently Asked Questions</h1>
-          
+
           <section className="content-section">
             <p className="intro-text">
-              Can't find the answer you're looking for? Contact our support team.
+              These answers cover common questions about transfers, expiry, support, and future advertising disclosures on SendIt.
             </p>
           </section>
 
           <section className="faq-section">
             {faqs.map((faq, index) => (
-              <div key={index} className="faq-item">
+              <div key={faq.question} className="faq-item">
                 <button
                   className={`faq-question ${activeIndex === index ? "active" : ""}`}
                   onClick={() => toggleAccordion(index)}
+                  type="button"
                 >
                   <span>{faq.question}</span>
                   <span className="faq-icon">+</span>

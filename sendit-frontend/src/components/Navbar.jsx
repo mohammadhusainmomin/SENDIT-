@@ -47,7 +47,7 @@ function Navbar() {
             
             <div>
               <div className="si-brand-wordmark">SendIt</div>
-              <div className="si-meta-label">Secure Motion</div>
+              <div className="si-meta-label">Temporary Sharing</div>
             </div>
           </div>
 

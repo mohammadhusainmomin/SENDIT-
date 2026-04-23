@@ -10,9 +10,9 @@ export default function Features() {
   return (
     <>
       <SEO
-        title="SendIt Features | Secure File Sharing and Code Sharing Tools"
-        description="Explore SendIt features for secure file sharing, code sharing, temporary access codes, fast retrieval, and a modern transfer workflow."
-        keywords="sendit features, secure file sharing features, code sharing features, temporary access codes"
+        title="SendIt Features | File Sharing and Code Sharing Tools"
+        description="Explore SendIt features for file sharing, code sharing, temporary access codes, expiry settings, and a simple receive workflow."
+        keywords="sendit features, file sharing features, code sharing features, temporary access codes"
         url="https://senditsystem.netlify.app/features"
       />
 
@@ -23,13 +23,13 @@ export default function Features() {
           <section className="content-section">
             <h2>File Sharing</h2>
             <div className="feature-details">
-              <p>Share files securely with encrypted links. No account needed.</p>
+              <p>Share files through a temporary-code workflow built for quick handoffs.</p>
               <ul>
                 <li>Upload multiple files at once</li>
-                <li>Encrypted transfer protocol</li>
+                <li>Receive files using a short access code</li>
                 <li>Customizable expiration time</li>
-                <li>Download progress tracking</li>
-                <li>Secure link generation</li>
+                <li>Clear send and receive pages</li>
+                <li>Temporary storage approach for shared items</li>
               </ul>
             </div>
           </section>
@@ -37,27 +37,27 @@ export default function Features() {
           <section className="content-section">
             <h2>Code Sharing</h2>
             <div className="feature-details">
-              <p>Share code snippets with syntax highlighting and formatting.</p>
+              <p>Share code snippets without needing to paste large blocks into chat apps.</p>
               <ul>
                 <li>Support for multiple programming languages</li>
                 <li>Syntax highlighting</li>
                 <li>Code formatting and beautification</li>
                 <li>View and share history</li>
-                <li>One-time view links for security</li>
+                <li>Dedicated receive page for code lookup</li>
               </ul>
             </div>
           </section>
 
           <section className="content-section">
-            <h2>Security Features</h2>
+            <h2>Access and Retention Controls</h2>
             <div className="feature-details">
-              <p>Your data security is our top priority.</p>
+              <p>SendIt is designed to reduce friction while keeping sharing more controlled than a permanent public post.</p>
               <ul>
-                <li>End-to-end encryption</li>
-                <li>Secure URL generation</li>
+                <li>Temporary codes instead of open browsing</li>
                 <li>Automatic link expiration</li>
-                <li>Password protected links</li>
-                <li>Download attempt logging</li>
+                <li>User-selected time windows</li>
+                <li>Temporary storage and cleanup workflows</li>
+                <li>Optional account-based history for signed-in users</li>
               </ul>
             </div>
           </section>
@@ -67,25 +67,25 @@ export default function Features() {
             <div className="feature-details">
               <p>Designed for simplicity and ease of use.</p>
               <ul>
-                <li>No registration required</li>
+                <li>No registration required for core sending and receiving</li>
                 <li>Drag-and-drop file upload</li>
                 <li>One-click copy to clipboard</li>
-                <li>Responsive design (mobile & desktop)</li>
-                <li>Fast and intuitive interface</li>
+                <li>Responsive design for mobile and desktop</li>
+                <li>Simple route structure for first-time visitors</li>
               </ul>
             </div>
           </section>
 
           <section className="content-section">
-            <h2>File Management</h2>
+            <h2>Typical Use Cases</h2>
             <div className="feature-details">
-              <p>Manage your transfers with ease.</p>
+              <p>Common ways people use SendIt in daily work and study.</p>
               <ul>
-                <li>View your sent files</li>
-                <li>Track download history</li>
-                <li>Delete files before expiration</li>
-                <li>Re-share previously sent files</li>
-                <li>Download receipts and reports</li>
+                <li>Sharing assignments or notes with classmates</li>
+                <li>Sending design drafts or PDFs to clients</li>
+                <li>Passing code snippets between developers</li>
+                <li>Moving temporary files between personal devices</li>
+                <li>Collecting short-lived downloads without cluttering chat threads</li>
               </ul>
             </div>
           </section>

@@ -19,6 +19,8 @@ const Features = lazy(() => import("./pages/Features"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const FAQ = lazy(() => import("./pages/FAQ"));
+const Contact = lazy(() => import("./pages/Contact"));
+const SharingGuide = lazy(() => import("./pages/SharingGuide"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 
@@ -41,9 +43,11 @@ function App() {
               <Route path="/code/history" element={<CodeHistory />} />
               <Route path="/about" element={<About />} />
               <Route path="/features" element={<Features />} />
+              <Route path="/guide" element={<SharingGuide />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

@@ -30,11 +30,13 @@ function GoogleLoginBtn({ closeModal }) {
 
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <GoogleLogin
-        onSuccess={handleSuccess}
-        onError={() => showError("Google Login Failed")}
-        useOneTap={false}
-      />
+      <div className="google-login-btn-container">
+        <GoogleLogin
+          onSuccess={handleSuccess}
+          onError={() => showError("Google Login Failed")}
+          useOneTap={false}
+        />
+      </div>
     </GoogleOAuthProvider>
   );
 }
