@@ -376,3 +376,191 @@ export const sendOtpEmail = async (to, otp) => {
     throw new Error(`Email sending failed: ${error.message}`);
   }
 };
+
+import { Resend } from "resend";
+
+// Create a reliable contact email function using Resend
+export const sendContactEmail = async ({
+  name,
+  email,
+  subject,
+  message,
+}) => {
+  try {
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error(
+        "RESEND_API_KEY is not configured. Please add your Resend API key to the .env file: RESEND_API_KEY=re_xxxxx"
+      );
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    
+    const safeName = name || "Website Visitor";
+    const safeEmail = email || "Not provided";
+    const safeSubject = subject || "Contact form message";
+    const safeMessage = message || "No message content provided.";
+
+    const emailHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SendIt Contact Form</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      background: linear-gradient(135deg, #0d6efd 0%, #0057cd 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      color: #151d22;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    .header {
+      background: linear-gradient(135deg, #0d6efd 0%, #0057cd 100%);
+      color: #ffffff;
+      padding: 32px 28px;
+      border-bottom: 4px solid #0a58ca;
+    }
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .header p {
+      margin: 0;
+      opacity: 0.95;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .content {
+      padding: 36px;
+    }
+    .field {
+      margin-bottom: 28px;
+    }
+    .label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #0d6efd;
+      margin-bottom: 10px;
+    }
+    .value {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #151d22;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .message-box {
+      padding: 20px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(13, 110, 253, 0.08) 0%, rgba(0, 92, 205, 0.04) 100%);
+      border: 2px solid rgba(13, 110, 253, 0.2);
+      border-left: 4px solid #0d6efd;
+    }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #e0e7ff, transparent);
+      margin: 28px 0;
+    }
+    .footer {
+      padding: 24px 36px;
+      background: #f8fbff;
+      font-size: 12px;
+      color: #607081;
+      border-top: 1px solid #e0e7ff;
+      text-align: center;
+    }
+    .sender-info {
+      font-size: 13px;
+      color: #607081;
+      margin-top: 20px;
+      padding: 12px 16px;
+      background: #f8fbff;
+      border-radius: 8px;
+      border-left: 3px solid #0d6efd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📧 New Contact Message</h1>
+      <p>A visitor submitted the SendIt contact form</p>
+    </div>
+    <div class="content">
+      <div class="field">
+        <span class="label">From</span>
+        <p class="value">${safeName}</p>
+      </div>
+
+      <div class="field">
+        <span class="label">Email Address</span>
+        <p class="value"><a href="mailto:${safeEmail}" style="color: #0d6efd; text-decoration: none; font-weight: 600;">${safeEmail}</a></p>
+      </div>
+
+      <div class="field">
+        <span class="label">Subject</span>
+        <p class="value">${safeSubject}</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field">
+        <span class="label">Message</span>
+        <div class="message-box">
+          <p class="value">${safeMessage}</p>
+        </div>
+      </div>
+
+      <div class="sender-info">
+        💡 <strong>Quick Reply:</strong> Click the email address above to reply directly to this visitor.
+      </div>
+    </div>
+    <div class="footer">
+      <p>✓ This message was sent from the SendIt website contact form</p>
+      <p style="margin-top: 8px; font-size: 11px; opacity: 0.7;">Timestamp: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+
+    console.log("📧 Sending contact email via Resend...");
+    
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured in environment variables");
+    }
+
+    const result = await resend.emails.send({
+      from: "SendIt <onboarding@resend.dev>",
+      to: "senditsystem786@gmail.com",
+      replyTo: safeEmail,
+      subject: `[Contact Form] ${safeSubject}`,
+      html: emailHtml,
+    });
+
+    if (result.error) {
+      throw new Error(result.error.message);
+    }
+
+    console.log("✓ Contact email sent successfully:", result.data.id);
+    return result.data;
+  } catch (error) {
+    console.error("❌ CONTACT EMAIL ERROR:", error.message);
+    throw new Error(`Failed to send contact email: ${error.message}`);
+  }
+};

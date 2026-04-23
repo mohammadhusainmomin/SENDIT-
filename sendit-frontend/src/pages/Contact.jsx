@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiArrowUpRight, FiMail, FiMapPin, FiMessageCircle, FiShield } from "react-icons/fi";
+import { FiArrowUpRight, FiMail, FiMapPin, FiMessageCircle, FiSend, FiShield, FiUser } from "react-icons/fi";
 import SEO from "../components/SEO";
+import api from "../services/api";
+import { useToast } from "../context/ToastContext";
 import "../styles/ContentPages.css";
 
 const googleMapsEmbedUrl =
@@ -29,10 +31,94 @@ const contactCards = [
 
 export default function Contact() {
   const navigate = useNavigate();
+  const { success, error: showError } = useToast();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!form.name.trim()) {
+      newErrors.name = "Name is required";
+    } else if (form.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    }
+
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
+    } else {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(form.email)) {
+        newErrors.email = "Please enter a valid email address";
+      }
+    }
+
+    if (!form.subject.trim()) {
+      newErrors.subject = "Subject is required";
+    } else if (form.subject.trim().length < 3) {
+      newErrors.subject = "Subject must be at least 3 characters";
+    }
+
+    if (!form.message.trim()) {
+      newErrors.message = "Message is required";
+    } else if (form.message.trim().length < 10) {
+      newErrors.message = "Message must be at least 10 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (field) => (event) => {
+    setForm((current) => ({
+      ...current,
+      [field]: event.target.value,
+    }));
+    // Clear error for this field when user starts typing
+    if (errors[field]) {
+      setErrors((current) => ({
+        ...current,
+        [field]: "",
+      }));
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!validateForm()) {
+      showError("Please fix the errors in the form");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await api.post("/contact", form);
+      success("Your message has been sent successfully! We'll get back to you soon.");
+      setForm({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+      setErrors({});
+    } catch (error) {
+      const message = error.response?.data?.message || "Failed to send message. Please try again later.";
+      showError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -116,6 +202,94 @@ export default function Contact() {
                   <p>{card.description}</p>
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="contact-panel-section">
+          <div className="contact-wrap">
+            <div className="contact-form-shell">
+              <div className="contact-form-copy">
+                <span className="contact-kicker">SEND A MESSAGE</span>
+                <h2>Contact form</h2>
+                <p>
+                  Fill out the form below and your message will be sent directly to <strong>senditsystem786@gmail.com</strong>. Use this for support, collaboration, or project-related questions.
+                </p>
+                <ul className="contact-form-list">
+                  <li>Ask about transfer issues or account help</li>
+                  <li>Request product clarification or support</li>
+                  <li>Send business, academic, or collaboration queries</li>
+                </ul>
+              </div>
+
+              <form className="contact-form-card" onSubmit={handleSubmit}>
+                <div className="contact-form-grid">
+                  <label className="contact-field">
+                    <span>Name</span>
+                    <div className="contact-input-shell">
+                      <FiUser />
+                      <input 
+                        type="text" 
+                        placeholder="Enter your name" 
+                        value={form.name} 
+                        onChange={handleChange("name")}
+                        className={errors.name ? "error" : ""}
+                      />
+                    </div>
+                    {errors.name && <span className="contact-error">{errors.name}</span>}
+                  </label>
+
+                  <label className="contact-field">
+                    <span>Email</span>
+                    <div className="contact-input-shell">
+                      <FiMail />
+                      <input 
+                        type="email" 
+                        placeholder="Enter your email" 
+                        value={form.email} 
+                        onChange={handleChange("email")}
+                        className={errors.email ? "error" : ""}
+                      />
+                    </div>
+                    {errors.email && <span className="contact-error">{errors.email}</span>}
+                  </label>
+                </div>
+
+                <label className="contact-field">
+                  <span>Subject</span>
+                  <div className="contact-input-shell">
+                    <FiShield />
+                    <input 
+                      type="text" 
+                      placeholder="What is this about?" 
+                      value={form.subject} 
+                      onChange={handleChange("subject")}
+                      className={errors.subject ? "error" : ""}
+                    />
+                  </div>
+                  {errors.subject && <span className="contact-error">{errors.subject}</span>}
+                </label>
+
+                <label className="contact-field">
+                  <span>Message</span>
+                  <div className="contact-textarea-shell">
+                    <textarea
+                      placeholder="Write your message here (minimum 10 characters)"
+                      value={form.message}
+                      onChange={handleChange("message")}
+                      className={errors.message ? "error" : ""}
+                    />
+                  </div>
+                  <div className="contact-char-count">
+                    {form.message.length}/500 characters
+                  </div>
+                  {errors.message && <span className="contact-error">{errors.message}</span>}
+                </label>
+
+                <button className="contact-primary-btn contact-submit-btn" type="submit" disabled={loading || Object.keys(errors).length > 0}>
+                  <FiSend /> {loading ? "Sending..." : "Send Message"}
+                </button>
+              </form>
             </div>
           </div>
         </section>
