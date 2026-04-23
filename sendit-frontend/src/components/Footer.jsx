@@ -46,6 +46,7 @@ function Footer() {
           <h4 className="si-footer-title">Legal</h4>
           <Link className="si-footer-link" to="/privacy">Privacy Policy</Link>
           <Link className="si-footer-link" to="/terms">Terms of Service</Link>
+          <Link className="si-footer-link" to="/disclaimer">Disclaimer</Link>
           <span className="si-footer-copy">Clear policies, support access, and transparent product details.</span>
         </div>
       </div>

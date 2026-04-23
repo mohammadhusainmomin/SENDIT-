@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiArrowRight, FiClock, FiGrid, FiHash, FiLock, FiShield, FiZap } from "react-icons/fi";
 import { FileTransferIllustration } from "../components/Illustrations";
 import SEO from "../components/SEO";
@@ -201,6 +201,44 @@ function Home() {
             <FiArrowRight className="inline-icon" size={30} />
             <h3 style={{ marginTop: "1rem" }}>3. Use the right receive page</h3>
             <p>Receivers can use the matching file or code receive page, which reduces confusion and makes retrieval predictable.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="page-section">
+        <div style={{ marginBottom: "1.6rem" }}>
+          <span className="si-chip">More Information</span>
+          <h2 className="si-heading" style={{ marginTop: "1rem" }}>Explore the pages that explain SendIt.</h2>
+          <p className="si-subtitle" style={{ marginTop: "1rem" }}>
+            If you are reviewing the site for trust, policy, or product clarity, these pages explain what SendIt does, how temporary sharing works, what the service limits are, and how to contact the team. This additional content helps first-time visitors understand the platform before they upload or receive any files.
+          </p>
+        </div>
+
+        <div className="feature-bento">
+          <div className="si-card span-2">
+            <h3>About the Project</h3>
+            <p className="si-subtitle" style={{ fontSize: "1rem", maxWidth: "unset" }}>
+              Learn who built SendIt, what problem it solves, and why the product focuses on temporary file and code sharing instead of permanent storage.
+            </p>
+            <Link className="inline-resource-link" to="/about">Read About Us</Link>
+          </div>
+          <div className="si-card span-2">
+            <h3>Features and Use Cases</h3>
+            <p className="si-subtitle" style={{ fontSize: "1rem", maxWidth: "unset" }}>
+              Explore file sharing, code sharing, expiry controls, and common situations where short-lived access codes are useful in study and work.
+            </p>
+            <Link className="inline-resource-link" to="/features">Explore Features</Link>
+          </div>
+          <div className="si-card span-2">
+            <h3>Guide, FAQ, and Support</h3>
+            <p className="si-subtitle" style={{ fontSize: "1rem", maxWidth: "unset" }}>
+              Visit the guide, FAQ, and contact pages for help, legal disclosures, privacy information, and support details if you have questions about the service.
+            </p>
+            <div className="home-resource-stack">
+              <Link className="inline-resource-link" to="/guide">Open Guide</Link>
+              <Link className="inline-resource-link" to="/faq">Read FAQ</Link>
+              <Link className="inline-resource-link" to="/contact">Contact SendIt</Link>
+            </div>
           </div>
         </div>
       </section>
