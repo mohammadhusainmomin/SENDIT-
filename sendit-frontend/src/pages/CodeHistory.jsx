@@ -150,12 +150,7 @@ function CodeHistory() {
                         </span>
                       </div>
 
-                      <div className="meta-item">
-                        <span className="meta-label">Preview</span>
-                        <span className="meta-value">
-                          {code.contentPreview}
-                        </span>
-                      </div>
+                      
 
                       <div className="meta-item">
                         <span className="meta-label">Date</span>

@@ -1,7 +1,7 @@
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import api from "../services/api";
+import api, { updateCachedToken } from "../services/api";
 import { useToast } from "../context/ToastContext";
 
 function GoogleLoginBtn({ closeModal }) {
@@ -18,6 +18,7 @@ function GoogleLoginBtn({ closeModal }) {
       );
 
       localStorage.setItem("token", res.data.token);
+      updateCachedToken(res.data.token);
       login(res.data.user);
       success("✓ Login successful!");
       closeModal();

@@ -94,7 +94,6 @@ function FileUpload({
         `${token ? "/send-auth" : "/send"}?expiresIn=${expiresIn}`,
         formData,
         {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
           onUploadProgress: (progressEvent) => {
             const percentCompleted = Math.round(
               (progressEvent.loaded * 100) / progressEvent.total

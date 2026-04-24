@@ -4,7 +4,7 @@ import GoogleLoginBtn from "./GoogleLoginBtn";
 import ForgotPassword from "./ForgotPassword";
 import { AuthContext } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
-import api from "../services/api";
+import api, { updateCachedToken } from "../services/api";
 import "./styles/AuthModel.css";
 
 function AuthModal({ isOpen, closeModal }) {
@@ -60,6 +60,7 @@ function AuthModal({ isOpen, closeModal }) {
         });
 
         localStorage.setItem("token", res.data.token);
+        updateCachedToken(res.data.token);
         login(res.data.user);
         success("Login successful! Welcome back");
         closeModal();
@@ -100,6 +101,7 @@ function AuthModal({ isOpen, closeModal }) {
         otp,
       });
 
+      updateCachedToken(res.data.token);
       localStorage.setItem("token", res.data.token);
       login(res.data.user);
       success("Account created successfully!");

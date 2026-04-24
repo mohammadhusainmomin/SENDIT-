@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { updateCachedToken } from "../services/api";
 
 export const AuthContext = createContext();
 
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    updateCachedToken(null);
   };
 
   return (

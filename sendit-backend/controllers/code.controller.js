@@ -40,13 +40,9 @@ export const sendCode = async (req, res) => {
       senderId
     });
 
-    const contentPreview =
-      content.length > 100 ? content.substring(0, 100) + "..." : content;
-
     await CodeHistory.create({
       codeId: codeDoc._id,
       code: shareCode,
-      contentPreview,
 
       senderId,
       senderEmail,
@@ -141,7 +137,7 @@ export const getSentCodesHistory = async (req, res) => {
     })
       .sort({ sentAt: -1 })
       .select(
-        "code contentPreview receiverName receiverEmail receiverType sentAt status"
+        "code receiverName receiverEmail receiverType sentAt status"
       );
 
     res.json({
@@ -168,7 +164,7 @@ export const getReceivedCodesHistory = async (req, res) => {
     })
       .sort({ receivedAt: -1 })
       .select(
-        "code contentPreview senderName senderEmail senderType sentAt receivedAt status"
+        "code senderName senderEmail senderType sentAt receivedAt status"
       );
 
     res.json({
