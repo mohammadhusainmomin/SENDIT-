@@ -105,7 +105,6 @@ function CodeReceive() {
                     <span />
                   </div>
                   <span className="si-chip">Read Only</span>
-                  <span className="si-footer-copy">Retrieved-Snippet.js</span>
                   <span className="si-footer-copy">Secure sandbox rendering</span>
                 </div>
                 {content && (

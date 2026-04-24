@@ -176,9 +176,9 @@ function CodeShare() {
                       <span />
                     </div>
                     <span className="si-chip">Formatted Preview</span>
-                    <span className="si-footer-copy">Formatted-Snippet.js</span>
+                   
                   </div>
-                  <span className="si-footer-copy">This version is sent to backend</span>
+                  <span className="si-footer-copy">This version is sent to Reciver</span>
                 </div>
                 <div className="viewer-canvas" style={{ margin: "0 1.4rem 1.4rem" }}>
                   <pre>{formattedCode}</pre>
