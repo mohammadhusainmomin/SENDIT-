@@ -80,15 +80,7 @@
   gap: 0.5rem;
 }
 
-.btn-scan-qr {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-}
 
-.btn-scan-qr:hover {
-  background: var(--border-light);
-}
 
 .code-output {
   margin-top: 1rem;
