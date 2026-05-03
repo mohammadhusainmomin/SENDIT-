@@ -49,7 +49,7 @@ function About() {
             A practical tool for <span>temporary</span> digital sharing.
           </h1>
           <p className="about-copy-lead">
-            SendIt is a web app for sending files and code snippets with a short access code and a straightforward receive flow. The aim is to make sharing easier to understand for both technical and non-technical users.
+            SendIt is a free, secure web app for sending files and code snippets with short temporary access codes and a straightforward receive flow. We solve the file-sharing problem by making temporary, one-time transfers as simple as permanent sharing—but with sender-set expiry for better privacy and data control.
           </p>
           <div className="about-copy-hero-image">
             <img
@@ -67,26 +67,33 @@ function About() {
       <section className="about-copy-mission">
         <div className="about-copy-wrap about-copy-mission-grid">
           <div>
-            <span className="about-copy-section-tag">WHAT WE FOCUS ON</span>
+            <span className="about-copy-section-tag">THE PROBLEM WE SOLVE</span>
             <h2 className="about-copy-section-title">
-              Clear sharing, short-lived access, and simpler handoffs.
+              File Sharing Should Be Easy AND Temporary
             </h2>
             <div className="about-copy-body">
               <p>
-                SendIt was built around a temporary-sharing model. A sender uploads a file or creates a code share, passes a short code to the receiver, and the receiver uses the matching page to retrieve the content.
+                Traditional file-sharing methods have a fundamental problem: <strong>they stay forever</strong>. Email attachments sit in inboxes indefinitely. Cloud storage links remain accessible until manually deleted. This creates unnecessary privacy and security risks.
               </p>
               <p>
-                This makes the product suitable for assignments, quick team collaboration, client handoffs, and short-lived downloads that do not need to stay public for long periods.
+                Many situations call for temporary sharing—assignments that expire after grading, client deliverables that should be accessible only for review, confidential information that should self-destruct after viewing. But existing solutions force you to choose: either simplicity with permanent access, or complexity with temporary controls.
+              </p>
+              <p>
+                <strong>SendIt solves this problem.</strong> We combine simplicity (upload, share, done) with temporary access (sender-set expiry, expiry-based cleanup). No complex permission systems. No manual cleanup. No files lingering on servers.
               </p>
             </div>
             <div className="about-copy-stats">
               <div>
-                <strong>Files</strong>
-                <span>Temporary transfers</span>
+                <strong>Simple</strong>
+                <span>No registration needed</span>
               </div>
               <div>
-                <strong>Code</strong>
-                <span>Snippet sharing</span>
+                <strong>Secure</strong>
+                <span>Sender-set expiry</span>
+              </div>
+              <div>
+                <strong>Private</strong>
+                <span>Temporary codes</span>
               </div>
             </div>
           </div>
@@ -95,28 +102,59 @@ function About() {
             <div className="about-copy-column offset">
               <article className="about-copy-value-card">
                 <MdSecurity className="about-copy-value-icon" />
-                <h3>Controlled Access</h3>
-                <p>Temporary codes and receive pages help keep sharing more intentional than a permanent public post.</p>
+                <h3>Privacy-First Design</h3>
+                <p>You control how long access lasts by setting the expiry before sending. No permanent storage. No data collection beyond what's necessary.</p>
               </article>
               <article className="about-copy-value-card">
                 <MdSpeed className="about-copy-value-icon" />
-                <h3>Fast Handoffs</h3>
-                <p>The flow is designed to reduce steps so people can upload, share, and retrieve content quickly.</p>
+                <h3>Intentional Sharing</h3>
+                <p>Temporary codes require deliberate sharing to the right person. No accidental public posts. No leaked permanent links. Better control over who accesses your files.</p>
               </article>
             </div>
 
             <div className="about-copy-column">
               <article className="about-copy-value-card primary">
                 <MdPeopleAlt className="about-copy-value-icon" />
-                <h3>User Friendly</h3>
-                <p>SendIt is meant to feel approachable even for users who are not deeply technical.</p>
+                <h3>Built for Everyone</h3>
+                <p>SendIt works for students, developers, teams, freelancers, and anyone who needs to share files. No technical expertise required. Works on all devices.</p>
               </article>
               <article className="about-copy-value-card">
                 <MdAutoDelete className="about-copy-value-icon" />
-                <h3>Expiry Workflow</h3>
-                <p>Short-lived sharing windows help keep old transfers from remaining active indefinitely.</p>
+                <h3>Expiry Control</h3>
+                <p>No forgotten uploads cluttering the sharing flow. Files follow the expiry duration selected by the sender.</p>
               </article>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section style={{ 
+        backgroundColor: "rgba(13, 71, 161, 0.05)", 
+        padding: "3rem 0",
+        marginTop: "2rem"
+      }}>
+        <div className="about-copy-wrap">
+          <span className="about-copy-section-tag">OUR MISSION</span>
+          <h2 className="about-copy-section-title">
+            Make secure, temporary sharing the default
+          </h2>
+          <div className="about-copy-body">
+            <p>
+              Most file-sharing services were designed in an era where storage was expensive and permanent sharing was the norm. Today, we understand that temporary sharing is often better for privacy and data control. Yet most people still default to permanent solutions (email, cloud storage) because temporary alternatives are complex or expensive.
+            </p>
+            <p>
+              SendIt exists to change this. We believe that temporary, one-time sharing should be as simple as permanent sharing. That's why SendIt is:
+            </p>
+            <ul>
+              <li><strong>Free</strong> - No payment, no premium tiers, no upgrade walls</li>
+              <li><strong>Private</strong> - No personal data collection, no selling data to advertisers</li>
+              <li><strong>Simple</strong> - Upload, share a code, done. No complex permission systems.</li>
+              <li><strong>Secure</strong> - HTTPS encryption, temporary codes, expiry-based cleanup, minimal logging</li>
+              <li><strong>Inclusive</strong> - Works on any device, requires no registration, accessible to everyone</li>
+            </ul>
+            <p>
+              We're building SendIt for users who care about privacy, simplicity, and intentional sharing. Users who want their files to follow a clear sender-selected expiry instead of lingering forever. Users who believe temporary access should be the default, not a complex afterthought.
+            </p>
           </div>
         </div>
       </section>

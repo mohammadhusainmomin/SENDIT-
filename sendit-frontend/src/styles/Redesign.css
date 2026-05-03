@@ -889,6 +889,43 @@ body {
   overflow: hidden;
 }
 
+.home-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 2rem;
+  overflow: hidden;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(135deg, var(--si-primary-deep), var(--si-primary));
+}
+
+.home-cta h2 {
+  margin: 0;
+  max-width: 760px;
+  color: #fff;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(2rem, 4vw, 3.3rem);
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.home-cta p {
+  margin: 0 0 1rem;
+  max-width: 760px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  line-height: 1.65;
+}
+
+.home-cta-button {
+  width: auto;
+  background: #fff;
+  color: var(--si-primary);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
+}
+
 .work-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.68fr);
@@ -2203,6 +2240,18 @@ body {
     width: 100%;
     min-width: 0;
     padding: 0.85rem 0.95rem;
+  }
+
+  .home-cta {
+    padding: 2.25rem 1rem;
+  }
+
+  .home-cta p {
+    font-size: 0.98rem;
+  }
+
+  .home-cta-button {
+    width: 100%;
   }
 
   .si-card,

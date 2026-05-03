@@ -55,7 +55,7 @@ export default function Terms() {
           <section className="content-section">
             <h2>Temporary availability</h2>
             <p>
-              SendIt is designed around short-lived access. Shared content may expire automatically or become unavailable as part of the service's normal retention and cleanup behavior.
+              SendIt is designed around short-lived access. Shared content may expire according to the sender-selected time or become unavailable as part of the service's normal retention and cleanup behavior.
             </p>
           </section>
 
