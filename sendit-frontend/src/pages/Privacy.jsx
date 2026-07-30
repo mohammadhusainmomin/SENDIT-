@@ -198,7 +198,7 @@ export default function Privacy() {
               <li><strong>Non-Discrimination:</strong> SendIt will not discriminate against you for exercising your privacy rights</li>
             </ul>
             <p>
-              To exercise any of these rights, contact us at senditsystem786@gmail.com with your request and proof of identity.
+              To exercise any of these rights, contact us at mmbrothersteam@gmail.com with your request and proof of identity.
             </p>
           </section>
 
@@ -208,7 +208,7 @@ export default function Privacy() {
               SendIt is not intended for children under 13 years old. We do not knowingly collect personal information from children under 13. If we learn that we have collected personal information from a child under 13, we will delete that information immediately and contact the child's parent or guardian.
             </p>
             <p>
-              Parents or guardians who believe SendIt has collected information from a child under 13 should contact us immediately at senditsystem786@gmail.com.
+              Parents or guardians who believe SendIt has collected information from a child under 13 should contact us immediately at mmbrothersteam@gmail.com.
             </p>
           </section>
 
@@ -256,8 +256,11 @@ export default function Privacy() {
               If you have questions about this Privacy Policy, want to exercise your privacy rights, or want to report a privacy concern, please contact us:
             </p>
             <ul>
-              <li><strong>Email:</strong> senditsystem786@gmail.com</li>
-              <li><strong>Response Time:</strong> We aim to respond to all privacy inquiries within 30 days</li>
+              <li><strong>Email:</strong> mmbrothersteam@gmail.com</li>
+              <li><strong>Operator:</strong> SENDIT</li>
+              <li><strong>Business Location:</strong> Ahmedabad, Gujarat, India</li>
+              <li><strong>Support Hours:</strong> Monday to Saturday, 10:00 AM - 6:00 PM (IST)</li>
+              <li><strong>Response Time:</strong> We typically respond to all inquiries within 24-48 hours, and to formal privacy requests within 30 days</li>
             </ul>
             <p>
               If you believe SendIt has violated your privacy rights and we are unable to resolve your concern, you may have the right to lodge a complaint with a data protection authority in your jurisdiction.

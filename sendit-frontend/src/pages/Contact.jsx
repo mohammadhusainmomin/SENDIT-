@@ -12,15 +12,25 @@ const googleMapsEmbedUrl =
 const contactCards = [
   {
     title: "Support Email",
-    value: "senditsystem786@gmail.com",
-    description: "Use this for support, transfer issues, approval questions, and general business contact.",
-    href: "mailto:senditsystem786@gmail.com",
+    value: "mmbrothersteam@gmail.com",
+    description: "Use this for support, transfer issues, approval questions, and general business contact. We reply within 24-48 hours.",
+    href: "mailto:mmbrothersteam@gmail.com",
   },
   {
     title: "WhatsApp Contact",
     value: "+91 97256 86429",
     description: "Useful for quick communication when you want to discuss product questions or urgent follow-up.",
     href: "https://wa.me/919725686429",
+  },
+  {
+    title: "Business Address",
+    value: "SENDIT, Ahmedabad, Gujarat, India",
+    description: "SENDIT is operated from Ahmedabad, Gujarat, India. Postal correspondence can be arranged by email request.",
+  },
+  {
+    title: "Support Hours",
+    value: "Mon-Sat, 10:00 AM - 6:00 PM IST",
+    description: "Messages received outside these hours are answered on the next working day, typically within 24-48 hours.",
   },
   {
     title: "Service Focus",
@@ -144,7 +154,7 @@ export default function Contact() {
                 </p>
 
                 <div className="contact-hero-actions">
-                  <a className="contact-primary-btn" href="mailto:senditsystem786@gmail.com">
+                  <a className="contact-primary-btn" href="mailto:mmbrothersteam@gmail.com">
                     Email Support <FiArrowUpRight />
                   </a>
                   <a
@@ -170,15 +180,15 @@ export default function Contact() {
                   </div>
                   <div>
                     <div className="contact-meta">Location</div>
-                    <strong>Gujarat, India</strong>
+                    <strong>Ahmedabad, Gujarat, India</strong>
                   </div>
                   <div>
                     <div className="contact-meta">Focus</div>
                     <strong>Files + Code</strong>
                   </div>
                   <div>
-                    <div className="contact-meta">Use</div>
-                    <strong>Help and policy</strong>
+                    <div className="contact-meta">Hours</div>
+                    <strong>Mon-Sat, 10 AM - 6 PM IST</strong>
                   </div>
                 </div>
               </div>
@@ -213,7 +223,7 @@ export default function Contact() {
                 <span className="contact-kicker">SEND A MESSAGE</span>
                 <h2>Contact form</h2>
                 <p>
-                  Fill out the form below and your message will be sent directly to <strong>senditsystem786@gmail.com</strong>. Use this for support, collaboration, or project-related questions.
+                  Fill out the form below and your message will be sent directly to <strong>mmbrothersteam@gmail.com</strong>. Use this for support, collaboration, or project-related questions.
                 </p>
                 <ul className="contact-form-list">
                   <li>Ask about transfer issues or account help</li>
@@ -316,7 +326,7 @@ export default function Contact() {
                     <FiMail />
                     <div>
                       <strong>Email</strong>
-                      <span>senditsystem786@gmail.com</span>
+                      <span>mmbrothersteam@gmail.com</span>
                     </div>
                   </div>
                   <div className="contact-point">

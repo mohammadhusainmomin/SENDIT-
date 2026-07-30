@@ -83,7 +83,7 @@ export default function Terms() {
           <section className="content-section">
             <h2>Contact information</h2>
             <p>
-              If you have questions about these Terms of Service, contact senditsystem786@gmail.com.
+              If you have questions about these Terms of Service, contact mmbrothersteam@gmail.com.
             </p>
           </section>
         </div>

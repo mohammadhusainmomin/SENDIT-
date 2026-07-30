@@ -52,7 +52,7 @@ export default function Disclaimer() {
           <section className="content-section">
             <h2>Contact</h2>
             <p>
-              If you have any questions about this Disclaimer, contact senditsystem786@gmail.com.
+              If you have any questions about this Disclaimer, contact mmbrothersteam@gmail.com.
             </p>
           </section>
         </div>

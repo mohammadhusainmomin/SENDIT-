@@ -9,7 +9,7 @@ const primaryLinks = [
   { to: "/receive", label: "Receive File" },
   { to: "/code/send", label: "Send Code" },
   { to: "/code/receive", label: "Receive Code" },
-  { to: "/drop-rooms", label: "Drop Rooms" },
+  { to: "/blog", label: "Blog" },
 ];
 
 function Navbar() {

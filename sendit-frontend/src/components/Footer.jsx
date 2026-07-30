@@ -16,7 +16,7 @@ function Footer() {
             <a className="si-nav-link" href="https://github.com/mohammadhusainmomin" target="_blank" rel="noreferrer">
               <FiGithub />
             </a>
-            <a className="si-nav-link" href="mailto:senditsystem786@gmail.com">
+            <a className="si-nav-link" href="mailto:mmbrothersteam@gmail.com">
               <FiMail />
             </a>
             <a className="si-nav-link" href="https://wa.me/919725686429" target="_blank" rel="noreferrer">
@@ -35,6 +35,7 @@ function Footer() {
 
         <div>
           <h4 className="si-footer-title">Resources</h4>
+          <Link className="si-footer-link" to="/blog">Blog</Link>
           <Link className="si-footer-link" to="/about">About Us</Link>
           <Link className="si-footer-link" to="/features">Features</Link>
           <Link className="si-footer-link" to="/guide">Sharing Guide</Link>
@@ -53,7 +54,7 @@ function Footer() {
 
       <div className="si-footer-bottom">
         <span>&copy; {year} SendIt. File and code sharing for everyday workflows.</span>
-        <span>Support: senditsystem786@gmail.com</span>
+        <span>Support: mmbrothersteam@gmail.com</span>
       </div>
     </footer>
   );

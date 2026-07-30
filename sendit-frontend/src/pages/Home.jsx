@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiArrowRight, FiClock, FiHash, FiLock, FiShield, FiZap, FiCheck, FiUsers, FiBook } from "react-icons/fi";
 import { FileTransferIllustration } from "../components/Illustrations";
 import SEO from "../components/SEO";
+import posts from "../data/blogPosts.json";
 
 function Home() {
   const navigate = useNavigate();
@@ -424,10 +425,46 @@ function Home() {
           </div>
 
           <div className="si-card span-2">
+            <h3>📚 SendIt Blog</h3>
+            <p>Original in-depth guides on secure transfers, encryption, temporary access codes, QR sharing, file expiry policies and the sharing habits that prevent data leaks.</p>
+            <Link className="inline-resource-link" to="/blog">Read the Blog</Link>
+          </div>
+
+          <div className="si-card span-2">
             <h3>💬 Contact & Support</h3>
             <p>Have questions about SendIt? Run into an issue? Want to provide feedback? Reach out to our team directly. We respond to all support inquiries promptly.</p>
             <Link className="inline-resource-link" to="/contact">Contact Us</Link>
           </div>
+        </div>
+      </section>
+
+      {/* Latest articles */}
+      <section className="page-section">
+        <div style={{ marginBottom: "1.6rem" }}>
+          <span className="si-chip">From the Blog</span>
+          <h2 className="si-heading" style={{ marginTop: "1rem" }}>Guides on sharing files and code safely</h2>
+          <p className="si-subtitle" style={{ marginTop: "0.8rem", fontSize: "1.05rem" }}>
+            Practical, original writing about moving files between people without leaving copies behind.
+          </p>
+        </div>
+        <div className="si-grid">
+          {[...posts]
+            .sort((a, b) => (a.date < b.date ? 1 : -1))
+            .slice(0, 4)
+            .map((post) => (
+              <div className="si-card span-3" key={post.slug}>
+                <h3>{post.title}</h3>
+                <p>{post.description}</p>
+                <Link className="inline-resource-link" to={`/blog/${post.slug}`}>
+                  Read article
+                </Link>
+              </div>
+            ))}
+        </div>
+        <div style={{ marginTop: "1.25rem" }}>
+          <Link className="inline-resource-link" to="/blog">
+            Browse all articles
+          </Link>
         </div>
       </section>
 
