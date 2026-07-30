@@ -1,16 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FiArrowUpRight, FiChevronDown, FiClock, FiFileText, FiLock, FiLogOut, FiMenu, FiMoon, FiSun, FiX } from "react-icons/fi";
+import { FiArrowUpRight, FiChevronDown, FiClock, FiFileText, FiInbox, FiLock, FiLogOut, FiMenu, FiMoon, FiSun, FiX } from "react-icons/fi";
 import { AuthContext } from "../context/AuthContext";
 import AuthModal from "./AuthModel";
 
 const primaryLinks = [
-  { to: "/", label: "Home" },
   { to: "/send", label: "Send File" },
   { to: "/receive", label: "Receive File" },
   { to: "/code/send", label: "Send Code" },
   { to: "/code/receive", label: "Receive Code" },
-  { to: "/about", label: "About Us" },
+  { to: "/drop-rooms", label: "Drop Rooms" },
 ];
 
 function Navbar() {
@@ -20,11 +19,25 @@ function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const userMenuRef = useRef(null);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    if (userMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [userMenuOpen]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -37,28 +50,32 @@ function Navbar() {
     setUserMenuOpen(false);
   };
 
-  const closeMenu = () => setMobileMenuOpen(false);
+  const closeMenu = () => {
+    setMobileMenuOpen(false);
+  };
 
   return (
     <>
-      <header className="si-navbar">
-        <div className="si-navbar-inner">
-          <div className="si-brand" onClick={() => { navigate("/"); closeMenu(); }}>
-            
-            <div>
-              <div className="si-brand-wordmark">SendIt</div>
-              <div className="si-meta-label">Temporary Sharing</div>
+      <header className="navbar-container">
+        <div className="navbar-wrapper">
+          {/* Brand */}
+          <div className="navbar-brand" onClick={() => { navigate("/"); closeMenu(); }}>
+          
+            <div className="brand-text">
+              <div className="brand-name">SendIt</div>
+              <div className="brand-tagline">Share Securely</div>
             </div>
           </div>
 
-          <nav className="si-nav-links">
+          {/* Desktop Navigation */}
+          <nav className="navbar-nav">
             {primaryLinks.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
                 end={link.to === "/"}
                 className={({ isActive }) =>
-                  `si-nav-link${isActive ? " active" : ""}`
+                  `navbar-nav-link ${isActive ? "active" : ""}`
                 }
               >
                 {link.label}
@@ -66,110 +83,191 @@ function Navbar() {
             ))}
           </nav>
 
-          <div className="si-nav-actions">
-            <button className="si-theme-toggle" onClick={toggleTheme} type="button" aria-label="Toggle theme">
-              {theme === "light" ? <FiMoon /> : <FiSun />}
+          {/* Actions */}
+          <div className="navbar-actions">
+            {/* Theme Toggle */}
+            <button 
+              className="navbar-action-btn navbar-theme-toggle" 
+              onClick={toggleTheme} 
+              type="button" 
+              aria-label="Toggle theme"
+              title={theme === "light" ? "Dark mode" : "Light mode"}
+            >
+              {theme === "light" ? <FiMoon size={18} /> : <FiSun size={18} />}
             </button>
 
             {user ? (
               <>
-                <div className="si-user-menu-wrap">
+                {/* User Menu */}
+                <div className="navbar-user-menu" ref={userMenuRef}>
                   <button
-                    className="si-user-menu-trigger"
+                    className="navbar-user-trigger"
                     onClick={() => setUserMenuOpen((prev) => !prev)}
                     type="button"
+                    aria-expanded={userMenuOpen}
                   >
-                    <span className="si-nav-user">{user.name}</span>
-                    <FiChevronDown className={userMenuOpen ? "is-open" : ""} />
+                    <div className="user-avatar">{user.name?.charAt(0).toUpperCase() || "U"}</div>
+                    <span className="user-name">{user.name?.split(" ")[0]}</span>
+                    <FiChevronDown size={16} className={`chevron-icon ${userMenuOpen ? "open" : ""}`} />
                   </button>
 
                   {userMenuOpen && (
-                    <div className="si-user-dropdown">
+                    <div className="navbar-dropdown">
                       <NavLink
                         to="/my-files"
                         className={({ isActive }) =>
-                          `si-user-dropdown-link${isActive ? " active" : ""}`
+                          `navbar-dropdown-item ${isActive ? "active" : ""}`
                         }
                         onClick={() => setUserMenuOpen(false)}
                       >
-                        <FiFileText /> My Files
+                        <FiFileText size={16} />
+                        <span>My Files</span>
                       </NavLink>
                       <NavLink
                         to="/code/history"
                         className={({ isActive }) =>
-                          `si-user-dropdown-link${isActive ? " active" : ""}`
+                          `navbar-dropdown-item ${isActive ? "active" : ""}`
                         }
                         onClick={() => setUserMenuOpen(false)}
                       >
-                        <FiClock /> My Codes
+                        <FiClock size={16} />
+                        <span>My Codes</span>
                       </NavLink>
+                      <NavLink
+                        to="/drop-rooms"
+                        className={({ isActive }) =>
+                          `navbar-dropdown-item ${isActive ? "active" : ""}`
+                        }
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <FiInbox size={16} />
+                        <span>Drop Rooms</span>
+                      </NavLink>
+                      <div className="navbar-dropdown-divider"></div>
+                      <button 
+                        className="navbar-dropdown-item logout" 
+                        onClick={handleLogout}
+                        type="button"
+                      >
+                        <FiLogOut size={16} />
+                        <span>Logout</span>
+                      </button>
                     </div>
                   )}
                 </div>
-                <button className="si-button-ghost" onClick={handleLogout} type="button">
-                  <FiLogOut /> Logout
-                </button>
               </>
             ) : (
               <>
-                <button className="si-button-ghost si-auth-login" onClick={() => setOpen(true)} type="button">
-                  <FiLock /> Login
+                <button 
+                  className="navbar-action-btn navbar-login-btn" 
+                  onClick={() => setOpen(true)} 
+                  type="button"
+                >
+                  <FiLock size={16} />
+                  <span>Login</span>
                 </button>
-                <button className="si-button si-auth-start" onClick={() => navigate("/send")} type="button">
-                  Get Started <FiArrowUpRight />
+                <button 
+                  className="navbar-action-btn navbar-cta-btn" 
+                  onClick={() => navigate("/send")} 
+                  type="button"
+                >
+                  Get Started
+                  <FiArrowUpRight size={16} />
                 </button>
               </>
             )}
 
+            {/* Mobile Menu Toggle */}
             <button
-              className="si-theme-toggle si-mobile-toggle"
+              className="navbar-mobile-toggle"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
               type="button"
               aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <FiX /> : <FiMenu />}
+              {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
             </button>
           </div>
         </div>
 
+        {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="si-mobile-menu">
-            {primaryLinks.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                end={link.to === "/"}
-                className={({ isActive }) =>
-                  `si-nav-link${isActive ? " active" : ""}`
-                }
-                onClick={closeMenu}
-              >
-                {link.label}
-              </NavLink>
-            ))}
+          <div className="navbar-mobile-menu">
+            <nav className="mobile-nav">
+              {primaryLinks.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  end={link.to === "/"}
+                  className={({ isActive }) =>
+                    `mobile-nav-link ${isActive ? "active" : ""}`
+                  }
+                  onClick={closeMenu}
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+            </nav>
+
             {user && (
-              <>
-                <NavLink to="/my-files" className="si-nav-link" onClick={closeMenu}>My Files</NavLink>
-                <NavLink to="/code/history" className="si-nav-link" onClick={closeMenu}>Code History</NavLink>
-              </>
+              <div className="mobile-user-section">
+                <div className="mobile-user-header">
+                  <div className="mobile-user-avatar">{user.name?.charAt(0).toUpperCase() || "U"}</div>
+                  <div className="mobile-user-info">
+                    <div className="mobile-user-name">{user.name}</div>
+                    <div className="mobile-user-email">{user.email || "User"}</div>
+                  </div>
+                </div>
+                <NavLink to="/my-files" className="mobile-user-link" onClick={closeMenu}>
+                  <FiFileText size={16} /> My Files
+                </NavLink>
+                <NavLink to="/code/history" className="mobile-user-link" onClick={closeMenu}>
+                  <FiClock size={16} /> My Codes
+                </NavLink>
+                <NavLink to="/drop-rooms" className="mobile-user-link" onClick={closeMenu}>
+                  <FiInbox size={16} /> Drop Rooms
+                </NavLink>
+                <button className="mobile-user-link logout" onClick={handleLogout} type="button">
+                  <FiLogOut size={16} /> Logout
+                </button>
+              </div>
             )}
-            <button className="si-button-ghost" onClick={toggleTheme} type="button">
-              {theme === "light" ? <FiMoon /> : <FiSun />} {theme === "light" ? "Dark Mode" : "Light Mode"}
-            </button>
-            {user ? (
-              <button className="si-button-ghost" onClick={handleLogout} type="button">
-                <FiLogOut /> Logout
+
+            <div className="mobile-actions">
+              <button 
+                className="mobile-theme-toggle" 
+                onClick={toggleTheme} 
+                type="button"
+              >
+                {theme === "light" ? (
+                  <>
+                    <FiMoon size={16} /> Dark Mode
+                  </>
+                ) : (
+                  <>
+                    <FiSun size={16} /> Light Mode
+                  </>
+                )}
               </button>
-            ) : (
-              <>
-                <button className="si-button-ghost si-auth-login" onClick={() => { setOpen(true); closeMenu(); }} type="button">
-                  <FiLock /> Login
-                </button>
-                <button className="si-button si-auth-start" onClick={() => { navigate("/send"); closeMenu(); }} type="button">
-                  Get Started <FiArrowUpRight />
-                </button>
-              </>
-            )}
+              {!user && (
+                <>
+                  <button 
+                    className="mobile-login-btn" 
+                    onClick={() => { setOpen(true); closeMenu(); }} 
+                    type="button"
+                  >
+                    <FiLock size={16} /> Login
+                  </button>
+                  <button 
+                    className="mobile-cta-btn" 
+                    onClick={() => { navigate("/send"); closeMenu(); }} 
+                    type="button"
+                  >
+                    Get Started <FiArrowUpRight size={16} />
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         )}
       </header>
