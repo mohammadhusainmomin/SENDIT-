@@ -4,6 +4,7 @@ import { FiCheck, FiCopy, FiRefreshCw, FiSend, FiUploadCloud } from "react-icons
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
 import CountdownTimer from "./CountdownTimer";
+import { MobileAdGate } from "./AdUnits";
 
 function FileUpload({
   expiresInHours,
@@ -19,6 +20,7 @@ function FileUpload({
   const [copied, setCopied] = useState(false);
   const [totalExpiryMinutes, setTotalExpiryMinutes] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showAdGate, setShowAdGate] = useState(false);
   const inputRef = useRef(null);
   const { success, error: showError } = useToast();
 
@@ -62,7 +64,7 @@ function FileUpload({
     }
   };
 
-  const handleSend = async () => {
+  const performUpload = async () => {
     if (files.length === 0) {
       showError("Please select at least one file");
       return;
@@ -114,6 +116,15 @@ function FileUpload({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleUploadAction = () => {
+    setShowAdGate(true);
+  };
+
+  const handleAdContinue = () => {
+    setShowAdGate(false);
+    performUpload();
   };
 
   const handleReset = () => {
@@ -238,7 +249,7 @@ function FileUpload({
           </div>
           <button
             className="si-button expiry-send-button send-upload-button"
-            onClick={handleSend}
+            onClick={handleUploadAction}
             disabled={files.length === 0 || loading || isMaxTimeExceeded()}
             type="button"
           >
@@ -246,6 +257,7 @@ function FileUpload({
           </button>
         </div>
       </div>
+      <MobileAdGate open={showAdGate} onContinue={handleAdContinue} title="Sponsored Message" />
     </div>
   );
 }

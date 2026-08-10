@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FiCode, FiCopy, FiRefreshCw, FiTrash2, FiUser, FiZap } from "react-icons/fi";
 import api from "../services/api";
 import CountdownTimer from "../components/CountdownTimer";
+import { MobileAdGate } from "../components/AdUnits";
 import SEO from "../components/SEO";
 import ScrollValuePicker from "../components/ScrollValuePicker";
 import { useAuth } from "../context/AuthContext";
@@ -17,6 +18,7 @@ function CodeShare() {
   const [totalExpiryMinutes, setTotalExpiryMinutes] = useState(0);
   const [expiresInHours, setExpiresInHours] = useState("0");
   const [expiresInMinutes, setExpiresInMinutes] = useState("10");
+  const [showAdGate, setShowAdGate] = useState(false);
   const formatTimeoutRef = useRef(null);
   const { success, error } = useToast();
   const { user } = useAuth();
@@ -59,7 +61,7 @@ function CodeShare() {
 
   const isMaxTimeExceeded = () => calculateTotalMinutes() > 1440;
 
-  const handleSend = async () => {
+  const performSend = async () => {
     if (!rawCode.trim()) {
       error("Please paste some code first");
       return;
@@ -92,6 +94,15 @@ function CodeShare() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSend = () => {
+    setShowAdGate(true);
+  };
+
+  const handleAdContinue = () => {
+    setShowAdGate(false);
+    performSend();
   };
 
   const handleReset = () => {
@@ -231,6 +242,7 @@ function CodeShare() {
             <button className="si-button" onClick={handleSend} disabled={loading || !rawCode.trim() || isMaxTimeExceeded()} type="button">
               <FiZap /> {loading ? "Generating..." : "Generate Share Code"}
             </button>
+            <MobileAdGate open={showAdGate} onContinue={handleAdContinue} title="Sponsored Message" />
 
             {rawCode && !shareCode && (
               <button className="si-button-secondary" onClick={handleReset} type="button">

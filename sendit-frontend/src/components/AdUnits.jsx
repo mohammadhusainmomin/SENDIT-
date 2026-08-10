@@ -24,7 +24,7 @@ const DISPLAY_ADS = {
   },
 };
 
-function useMediaQuery(query, fallback = false) {
+export function useMediaQuery(query, fallback = false) {
   const [matches, setMatches] = useState(() => {
     if (typeof window === "undefined" || !window.matchMedia) {
       return fallback;
@@ -94,7 +94,7 @@ function buildDisplayAdSrcDoc({ key, width, height }) {
 </html>`;
 }
 
-function DisplayAdFrame({ ad }) {
+export function DisplayAdFrame({ ad }) {
   const srcDoc = useMemo(() => buildDisplayAdSrcDoc(ad), [ad]);
 
   return (
@@ -112,6 +112,56 @@ function DisplayAdFrame({ ad }) {
         "--sendit-ad-height": `${ad.height}px`,
       }}
     />
+  );
+}
+
+export function MobileAdGate({ open, onContinue, title = "Sponsored Message" }) {
+  const [secondsLeft, setSecondsLeft] = useState(5);
+
+  useEffect(() => {
+    if (!open) {
+      setSecondsLeft(5);
+      return undefined;
+    }
+
+    setSecondsLeft(5);
+
+    const timer = window.setInterval(() => {
+      setSecondsLeft((current) => Math.max(current - 1, 0));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [open]);
+
+  if (!open) {
+    return null;
+  }
+
+  const canContinue = secondsLeft === 0;
+
+  return (
+    <div className="mobile-ad-gate" role="dialog" aria-modal="true" aria-labelledby="mobile-ad-gate-title">
+      <div className="mobile-ad-gate__panel">
+        <div className="mobile-ad-gate__header">
+          <span className="si-chip">Ad</span>
+          <strong id="mobile-ad-gate-title">{title}</strong>
+        </div>
+
+        <div className="mobile-ad-gate__slot">
+          <DisplayAdFrame key={open ? "mobile-ad-gate-open" : "mobile-ad-gate-closed"} ad={DISPLAY_ADS.rectangle} />
+        </div>
+
+        <div className="mobile-ad-gate__footer">
+          {canContinue ? (
+            <button className="si-button mobile-ad-gate__button" onClick={onContinue} type="button">
+              Skip and Continue
+            </button>
+          ) : (
+            <div className="mobile-ad-gate__countdown">Continue in {secondsLeft}s</div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
