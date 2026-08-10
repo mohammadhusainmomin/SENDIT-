@@ -106,7 +106,7 @@ function DisplayAdFrame({ ad }) {
       height={ad.height}
       loading="lazy"
       scrolling="no"
-      sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms allow-top-navigation-by-user-activation"
+      sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms allow-top-navigation-by-user-activation"
       style={{
         "--sendit-ad-width": `${ad.width}px`,
         "--sendit-ad-height": `${ad.height}px`,
