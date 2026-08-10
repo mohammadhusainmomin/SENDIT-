@@ -18,6 +18,8 @@ const path = require("path");
 const SITE = "https://senditsystem.netlify.app";
 const BUILD_DIR = path.join(__dirname, "..", "build");
 const TEMPLATE = path.join(BUILD_DIR, "index.html");
+const ADSTERRA_POPUNDER_SRC =
+  "https://pl30781420.effectivecpmnetwork.com/b5/cc/1e/b5cc1e5eeaa32d60ebc552f38326c580.js";
 const posts = require(path.join(__dirname, "..", "src", "data", "blogPosts.json"));
 
 const escapeHtml = (value) =>
@@ -26,6 +28,23 @@ const escapeHtml = (value) =>
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+
+const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+function keepPopunderLastInHead(html) {
+  const popunderPattern = new RegExp(
+    `\\s*(?:<!-- Adsterra Popunder -->\\s*)?<script src="${escapeRegExp(
+      ADSTERRA_POPUNDER_SRC
+    )}"></script>`,
+    "g"
+  );
+  const htmlWithoutPopunder = html.replace(popunderPattern, "");
+
+  return htmlWithoutPopunder.replace(
+    "</head>",
+    `    <!-- Adsterra Popunder -->\n    <script src="${ADSTERRA_POPUNDER_SRC}"></script>\n  </head>`
+  );
+}
 
 const staticPages = [
   {
@@ -291,7 +310,14 @@ function buildHtml(template, page) {
   const extraHead = page.jsonLd
     ? `\n    <script type="application/ld+json">${JSON.stringify(page.jsonLd)}</script>`
     : "";
-  html = html.replace("</head>", `${extraHead}\n  </head>`);
+
+  if (extraHead && html.includes("<!-- Adsterra Popunder -->")) {
+    html = html.replace("    <!-- Adsterra Popunder -->", `${extraHead}\n    <!-- Adsterra Popunder -->`);
+  } else {
+    html = html.replace("</head>", `${extraHead}\n  </head>`);
+  }
+
+  html = keepPopunderLastInHead(html);
 
   const nav = [
     ["/", "Home"],

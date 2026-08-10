@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CookieConsent from "./components/CookieConsent";
 import ToastContainer from "./components/ToastContainer";
+import AdUnits from "./components/AdUnits";
 import { ToastProvider } from "./context/ToastContext";
 import "./styles/global.css";
 import "./styles/Redesign.css";
@@ -61,6 +62,7 @@ function App() {
             </main>
           </Suspense>
           <CookieConsent />
+          <AdUnits />
           <Footer />
         </div>
       </BrowserRouter>
