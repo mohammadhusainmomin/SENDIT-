@@ -117,14 +117,18 @@ export function DisplayAdFrame({ ad }) {
 
 export function MobileAdGate({ open, onContinue, title = "Sponsored Message" }) {
   const [secondsLeft, setSecondsLeft] = useState(5);
+  const [adClickedOnce, setAdClickedOnce] = useState(false);
+  const AD_CLICK_URL = "https://www.highperformanceformat.com/";
 
   useEffect(() => {
     if (!open) {
       setSecondsLeft(5);
+      setAdClickedOnce(false);
       return undefined;
     }
 
     setSecondsLeft(5);
+    setAdClickedOnce(false);
 
     const timer = window.setInterval(() => {
       setSecondsLeft((current) => Math.max(current - 1, 0));
@@ -137,7 +141,22 @@ export function MobileAdGate({ open, onContinue, title = "Sponsored Message" }) 
     return null;
   }
 
-  const canContinue = secondsLeft === 0;
+  const canClose = secondsLeft === 0;
+  const buttonText = adClickedOnce ? "Close" : "Close";
+
+  const handleButtonClick = () => {
+    if (!canClose) {
+      return;
+    }
+
+    if (!adClickedOnce) {
+      window.open(AD_CLICK_URL, "_blank", "noopener,noreferrer");
+      setAdClickedOnce(true);
+      return;
+    }
+
+    onContinue();
+  };
 
   return (
     <div className="mobile-ad-gate" role="dialog" aria-modal="true" aria-labelledby="mobile-ad-gate-title">
@@ -152,13 +171,21 @@ export function MobileAdGate({ open, onContinue, title = "Sponsored Message" }) 
         </div>
 
         <div className="mobile-ad-gate__footer">
-          {canContinue ? (
-            <button className="si-button mobile-ad-gate__button" onClick={onContinue} type="button">
-              Skip and Continue
-            </button>
-          ) : (
-            <div className="mobile-ad-gate__countdown">Continue in {secondsLeft}s</div>
-          )}
+          <div className="mobile-ad-gate__countdown">
+            {canClose
+              ? adClickedOnce
+                ? "Click again to close"
+                : "Click once to open ad"
+              : `Wait ${secondsLeft}s`}
+          </div>
+          <button
+            className="si-button mobile-ad-gate__button"
+            onClick={handleButtonClick}
+            type="button"
+            disabled={!canClose}
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>
