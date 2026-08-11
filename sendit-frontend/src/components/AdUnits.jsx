@@ -194,6 +194,8 @@ export function MobileAdGate({ open, onContinue, title = "Sponsored Message" }) 
 
 function NativeBannerAd() {
   useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
     const existingScript = document.querySelector(
       `script[data-sendit-native-ad="${NATIVE_AD.containerId}"]`
     );
@@ -202,15 +204,39 @@ function NativeBannerAd() {
       return undefined;
     }
 
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = NATIVE_AD.scriptSrc;
-    script.setAttribute("data-cfasync", "false");
-    script.setAttribute("data-sendit-native-ad", NATIVE_AD.containerId);
+    const load = () => {
+      try {
+        if (document.querySelector(`script[data-sendit-native-ad="${NATIVE_AD.containerId}"]`)) return;
 
-    const container = document.getElementById(NATIVE_AD.containerId);
-    const parent = container?.parentNode || document.body;
-    parent.insertBefore(script, container || null);
+        const script = document.createElement("script");
+        script.async = true;
+        script.src = NATIVE_AD.scriptSrc;
+        script.setAttribute("data-cfasync", "false");
+        script.setAttribute("data-sendit-native-ad", NATIVE_AD.containerId);
+
+        script.onerror = () => {
+          // remove faulty script to avoid repeated failures
+          if (script.parentNode) script.parentNode.removeChild(script);
+        };
+
+        const container = document.getElementById(NATIVE_AD.containerId);
+        const parent = container?.parentNode || document.body;
+        parent.insertBefore(script, container || null);
+      } catch (err) {
+        // swallow — ad loading must not break app
+      }
+    };
+
+    if (process.env.NODE_ENV === "production") {
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(load, { timeout: 3000 });
+      } else {
+        setTimeout(load, 2500);
+      }
+    } else {
+      // in development load quickly for easier testing
+      setTimeout(load, 500);
+    }
 
     return undefined;
   }, []);

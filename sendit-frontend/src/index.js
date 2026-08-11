@@ -22,6 +22,31 @@ const loadAnalytics = () => {
   window.gtag("config", GA_ID, { transport_type: "beacon" });
 };
 
+// Suppress noisy errors coming from browser extensions or injected third-party scripts
+window.addEventListener('error', (e) => {
+  try {
+    if (e && e.filename && e.filename.startsWith && e.filename.startsWith('chrome-extension://')) {
+      e.preventDefault();
+      return true;
+    }
+  } catch (err) {
+    // ignore
+  }
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+  try {
+    const reason = e && e.reason;
+    const stack = reason && reason.stack ? reason.stack.toString() : '';
+    if ((typeof reason === 'string' && reason.includes('chrome-extension://')) || stack.includes('chrome-extension://')) {
+      e.preventDefault();
+      return true;
+    }
+  } catch (err) {
+    // ignore
+  }
+});
+
 if (process.env.NODE_ENV === "production") {
   const scheduleAnalytics = () => {
     if ("requestIdleCallback" in window) {

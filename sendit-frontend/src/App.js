@@ -1,5 +1,6 @@
 import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ErrorBoundary from "./components/ErrorBoundary";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CookieConsent from "./components/CookieConsent";
@@ -37,8 +38,9 @@ function App() {
           <Navbar />
           <ToastContainer />
 
-          <Suspense fallback={<div className="route-loading">Loading...</div>}>
-            <main className="app-main">
+          <ErrorBoundary>
+            <Suspense fallback={<div className="route-loading">Loading...</div>}>
+              <main className="app-main">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/send" element={<Send />} />
@@ -59,8 +61,9 @@ function App() {
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </main>
-          </Suspense>
+              </main>
+            </Suspense>
+          </ErrorBoundary>
           <CookieConsent />
           <AdUnits />
           <Footer />
