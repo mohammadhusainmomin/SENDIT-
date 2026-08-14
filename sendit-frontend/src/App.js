@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import CookieConsent from "./components/CookieConsent";
 import ToastContainer from "./components/ToastContainer";
 import AdUnits from "./components/AdUnits";
+import ScrollToTop from "./components/ScrollToTop";
 import { ToastProvider } from "./context/ToastContext";
 import "./styles/global.css";
 import "./styles/Redesign.css";
@@ -34,6 +35,7 @@ function App() {
   return (
     <ToastProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <div className="app-shell">
           <Navbar />
           <ToastContainer />

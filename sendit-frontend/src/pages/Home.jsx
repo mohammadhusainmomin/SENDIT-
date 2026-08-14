@@ -1,8 +1,23 @@
 import { Link, useNavigate } from "react-router-dom";
-import { FiArrowRight, FiClock, FiHash, FiLock, FiShield, FiZap, FiCheck, FiUsers, FiBook } from "react-icons/fi";
+import { FiArrowRight, FiCalendar, FiClock, FiHash, FiLock, FiShield, FiZap, FiCheck, FiUsers, FiBook } from "react-icons/fi";
 import { FileTransferIllustration } from "../components/Illustrations";
 import SEO from "../components/SEO";
 import posts from "../data/blogPosts.json";
+
+const blogDateFormatter = new Intl.DateTimeFormat("en", {
+  month: "short",
+  day: "numeric",
+});
+
+function formatBlogDate(date) {
+  const parsedDate = new Date(`${date}T00:00:00`);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return date;
+  }
+
+  return blogDateFormatter.format(parsedDate);
+}
 
 function Home() {
   const navigate = useNavigate();
@@ -61,6 +76,9 @@ function Home() {
       ],
     },
   ];
+  const latestPosts = [...posts]
+    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .slice(0, 4);
 
   return (
     <div className="page-shell">
@@ -295,7 +313,7 @@ function Home() {
       </section>
 
       {/* Security & Privacy */}
-      <section className="page-section" style={{ background: "linear-gradient(135deg, rgba(13, 71, 161, 0.05), rgba(16, 185, 129, 0.05))" }}>
+      <section className="page-section" >
         <div style={{ marginBottom: "1.6rem" }}>
           <span className="si-chip">Security & Privacy</span>
           <h2 className="si-heading" style={{ marginTop: "1rem" }}>Your Data Is Protected</h2>
@@ -439,32 +457,53 @@ function Home() {
       </section>
 
       {/* Latest articles */}
-      <section className="page-section">
-        <div style={{ marginBottom: "1.6rem" }}>
-          <span className="si-chip">From the Blog</span>
-          <h2 className="si-heading" style={{ marginTop: "1rem" }}>Guides on sharing files and code safely</h2>
-          <p className="si-subtitle" style={{ marginTop: "0.8rem", fontSize: "1.05rem" }}>
-            Practical, original writing about moving files between people without leaving copies behind.
-          </p>
-        </div>
-        <div className="si-grid">
-          {[...posts]
-            .sort((a, b) => (a.date < b.date ? 1 : -1))
-            .slice(0, 4)
-            .map((post) => (
-              <div className="si-card span-3" key={post.slug}>
-                <h3>{post.title}</h3>
-                <p>{post.description}</p>
-                <Link className="inline-resource-link" to={`/blog/${post.slug}`}>
-                  Read article
-                </Link>
-              </div>
-            ))}
-        </div>
-        <div style={{ marginTop: "1.25rem" }}>
-          <Link className="inline-resource-link" to="/blog">
-            Browse all articles
+      <section className="page-section " aria-labelledby="home-blog-title">
+        <div className="home-blog-header">
+          <div className="home-blog-header-copy">
+            <span className="si-chip">From the Blog</span>
+            <h2 id="home-blog-title" className="si-heading">Guides on sharing files and code safely</h2>
+            <p className="si-subtitle">
+              Practical, original writing about moving files between people without leaving copies behind.
+            </p>
+          </div>
+
+          <Link className="si-button-secondary home-blog-header-link" to="/blog">
+            Browse all articles <FiArrowRight aria-hidden="true" />
           </Link>
+        </div>
+
+        <div className="home-blog-grid">
+          {latestPosts.map((post, index) => (
+            <Link
+              aria-label={`Read article: ${post.title}`}
+              className="home-blog-card"
+              key={post.slug}
+              to={`/blog/${post.slug}`}
+            >
+              <div className="home-blog-card-top">
+                <span className="home-blog-index">{String(index + 1).padStart(2, "0")}</span>
+                <span className="home-blog-tag">{post.tags?.[0] || "Guide"}</span>
+              </div>
+
+              <h3>{post.title}</h3>
+              <p>{post.description}</p>
+
+              <div className="home-blog-meta">
+                <span>
+                  <FiCalendar aria-hidden="true" />
+                  {formatBlogDate(post.date)}
+                </span>
+                <span>
+                  <FiClock aria-hidden="true" />
+                  {post.readTime}
+                </span>
+              </div>
+
+              <span className="home-blog-read">
+                Read article <FiArrowRight aria-hidden="true" />
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 
