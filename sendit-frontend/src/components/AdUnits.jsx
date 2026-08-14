@@ -24,6 +24,9 @@ const DISPLAY_ADS = {
   },
 };
 
+const SMARTLINK_URL =
+  "https://www.effectivecpmnetwork.com/n6nm1kfv6?key=1aeeef1ae3f8beb331ab2d03f8d60d26";
+
 export function useMediaQuery(query, fallback = false) {
   const [matches, setMatches] = useState(() => {
     if (typeof window === "undefined" || !window.matchMedia) {
@@ -118,7 +121,6 @@ export function DisplayAdFrame({ ad }) {
 export function MobileAdGate({ open, onContinue, title = "Sponsored Message" }) {
   const [secondsLeft, setSecondsLeft] = useState(5);
   const [adClickedOnce, setAdClickedOnce] = useState(false);
-  const AD_CLICK_URL = "https://www.highperformanceformat.com/";
 
   useEffect(() => {
     if (!open) {
@@ -142,7 +144,6 @@ export function MobileAdGate({ open, onContinue, title = "Sponsored Message" }) 
   }
 
   const canClose = secondsLeft === 0;
-  const buttonText = adClickedOnce ? "Close" : "Close";
 
   const handleButtonClick = () => {
     if (!canClose) {
@@ -150,7 +151,7 @@ export function MobileAdGate({ open, onContinue, title = "Sponsored Message" }) 
     }
 
     if (!adClickedOnce) {
-      window.open(AD_CLICK_URL, "_blank", "noopener,noreferrer");
+      window.open(SMARTLINK_URL, "_blank", "noopener,noreferrer");
       setAdClickedOnce(true);
       return;
     }
