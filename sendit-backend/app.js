@@ -12,6 +12,7 @@ import fileRoutes from "./routes/file.routes.js";
 import codeRoutes from "./routes/code.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import contactRoutes from "./routes/contact.routes.js";
+import dropRoomRoutes from "./routes/dropRoom.routes.js";
 
 
 connectDB();
@@ -53,7 +54,15 @@ app.use("/api/auth", authRoutes);
 app.use("/api", fileRoutes);
 app.use("/api", codeRoutes);
 app.use("/api", contactRoutes);
+app.use("/api", dropRoomRoutes);
 app.use("/api/admin", adminRoutes);
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    message: "SENDIT server is running"
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
