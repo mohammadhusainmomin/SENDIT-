@@ -50,7 +50,7 @@ function CodeSend() {
 
     try {
       setLoading(true);
-      const formatted = formatCode(codeText);
+      const formatted = formatCode(codeText, "auto-detect");
       const expiresIn = calculateTotalMinutes();
 
       const res = await api.post("/code/send", {

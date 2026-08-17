@@ -1,0 +1,114 @@
+/**
+ * Syntax Highlighter Styles
+ * Language-specific code display styling
+ */
+
+.syntax-highlighter {
+  width: 100%;
+  border-radius: 1.5rem;
+  background: #11181f;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.syntax-highlighter-label {
+  padding: 0.75rem 1.4rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(220, 230, 242, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.syntax-highlighter-code {
+  margin: 0;
+  padding: 1.4rem;
+  overflow-x: auto;
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #dce6f2;
+  white-space: pre;
+  word-break: break-word;
+  word-wrap: break-word;
+  tab-size: 2;
+  -moz-tab-size: 2;
+}
+
+.syntax-highlighter code {
+  font-family: 'Courier New', 'Monaco', monospace;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Language-specific base colors */
+.syntax-highlighter.language-javascript .syntax-highlighter-code,
+.syntax-highlighter.language-typescript .syntax-highlighter-code,
+.syntax-highlighter.language-jsx .syntax-highlighter-code,
+.syntax-highlighter.language-tsx .syntax-highlighter-code {
+  color: #dce6f2;
+}
+
+.syntax-highlighter.language-python .syntax-highlighter-code {
+  color: #dce6f2;
+}
+
+.syntax-highlighter.language-java .syntax-highlighter-code {
+  color: #dce6f2;
+}
+
+.syntax-highlighter.language-c .syntax-highlighter-code,
+.syntax-highlighter.language-cpp .syntax-highlighter-code {
+  color: #dce6f2;
+}
+
+.syntax-highlighter.language-csharp .syntax-highlighter-code {
+  color: #dce6f2;
+}
+
+.syntax-highlighter.language-php .syntax-highlighter-code {
+  color: #dce6f2;
+}
+
+.syntax-highlighter.language-html .syntax-highlighter-code {
+  color: #dce6f2;
+}
+
+.syntax-highlighter.language-css .syntax-highlighter-code {
+  color: #dce6f2;
+}
+
+.syntax-highlighter.language-json .syntax-highlighter-code {
+  color: #dce6f2;
+}
+
+.syntax-highlighter.language-plaintext .syntax-highlighter-code {
+  color: #dce6f2;
+}
+
+/* Scrollbar styling */
+.syntax-highlighter-code::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.syntax-highlighter-code::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.syntax-highlighter-code::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.syntax-highlighter-code::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Firefox scrollbar */
+.syntax-highlighter-code {
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-width: thin;
+}

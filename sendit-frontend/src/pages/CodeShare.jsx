@@ -5,13 +5,17 @@ import CountdownTimer from "../components/CountdownTimer";
 import { MobileAdGate } from "../components/AdUnits";
 import SEO from "../components/SEO";
 import ScrollValuePicker from "../components/ScrollValuePicker";
+import LanguageSelector from "../components/LanguageSelector";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
-import { formatCode } from "../utils/formatCode";
+import { formatCode } from "../utils/multiLanguageFormatter";
+import { detectLanguage } from "../utils/detectLanguage";
 
 function CodeShare() {
   const [rawCode, setRawCode] = useState("");
   const [formattedCode, setFormattedCode] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("auto-detect");
+  const [detectedLanguage, setDetectedLanguage] = useState("plaintext");
   const [shareCode, setShareCode] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,19 +36,33 @@ function CodeShare() {
 
     if (!rawCode.trim()) {
       setFormattedCode("");
+      setDetectedLanguage("plaintext");
       return;
     }
 
-    formatTimeoutRef.current = setTimeout(() => {
+    formatTimeoutRef.current = setTimeout(async () => {
       try {
-        setFormattedCode(formatCode(rawCode));
+        // Auto-detect language if not manually selected
+        let languageToUse = selectedLanguage;
+        if (selectedLanguage === "auto-detect") {
+          const detected = detectLanguage(rawCode);
+          setDetectedLanguage(detected);
+          languageToUse = detected;
+        } else {
+          setDetectedLanguage(selectedLanguage);
+        }
+
+        // Format code using language-aware formatter (with Prettier support)
+        const formatted = await formatCode(rawCode, languageToUse);
+        setFormattedCode(formatted);
       } catch (err) {
+        console.error("Formatting error:", err);
         setFormattedCode(rawCode);
       }
     }, 400);
 
     return () => clearTimeout(formatTimeoutRef.current);
-  }, [rawCode]);
+  }, [rawCode, selectedLanguage]);
 
   const calculateTotalMinutes = () => {
     const hours = parseInt(expiresInHours, 10) || 0;
@@ -80,8 +98,16 @@ function CodeShare() {
     setLoading(true);
     try {
       const expiresIn = calculateTotalMinutes();
+      
+      // Determine the language to send to backend
+      let languageToSend = selectedLanguage;
+      if (selectedLanguage === "auto-detect") {
+        languageToSend = detectedLanguage || "auto-detect";
+      }
+      
       const response = await api.post("/code/send", {
         content: formattedCode || rawCode,
+        language: languageToSend,
         expiresIn,
       });
 
@@ -108,6 +134,8 @@ function CodeShare() {
   const handleReset = () => {
     setRawCode("");
     setFormattedCode("");
+    setSelectedLanguage("auto-detect");
+    setDetectedLanguage("plaintext");
     setShareCode("");
     setExpiresAt("");
     setTotalExpiryMinutes(0);
@@ -201,6 +229,13 @@ function CodeShare() {
           <aside className="work-sidebar">
             <div className="settings-card si-card">
               <h3>Settings</h3>
+              
+              <LanguageSelector 
+                value={selectedLanguage} 
+                onChange={setSelectedLanguage}
+                disabled={loading}
+              />
+
               <div className="wheel-panel" style={{ marginTop: "1rem" }}>
                 <div className="wheel-column">
                   <div className="wheel-value">

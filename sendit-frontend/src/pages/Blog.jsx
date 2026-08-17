@@ -29,7 +29,10 @@ export default function Blog() {
     return ["All", ...Array.from(set).sort()];
   }, []);
 
-  const visible = topic === "All" ? sorted : sorted.filter((post) => post.tags.includes(topic));
+  const visible =
+    topic === "All"
+      ? sorted
+      : sorted.filter((post) => post.tags.includes(topic));
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -61,12 +64,14 @@ export default function Blog() {
 
       <div className="blog-page">
         <header className="blog-hero">
-          <span className="blog-kicker">SendIt Library</span>
-          <h1>Guides on sharing files and code without leaving a trail</h1>
+          <span className="blog-kicker">SENDIT Blog</span>
+
+          <h1>Secure File Sharing, Transfer & Privacy Guides</h1>
+
           <p>
-            Practical, independently written articles about secure transfers, temporary access codes,
-            encryption, expiry policies and the everyday habits that keep shared data from leaking. No
-            reposted content, no filler.
+            Practical guides to secure file sharing, encrypted transfers,
+            temporary access codes, file expiry, and safer ways to share
+            sensitive data.
           </p>
         </header>
 
@@ -85,10 +90,19 @@ export default function Blog() {
 
         <div className="blog-grid">
           {visible.map((post) => (
-            <Link className="blog-card" key={post.slug} to={`/blog/${post.slug}`}>
+            <Link
+              className="blog-card"
+              key={post.slug}
+              to={`/blog/${post.slug}`}
+            >
               <div className="blog-card-meta">
                 <span>{formatDate(post.date)}</span>
                 <span>{post.readTime}</span>
+              </div>
+              <div className="blog-card-tags">
+                {post.tags.slice(0, 2).map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
               </div>
               <h2>{post.title}</h2>
               <p>{post.description}</p>

@@ -1,13 +1,95 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import Code from "../models/Code.js";
 import CodeHistory from "../models/CodeHistory.js";
 import { encryptText, decryptText } from "../utils/encryption.utils.js";
 import { generateUniqueCode } from "../utils/codeGenerator.utils.js";
 import { resolveExpiryWindow } from "../utils/expiry.utils.js";
 
+const execFileAsync = promisify(execFile);
+
+const repairPythonIndentation = (content) => {
+  const lines = content.split(/\r?\n/);
+  const repaired = [];
+  let indentLevel = 0;
+  const blockKeywords = /^(?:async\s+def|def|class|if|elif|else|for|while|try|except|finally|with|match|case)\b/;
+  const inlineBlockKeywords = /^(?:if|for|while|with|try|except|finally|def|class|elif|else)\b/;
+
+  for (const rawLine of lines) {
+    const trimmed = rawLine.trim();
+
+    if (!trimmed || trimmed.startsWith("#")) {
+      repaired.push(rawLine);
+      continue;
+    }
+
+    const startsWithClause = /^(?:elif|else|except|finally)\b/.test(trimmed);
+
+    if (startsWithClause && indentLevel > 0) {
+      indentLevel = Math.max(0, indentLevel - 1);
+    }
+
+    const indent = " ".repeat(indentLevel * 4);
+    repaired.push(`${indent}${trimmed}`);
+
+    const isBlockStarter = trimmed.endsWith(":") && (blockKeywords.test(trimmed) || inlineBlockKeywords.test(trimmed));
+    if (isBlockStarter) {
+      indentLevel += 1;
+    }
+  }
+
+  return repaired.join("\n");
+};
+
+export const formatCodeForLanguage = async (req, res) => {
+  try {
+    const { content, language } = req.body;
+
+    if (!content || typeof content !== "string") {
+      return res.status(400).json({ message: "Code content is required" });
+    }
+
+    const normalizedLanguage = (language || "auto-detect").toLowerCase();
+
+    if (normalizedLanguage !== "python") {
+      return res.json({ formattedContent: content, language: normalizedLanguage });
+    }
+
+    const repairedContent = repairPythonIndentation(content);
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "sendit-python-"));
+    const tempFile = path.join(tempDir, "snippet.py");
+
+    await fs.writeFile(tempFile, repairedContent, "utf8");
+
+    try {
+      await execFileAsync("python", ["-m", "black", "--quiet", tempFile], {
+        cwd: tempDir,
+      });
+
+      const formattedContent = await fs.readFile(tempFile, "utf8");
+      return res.json({ formattedContent, language: "python" });
+    } catch (error) {
+      const message = error?.stderr || error?.message || "Python formatting failed";
+      return res.status(500).json({
+        message: "Python formatting is unavailable on the server.",
+        details: message,
+      });
+    } finally {
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  } catch (error) {
+    console.error("FORMAT CODE ERROR:", error);
+    res.status(500).json({ message: "Failed to format code" });
+  }
+};
+
 /* ================= SEND CODE ================= */
 export const sendCode = async (req, res) => {
   try {
-    const { content, expiresIn } = req.body;
+    const { content, expiresIn, language } = req.body;
 
     if (!content) {
       return res.status(400).json({ message: "Code is required" });
@@ -26,15 +108,20 @@ export const sendCode = async (req, res) => {
 
     const encryptedContent = encryptText(content);
 
-
     const senderId = req.user?._id || null;
     const senderEmail = req.user?.email || null;
     const senderName = req.user?.name || "Guest User";
     const senderType = req.user ? "authenticated" : "guest";
 
+    // Normalize and validate language
+    const normalizedLanguage = language && language !== "auto-detect" 
+      ? language.toLowerCase() 
+      : "auto-detect";
+
     const codeDoc = await Code.create({
       code: shareCode,
       content: encryptedContent,
+      language: normalizedLanguage,
       expiresIn: expirationTime,
       expiresAt: expiresAtTime,
       senderId
@@ -118,7 +205,10 @@ export const receiveCode = async (req, res) => {
       receiverUpdate
     );
 
-    res.json({ content: decryptedContent });
+    res.json({ 
+      content: decryptedContent,
+      language: data.language || "auto-detect"
+    });
 
   } catch (err) {
     console.error("RECEIVE CODE ERROR:", err);

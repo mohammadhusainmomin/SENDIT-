@@ -3,11 +3,13 @@ import { FiCheckCircle, FiCopy, FiDownload, FiTerminal } from "react-icons/fi";
 import api from "../services/api";
 import SEO from "./SEO";
 import { useToast } from "../context/ToastContext";
-import { formatCode } from "../utils/formatCode";
+import { formatCode } from "../utils/multiLanguageFormatter";
 
 function CodeReceive() {
   const [code, setCode] = useState("");
   const [content, setContent] = useState("");
+  // eslint-disable-next-line no-unused-vars
+  const [language, setLanguage] = useState("plaintext");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const { success, error } = useToast();
@@ -26,7 +28,13 @@ function CodeReceive() {
     setLoading(true);
     try {
       const response = await api.post("/code/receive", { code });
-      setContent(formatCode(response.data.content));
+      const receivedLanguage = response.data.language || "auto-detect";
+      
+      // Format code using the stored or detected language (with Prettier support)
+      const formattedContent = await formatCode(response.data.content, receivedLanguage);
+      
+      setContent(formattedContent);
+      setLanguage(receivedLanguage);
       success("Code retrieved successfully");
     } catch (err) {
       if (err.response?.status === 404) {
@@ -37,6 +45,7 @@ function CodeReceive() {
         error(err.response?.data?.message || "Failed to retrieve code");
       }
       setContent("");
+      setLanguage("plaintext");
     } finally {
       setLoading(false);
     }
@@ -56,6 +65,7 @@ function CodeReceive() {
   const handleReset = () => {
     setCode("");
     setContent("");
+    setLanguage("plaintext");
     setCopied(false);
   };
 

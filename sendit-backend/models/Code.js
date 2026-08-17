@@ -9,6 +9,28 @@ const codeSchema = new mongoose.Schema(
       sparse: true
     },
     content: String,      // Encrypted content (includes IV in format: iv_hex:encrypted_hex)
+    language: {
+      type: String,
+      enum: [
+        "auto-detect",
+        "javascript",
+        "typescript",
+        "jsx",
+        "tsx",
+        "python",
+        "java",
+        "c",
+        "cpp",
+        "csharp",
+        "php",
+        "html",
+        "css",
+        "json",
+        "plaintext"
+      ],
+      default: "auto-detect",
+      description: "Programming language for syntax highlighting and formatting"
+    },
     expiresAt: Date,
     expiresIn: {
       type: Number,
