@@ -6,7 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'sha256-XDTn8Jx70susGpKh92YtTdMn+F5+MEeuQywF5DjWgoQ=' 'sha256-U74DS08FMkH+G9Qi93Llbokq7baOCyaqXznDEbUiuX4=' 'sha256-xPUU4g7HJ7xdowE7lpJKl2aQLNlBXZGBVUTnErFFCpQ=' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://accounts.google.com https://apis.google.com https://pl30781421.effectivecpmnetwork.com https://pl30781420.effectivecpmnetwork.com https://www.highperformanceformat.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https: http://localhost:3000 http://localhost:5000; font-src 'self' https://fonts.gstatic.com; connect-src 'self' http://localhost:5000 https://sendit-backend-8h7d.onrender.com https://www.google-analytics.com https://www.googletagmanager.com https://spendsdetachment.com; frame-src 'self' https: blob: about:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; upgrade-insecure-requests"
+      content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:;
+    style-src 'self' 'unsafe-inline' https:;
+    img-src 'self' data: https: blob:;
+    connect-src 'self' https: wss: localhost;
+    frame-src 'self' https:;
+    font-src 'self' data: https:;
+    media-src 'self' https:;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+  "
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
@@ -30,8 +42,11 @@
     <meta name="revisit-after" content="7 days" />
 
     <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6553893786189981"
-     crossorigin="anonymous"></script>
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6553893786189981"
+      crossorigin="anonymous"
+    ></script>
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website" />
@@ -52,7 +67,10 @@
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="SendIt - Secure File Sharing and Code Sharing Platform" />
+    <meta
+      name="twitter:title"
+      content="SendIt - Secure File Sharing and Code Sharing Platform"
+    />
     <meta
       name="twitter:description"
       content="Send files online and share code snippets with temporary access codes and a clean retrieval flow."
@@ -131,33 +149,64 @@
     <title>SendIt - Secure File Sharing and Code Sharing Platform</title>
     <!-- Minimal critical CSS to reduce FOUC -->
     <style>
-      html,body{height:100%;margin:0}
-      body{background:linear-gradient(180deg,#f4fbff 0%,#f7fbfd 40%);font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;color:#0b2136}
-      .route-loading{padding:2rem;color:#123;border-radius:4px}
-      .app-shell{min-height:100vh;display:flex;flex-direction:column}
-      .app-main{flex:1}
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        background: linear-gradient(180deg, #f4fbff 0%, #f7fbfd 40%);
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          Arial,
+          sans-serif;
+        color: #0b2136;
+      }
+      .route-loading {
+        padding: 2rem;
+        color: #123;
+        border-radius: 4px;
+      }
+      .app-shell {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .app-main {
+        flex: 1;
+      }
     </style>
+    <script src="https://pl30781420.effectivecpmnetwork.com/b5/cc/1e/b5cc1e5eeaa32d60ebc552f38326c580.js"></script>
   </head>
   <body>
     <noscript>
       <header>
         <h1>SendIt: Temporary File Sharing and Code Sharing Platform</h1>
         <p>
-          SendIt is a web application for temporary digital sharing. It helps users send files and
-          code snippets using short access codes and expiry-based retrieval instead of long public
-          links. This makes the platform easier to explain and easier to use for classmates,
-          teammates, clients, and general web users who need a short-lived transfer workflow.
+          SendIt is a web application for temporary digital sharing. It helps
+          users send files and code snippets using short access codes and
+          expiry-based retrieval instead of long public links. This makes the
+          platform easier to explain and easier to use for classmates,
+          teammates, clients, and general web users who need a short-lived
+          transfer workflow.
         </p>
       </header>
       <main>
         <section>
           <h2>How SendIt Works</h2>
           <p>
-            A sender uploads one or more files, or submits a code snippet, then receives a short
-            access code. The receiver visits the matching receive page, enters that code, and
-            retrieves the shared content before the expiry period ends. SendIt is designed for
-            temporary sharing rather than permanent storage, which makes it suitable for assignments,
-            document handoffs, code snippets, and quick file exchange between devices.
+            A sender uploads one or more files, or submits a code snippet, then
+            receives a short access code. The receiver visits the matching
+            receive page, enters that code, and retrieves the shared content
+            before the expiry period ends. SendIt is designed for temporary
+            sharing rather than permanent storage, which makes it suitable for
+            assignments, document handoffs, code snippets, and quick file
+            exchange between devices.
           </p>
         </section>
         <section>
@@ -173,40 +222,65 @@
         <section>
           <h2>Helpful Pages</h2>
           <p>
-            SendIt provides additional informational pages to help visitors understand the project,
-            service limitations, privacy disclosures, and support options. These pages also help
-            search engines and site reviewers understand the platform architecture and purpose.
+            SendIt provides additional informational pages to help visitors
+            understand the project, service limitations, privacy disclosures,
+            and support options. These pages also help search engines and site
+            reviewers understand the platform architecture and purpose.
           </p>
           <ul>
-            <li><a href="https://senditsystem.netlify.app/about">About Us</a></li>
-            <li><a href="https://senditsystem.netlify.app/features">Features</a></li>
-            <li><a href="https://senditsystem.netlify.app/guide">Sharing Guide</a></li>
+            <li>
+              <a href="https://senditsystem.netlify.app/about">About Us</a>
+            </li>
+            <li>
+              <a href="https://senditsystem.netlify.app/features">Features</a>
+            </li>
+            <li>
+              <a href="https://senditsystem.netlify.app/guide">Sharing Guide</a>
+            </li>
             <li><a href="https://senditsystem.netlify.app/faq">FAQ</a></li>
-            <li><a href="https://senditsystem.netlify.app/contact">Contact</a></li>
-            <li><a href="https://senditsystem.netlify.app/privacy">Privacy Policy</a></li>
-            <li><a href="https://senditsystem.netlify.app/terms">Terms of Service</a></li>
-            <li><a href="https://senditsystem.netlify.app/disclaimer">Disclaimer</a></li>
+            <li>
+              <a href="https://senditsystem.netlify.app/contact">Contact</a>
+            </li>
+            <li>
+              <a href="https://senditsystem.netlify.app/privacy"
+                >Privacy Policy</a
+              >
+            </li>
+            <li>
+              <a href="https://senditsystem.netlify.app/terms"
+                >Terms of Service</a
+              >
+            </li>
+            <li>
+              <a href="https://senditsystem.netlify.app/disclaimer"
+                >Disclaimer</a
+              >
+            </li>
           </ul>
         </section>
         <section>
           <h2>Contact Information</h2>
           <p>
-            Support email: <a href="mailto:mmbrothersteam@gmail.com">mmbrothersteam@gmail.com</a>
+            Support email:
+            <a href="mailto:mmbrothersteam@gmail.com"
+              >mmbrothersteam@gmail.com</a
+            >
           </p>
-          <p>
-            Operating region: Gujarat, India
-          </p>
+          <p>Operating region: Gujarat, India</p>
         </section>
         <section>
           <h2>Cookie and Privacy Notice</h2>
           <p>
-            SendIt may use essential cookies for authentication and basic site functionality. If
-            analytics or advertising tools are enabled in the future, those disclosures are explained
-            in the Privacy Policy. JavaScript is required to use the full interactive application.
+            SendIt may use essential cookies for authentication and basic site
+            functionality. If analytics or advertising tools are enabled in the
+            future, those disclosures are explained in the Privacy Policy.
+            JavaScript is required to use the full interactive application.
           </p>
         </section>
       </main>
     </noscript>
     <div id="root"></div>
+      <!-- Adsterra Social Bar -->
+    <script src="https://pl30781425.effectivecpmnetwork.com/c9/69/bc/c969bc24b3636f1b0fab976b4fcc01b7.js"></script>
   </body>
 </html>
