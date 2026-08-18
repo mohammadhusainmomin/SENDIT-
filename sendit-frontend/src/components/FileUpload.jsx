@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
-import { FiCheck, FiCopy, FiRefreshCw, FiSend, FiUploadCloud } from "react-icons/fi";
+import {
+  FiCheck,
+  FiCopy,
+  FiRefreshCw,
+  FiSend,
+  FiUploadCloud,
+} from "react-icons/fi";
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
 import CountdownTimer from "./CountdownTimer";
@@ -9,8 +15,10 @@ import { MobileAdGate } from "./AdUnits";
 function FileUpload({
   expiresInHours,
   expiresInMinutes,
+  expirySelected,
   onExpiresInHoursChange,
   onExpiresInMinutesChange,
+  onExpirySelectedChange,
   onStateChange,
 }) {
   const [files, setFiles] = useState([]);
@@ -70,7 +78,7 @@ function FileUpload({
       return;
     }
 
-    if (calculateTotalMinutes() === 0) {
+    if (!expirySelected || calculateTotalMinutes() === 0) {
       showError("Please set an expiration time");
       return;
     }
@@ -98,11 +106,11 @@ function FileUpload({
         {
           onUploadProgress: (progressEvent) => {
             const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
+              (progressEvent.loaded * 100) / progressEvent.total,
             );
             setUploadProgress(percentCompleted);
           },
-        }
+        },
       );
 
       setCode(response.data.code);
@@ -110,8 +118,11 @@ function FileUpload({
       setExpiresAt(response.data.expiresAt || "");
       setUploadProgress(0);
       success(`${files.length} file(s) uploaded successfully`);
+      console.log(expiresInHours, expiresInMinutes, calculateTotalMinutes());
     } catch (err) {
-      showError(err.response?.data?.message || "Upload failed. Please try again.");
+      showError(
+        err.response?.data?.message || "Upload failed. Please try again.",
+      );
       setUploadProgress(0);
     } finally {
       setLoading(false);
@@ -119,6 +130,21 @@ function FileUpload({
   };
 
   const handleUploadAction = () => {
+    if (files.length === 0) {
+      showError("Please select at least one file");
+      return;
+    }
+
+    if (!expirySelected || calculateTotalMinutes() === 0) {
+      showError("Please select an expiration time before sending the file");
+      return;
+    }
+
+    if (isMaxTimeExceeded()) {
+      showError("Maximum expiration time is 1 day (24 hours)");
+      return;
+    }
+
     setShowAdGate(true);
   };
 
@@ -134,6 +160,7 @@ function FileUpload({
     setCopied(false);
     setUploadProgress(0);
     setTotalExpiryMinutes(0);
+    onExpirySelectedChange(false);
     onExpiresInHoursChange("0");
     onExpiresInMinutesChange("10");
     if (inputRef.current) {
@@ -153,22 +180,27 @@ function FileUpload({
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
   };
 
- 
-
   if (code) {
     return (
       <div className="si-card" style={{ padding: "1.5rem" }}>
         <div className="code-display-redesign">
-          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", justifyContent: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              justifyContent: "center",
+            }}
+          >
             <span className="si-chip" style={{ padding: "0.45rem 0.8rem" }}>
               <FiCheck /> Ready
             </span>
           </div>
 
-        
-
           <div>
-            <div className="si-meta-label text-center-redesign">Share this code</div>
+            <div className="si-meta-label text-center-redesign">
+              Share this code
+            </div>
             <div className="big-share-code">{code}</div>
           </div>
 
@@ -183,11 +215,27 @@ function FileUpload({
             />
           )}
 
-          <div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap", justifyContent: "center" }}>
-            <button className="si-button-secondary" onClick={copyToClipboard} type="button">
-              {copied ? <FiCheck /> : <FiCopy />} {copied ? "Copied" : "Copy Code"}
+          <div
+            style={{
+              display: "flex",
+              gap: "0.8rem",
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
+          >
+            <button
+              className="si-button-secondary"
+              onClick={copyToClipboard}
+              type="button"
+            >
+              {copied ? <FiCheck /> : <FiCopy />}{" "}
+              {copied ? "Copied" : "Copy Code"}
             </button>
-            <button className="si-button-secondary" onClick={shareOnWhatsApp} type="button">
+            <button
+              className="si-button-secondary"
+              onClick={shareOnWhatsApp}
+              type="button"
+            >
               <FaWhatsapp /> WhatsApp
             </button>
             <button className="si-button" onClick={handleReset} type="button">
@@ -230,12 +278,20 @@ function FileUpload({
         {files.length > 0 ? (
           <div className="upload-list-preview" style={{ marginTop: "0.85rem" }}>
             {files.map((file, index) => (
-              <div key={`${file.name}-${index}`} className="upload-preview-item">
+              <div
+                key={`${file.name}-${index}`}
+                className="upload-preview-item"
+              >
                 <span>
                   <strong style={{ display: "block" }}>{file.name}</strong>
-                  <span className="si-footer-copy">{Math.round(file.size / 1024)} KB</span>
+                  <span className="si-footer-copy">
+                    {Math.round(file.size / 1024)} KB
+                  </span>
                 </span>
-                <span className="si-chip" style={{ padding: "0.35rem 0.65rem" }}>
+                <span
+                  className="si-chip"
+                  style={{ padding: "0.35rem 0.65rem" }}
+                >
                   Ready
                 </span>
               </div>
@@ -245,19 +301,31 @@ function FileUpload({
 
         <div className="send-upload-actions">
           <div className="si-footer-copy send-upload-note">
-            Pick the expiry from the right panel, then upload to get the share code.
+            Pick the expiry from the right panel, then upload to get the share
+            code.
           </div>
           <button
             className="si-button expiry-send-button send-upload-button"
             onClick={handleUploadAction}
-            disabled={files.length === 0 || loading || isMaxTimeExceeded()}
+            disabled={
+              files.length === 0 ||
+              loading ||
+              !expirySelected ||
+              calculateTotalMinutes() === 0 ||
+              isMaxTimeExceeded()
+            }
             type="button"
           >
-            <FiSend /> {loading ? `Uploading ${uploadProgress}%` : "Upload and Get Code"}
+            <FiSend />{" "}
+            {loading ? `Uploading ${uploadProgress}%` : "Upload and Get Code"}
           </button>
         </div>
       </div>
-      <MobileAdGate open={showAdGate} onContinue={handleAdContinue} title="Sponsored Message" />
+      <MobileAdGate
+        open={showAdGate}
+        onContinue={handleAdContinue}
+        title="Sponsored Message"
+      />
     </div>
   );
 }

@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { FiCode, FiCopy, FiRefreshCw, FiTrash2, FiUser, FiZap } from "react-icons/fi";
+import {
+  FiCode,
+  FiCopy,
+  FiRefreshCw,
+  FiTrash2,
+  FiUser,
+  FiZap,
+} from "react-icons/fi";
 import api from "../services/api";
 import CountdownTimer from "../components/CountdownTimer";
 import { MobileAdGate } from "../components/AdUnits";
@@ -21,7 +28,7 @@ function CodeShare() {
   const [loading, setLoading] = useState(false);
   const [totalExpiryMinutes, setTotalExpiryMinutes] = useState(0);
   const [expiresInHours, setExpiresInHours] = useState("0");
-  const [expiresInMinutes, setExpiresInMinutes] = useState("10");
+  const [expiresInMinutes, setExpiresInMinutes] = useState("0");
   const [showAdGate, setShowAdGate] = useState(false);
   const formatTimeoutRef = useRef(null);
   const { success, error } = useToast();
@@ -72,7 +79,9 @@ function CodeShare() {
 
   const selectedDurationLabel = [
     parseInt(expiresInHours, 10) ? `${parseInt(expiresInHours, 10)}h` : null,
-    parseInt(expiresInMinutes, 10) ? `${parseInt(expiresInMinutes, 10)}m` : null,
+    parseInt(expiresInMinutes, 10)
+      ? `${parseInt(expiresInMinutes, 10)}m`
+      : null,
   ]
     .filter(Boolean)
     .join(" ");
@@ -98,13 +107,13 @@ function CodeShare() {
     setLoading(true);
     try {
       const expiresIn = calculateTotalMinutes();
-      
+
       // Determine the language to send to backend
       let languageToSend = selectedLanguage;
       if (selectedLanguage === "auto-detect") {
         languageToSend = detectedLanguage || "auto-detect";
       }
-      
+
       const response = await api.post("/code/send", {
         content: formattedCode || rawCode,
         language: languageToSend,
@@ -157,14 +166,21 @@ function CodeShare() {
       <section className="page-section">
         <header style={{ marginBottom: "2rem" }}>
           <span className="si-chip">Precision Logistics for Developers</span>
-          <h1 className="si-title" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+          <h1
+            className="si-title"
+            style={{ marginTop: "1rem", marginBottom: "1rem" }}
+          >
             Secure Snippet Sharing.
           </h1>
           <p className="si-subtitle">
-            Paste your code, let SendIt format it, choose an expiry, and generate the working share code from your existing backend.
+            Paste your code, let SendIt format it, choose an expiry, and
+            generate the working share code from your existing backend.
           </p>
           {!user && (
-            <div className="si-nav-link active" style={{ marginTop: "1rem", width: "fit-content" }}>
+            <div
+              className="si-nav-link active"
+              style={{ marginTop: "1rem", width: "fit-content" }}
+            >
               <FiUser /> Guest Mode Enabled
             </div>
           )}
@@ -174,17 +190,28 @@ function CodeShare() {
           <div className="work-main">
             <div className="code-editor-shell">
               <div className="editor-toolbar">
-                <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.8rem",
+                  }}
+                >
                   <div className="editor-dots" aria-hidden="true">
                     <span />
                     <span />
                     <span />
                   </div>
-                  <span className="si-chip" style={{ padding: "0.4rem 0.7rem" }}>
+                  <span
+                    className="si-chip"
+                    style={{ padding: "0.4rem 0.7rem" }}
+                  >
                     <FiCode /> Live Editor
                   </span>
                 </div>
-                <span className="si-footer-copy">Auto format preview below</span>
+                <span className="si-footer-copy">
+                  Auto format preview below
+                </span>
               </div>
               <div style={{ padding: "0 1.4rem 1.4rem" }}>
                 <textarea
@@ -208,18 +235,28 @@ function CodeShare() {
             {formattedCode && (
               <div className="code-editor-shell">
                 <div className="editor-toolbar">
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.8rem",
+                    }}
+                  >
                     <div className="editor-dots" aria-hidden="true">
                       <span />
                       <span />
                       <span />
                     </div>
                     <span className="si-chip">Formatted Preview</span>
-                   
                   </div>
-                  <span className="si-footer-copy">This version is sent to Reciver</span>
+                  <span className="si-footer-copy">
+                    This version is sent to Reciver
+                  </span>
                 </div>
-                <div className="viewer-canvas" style={{ margin: "0 1.4rem 1.4rem" }}>
+                <div
+                  className="viewer-canvas"
+                  style={{ margin: "0 1.4rem 1.4rem" }}
+                >
                   <pre>{formattedCode}</pre>
                 </div>
               </div>
@@ -229,9 +266,9 @@ function CodeShare() {
           <aside className="work-sidebar">
             <div className="settings-card si-card">
               <h3>Settings</h3>
-              
-              <LanguageSelector 
-                value={selectedLanguage} 
+
+              <LanguageSelector
+                value={selectedLanguage}
                 onChange={setSelectedLanguage}
                 disabled={loading}
               />
@@ -248,11 +285,19 @@ function CodeShare() {
                     />
                   </div>
                 </div>
-                <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--si-primary)" }}>:</div>
+                <div
+                  style={{
+                    fontSize: "2rem",
+                    fontWeight: 800,
+                    color: "var(--si-primary)",
+                  }}
+                >
+                  :
+                </div>
                 <div className="wheel-column">
                   <div className="wheel-value">
                     <ScrollValuePicker
-                      label="Minutes" 
+                      label="Minutes"
                       options={minuteOptions}
                       value={expiresInMinutes}
                       onChange={setExpiresInMinutes}
@@ -274,20 +319,40 @@ function CodeShare() {
               </div>
             </div>
 
-            <button className="si-button" onClick={handleSend} disabled={loading || !rawCode.trim() || isMaxTimeExceeded()} type="button">
+            <button
+              className="si-button"
+              onClick={handleSend}
+              disabled={
+                loading ||
+                !rawCode.trim() ||
+                calculateTotalMinutes() === 0 ||
+                isMaxTimeExceeded()
+              }
+              type="button"
+            >
               <FiZap /> {loading ? "Generating..." : "Generate Share Code"}
             </button>
-            <MobileAdGate open={showAdGate} onContinue={handleAdContinue} title="Sponsored Message" />
+            <MobileAdGate
+              open={showAdGate}
+              onContinue={handleAdContinue}
+              title="Sponsored Message"
+            />
 
             {rawCode && !shareCode && (
-              <button className="si-button-secondary" onClick={handleReset} type="button">
+              <button
+                className="si-button-secondary"
+                onClick={handleReset}
+                type="button"
+              >
                 <FiTrash2 /> Clear Editor
               </button>
             )}
 
             {shareCode && (
               <div className="si-card" style={{ padding: "1.5rem" }}>
-                <div className="si-meta-label text-center-redesign">Your Share Code</div>
+                <div className="si-meta-label text-center-redesign">
+                  Your Share Code
+                </div>
                 <div className="big-share-code">{shareCode}</div>
 
                 {totalExpiryMinutes > 0 && (
@@ -301,11 +366,21 @@ function CodeShare() {
                   />
                 )}
 
-                <div style={{ display: "grid", gap: "0.8rem", marginTop: "1rem" }}>
-                  <button className="si-button-secondary" onClick={handleCopyCode} type="button">
+                <div
+                  style={{ display: "grid", gap: "0.8rem", marginTop: "1rem" }}
+                >
+                  <button
+                    className="si-button-secondary"
+                    onClick={handleCopyCode}
+                    type="button"
+                  >
                     <FiCopy /> Copy Code
                   </button>
-                  <button className="si-button-secondary" onClick={handleReset} type="button">
+                  <button
+                    className="si-button-secondary"
+                    onClick={handleReset}
+                    type="button"
+                  >
                     <FiRefreshCw /> Share Another
                   </button>
                 </div>
@@ -315,7 +390,8 @@ function CodeShare() {
             <div className="info-note">
               <strong>Enterprise Compliance</strong>
               <p className="si-footer-copy" style={{ marginTop: "0.5rem" }}>
-                Snippets remain temporary and respect your expiry policy. UI changed, backend logic preserved.
+                Snippets remain temporary and respect your expiry policy. UI
+                changed, backend logic preserved.
               </p>
             </div>
           </aside>

@@ -13,8 +13,9 @@ function CodeSend() {
   const [expiresAt, setExpiresAt] = useState("");
   const [loading, setLoading] = useState(false);
   const [expiresInHours, setExpiresInHours] = useState("0");
-  const [expiresInMinutes, setExpiresInMinutes] = useState("10");
+  const [expiresInMinutes, setExpiresInMinutes] = useState("0");
   const [totalExpiryMinutes, setTotalExpiryMinutes] = useState(0);
+  const [expirySelected, setExpirySelected] = useState(false);
   const [copied, setCopied] = useState(false);
   const { success, error: showError } = useToast();
 
@@ -38,8 +39,8 @@ function CodeSend() {
       return;
     }
 
-    if (calculateTotalMinutes() === 0) {
-      showError("Please set an expiration time");
+    if (!expirySelected || calculateTotalMinutes() === 0) {
+      showError("Please select an expiration time");
       return;
     }
 
@@ -84,7 +85,8 @@ function CodeSend() {
     setExpiresAt("");
     setTotalExpiryMinutes(0);
     setExpiresInHours("0");
-    setExpiresInMinutes("10");
+    setExpiresInMinutes("0");
+    setExpirySelected(false);
     setCopied(false);
   };
 
@@ -112,7 +114,10 @@ function CodeSend() {
             <TimeStepper
               label="Hours"
               value={expiresInHours}
-              onChange={setExpiresInHours}
+              onChange={(value) => {
+                setExpiresInHours(value);
+                setExpirySelected(true);
+              }}
               max={24}
               step={1}
               disabled={loading || shareCode}
@@ -120,7 +125,10 @@ function CodeSend() {
             <TimeStepper
               label="Minutes"
               value={expiresInMinutes}
-              onChange={setExpiresInMinutes}
+              onChange={(value) => {
+                setExpiresInMinutes(value);
+                setExpirySelected(true);
+              }}
               max={55}
               step={5}
               disabled={loading || shareCode}
@@ -135,7 +143,14 @@ function CodeSend() {
         <button
           className="btn-send"
           onClick={handleSend}
-          disabled={!codeText.trim() || loading || isMaxTimeExceeded() || shareCode}
+          disabled={
+            !codeText.trim() ||
+            loading ||
+            !expirySelected ||
+            calculateTotalMinutes() === 0 ||
+            isMaxTimeExceeded() ||
+            shareCode
+          }
         >
           {loading ? "Encrypting..." : "🚀 Encrypt & Share"}
         </button>
@@ -183,14 +198,14 @@ function CodeSend() {
                 </div>
               )}
 
-              <p className="display-hint">Share this code with someone to receive their code and decrypt the message</p>
+              <p className="display-hint">
+                Share this code with someone to receive their code and decrypt
+                the message
+              </p>
             </div>
 
             <div className="display-footer">
-              <button
-                onClick={handleReset}
-                className="btn-send-another"
-              >
+              <button onClick={handleReset} className="btn-send-another">
                 <FiRefreshCw /> Share Another
               </button>
             </div>
@@ -200,7 +215,9 @@ function CodeSend() {
             <div className="placeholder-content">
               <div className="placeholder-icon">🔐</div>
               <p className="placeholder-text">Paste code on the left</p>
-              <p className="placeholder-subtext">Your 4-digit code will appear here</p>
+              <p className="placeholder-subtext">
+                Your 4-digit code will appear here
+              </p>
             </div>
           </div>
         )}

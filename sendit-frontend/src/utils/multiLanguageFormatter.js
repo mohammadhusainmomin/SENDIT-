@@ -3,35 +3,46 @@
  * Uses appropriate formatters for each language
  */
 
-import { normalizeLang } from './detectLanguage';
-import beautify from 'js-beautify';
-import api from '../services/api';
+import { normalizeLang } from "./detectLanguage";
+import beautify from "js-beautify";
+import * as prettier from "prettier/standalone";
+import * as babelPlugin from "prettier/plugins/babel";
+import * as typescriptPlugin from "prettier/plugins/typescript";
+import * as estreePlugin from "prettier/plugins/estree";
+import * as htmlPlugin from "prettier/plugins/html";
+import * as cssPlugin from "prettier/plugins/postcss";
+import * as markdownPlugin from "prettier/plugins/markdown";
+
 
 const INDENT_SIZE = 2;
-const INDENT_CHAR = ' ';
+const INDENT_CHAR = " ";
+
+
 
 /**
  * Smart indentation fallback for languages without dedicated formatters
  */
 const smartIndentCode = (code) => {
-  const lines = code.split('\n');
+  const lines = code.split("\n");
   const formattedLines = [];
   let indentLevel = 0;
 
-  const closeBrackets = ['}', ']', ')', 'end', 'endif', 'endfor', 'endwhile'];
+  const closeBrackets = ["}", "]", ")", "end", "endif", "endfor", "endwhile"];
 
   for (let line of lines) {
     const trimmedLine = line.trim();
 
     // Skip empty lines
     if (!trimmedLine) {
-      formattedLines.push('');
+      formattedLines.push("");
       continue;
     }
 
     // Decrease indent for closing brackets
-    const startsWithClose = closeBrackets.some(bracket => 
-      trimmedLine.startsWith(bracket) || trimmedLine.toLowerCase().startsWith(bracket)
+    const startsWithClose = closeBrackets.some(
+      (bracket) =>
+        trimmedLine.startsWith(bracket) ||
+        trimmedLine.toLowerCase().startsWith(bracket),
     );
     if (startsWithClose) {
       indentLevel = Math.max(0, indentLevel - 1);
@@ -48,17 +59,120 @@ const smartIndentCode = (code) => {
     indentLevel = Math.max(0, indentLevel);
   }
 
-  return formattedLines.join('\n');
+  return formattedLines.join("\n");
 };
 
 /**
  * Format Python code with basic smart formatting
- */
-const formatPython = (code) => {
-  // Python is sensitive to indentation, use smart indent
-  return smartIndentCode(code);
-};
+ */const formatPython = (code) => {
+  try {
+    const lines = code.replace(/\r\n/g, "\n").split("\n");
+    const result = [];
+    let indentLevel = 0;
+    let bracketDepth = 0;
 
+    const blockStartRegex =
+      /^(if|elif|else|for|while|def|class|try|except|finally|with|match|case)\b/;
+
+    const dedentRegex =
+      /^(elif|else|except|finally|case)\b/;
+
+    const isContinuationLine = (line) => {
+      return (
+        bracketDepth > 0 ||
+        /[([{]\s*$/.test(line) ||
+        /[,\\]$/.test(line)
+      );
+    };
+
+    const updateBracketDepth = (line) => {
+      let single = false;
+      let double = false;
+      let escaped = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+
+        if (escaped) {
+          escaped = false;
+          continue;
+        }
+
+        if (char === "\\") {
+          escaped = true;
+          continue;
+        }
+
+        if (char === "'" && !double) {
+          single = !single;
+          continue;
+        }
+
+        if (char === '"' && !single) {
+          double = !double;
+          continue;
+        }
+
+        if (single || double) {
+          continue;
+        }
+
+        if (char === "(" || char === "[" || char === "{") {
+          bracketDepth++;
+        }
+
+        if (char === ")" || char === "]" || char === "}") {
+          bracketDepth = Math.max(0, bracketDepth - 1);
+        }
+      }
+    };
+
+    for (let i = 0; i < lines.length; i++) {
+      const original = lines[i];
+      const trimmed = original.trim();
+
+      if (!trimmed) {
+        if (result.length > 0 && result[result.length - 1] !== "") {
+          result.push("");
+        }
+        continue;
+      }
+
+      if (trimmed.startsWith("#")) {
+        result.push(" ".repeat(indentLevel * 4) + trimmed);
+        continue;
+      }
+
+      if (dedentRegex.test(trimmed)) {
+        indentLevel = Math.max(0, indentLevel - 1);
+      }
+
+      const continuation = isContinuationLine(trimmed);
+
+      let currentIndent = indentLevel;
+
+      if (continuation && bracketDepth > 0) {
+        currentIndent = indentLevel + 1;
+      }
+
+      result.push(" ".repeat(currentIndent * 4) + trimmed);
+
+      updateBracketDepth(trimmed);
+
+      if (
+        trimmed.endsWith(":") &&
+        blockStartRegex.test(trimmed)
+      ) {
+        indentLevel++;
+      }
+    }
+
+    return result.join("\n").replace(/\n{3,}/g, "\n\n");
+  } catch (error) {
+    console.error("Python formatting failed:", error);
+    return code;
+  }
+};
 /**
  * Format Java code
  */
@@ -148,7 +262,7 @@ const formatHtml = (code) => {
       preserve_newlines: true,
       indent_inner_html: true,
       wrap_line_length: 100,
-      wrap_attributes: 'auto',
+      wrap_attributes: "auto",
     });
   } catch (e) {
     return smartIndentCode(code);
@@ -202,23 +316,6 @@ const formatJavaScript = (code) => {
   }
 };
 
-const formatPythonWithBackend = async (code) => {
-  try {
-    const response = await api.post('/code/format', {
-      content: code,
-      language: 'python',
-    });
-
-    if (response?.data?.formattedContent) {
-      return response.data.formattedContent;
-    }
-  } catch (error) {
-    console.warn('Python backend formatting failed, using fallback formatter.', error);
-  }
-
-  return null;
-};
-
 /**
  * Format TypeScript code
  */
@@ -244,29 +341,29 @@ const formatTypeScript = (code) => {
  */
 const formatWithPrettier = async (code, parser) => {
   try {
-    // Try to import Prettier - it's bundled with the app via npm
-    const prettier = await import('prettier');
-    
-    // Use the format function if available (Prettier 2.x and 3.x)
-    const format = prettier.format || prettier.default?.format;
-    if (!format) {
-      console.warn('Prettier format function not available');
-      return null;
-    }
-    
-    return await format(code, {
+    const plugins = [
+      babelPlugin,
+      typescriptPlugin,
+      estreePlugin,
+      htmlPlugin,
+      cssPlugin,
+      markdownPlugin,
+    ];
+
+    return await prettier.format(code, {
       parser,
+      plugins,
       semi: true,
       singleQuote: false,
-      trailingComma: 'es5',
-      tabWidth: INDENT_SIZE,
+      trailingComma: "es5",
+      tabWidth: 2,
       useTabs: false,
       printWidth: 100,
-      arrowParens: 'always',
+      arrowParens: "always",
       bracketSpacing: true,
     });
   } catch (error) {
-    console.debug(`Prettier formatting with parser '${parser}' failed, falling back:`, error.message);
+    console.error("Prettier formatting failed:", error);
     return null;
   }
 };
@@ -275,9 +372,9 @@ const formatWithPrettier = async (code, parser) => {
  * Format HTML code using Prettier
  */
 const formatHtmlWithPrettier = async (code) => {
-  const formatted = await formatWithPrettier(code, 'html');
+  const formatted = await formatWithPrettier(code, "html");
   if (formatted) return formatted;
-  
+
   // Fallback to js-beautify
   try {
     return beautify.html(code, {
@@ -287,7 +384,7 @@ const formatHtmlWithPrettier = async (code) => {
       preserve_newlines: true,
       indent_inner_html: true,
       wrap_line_length: 100,
-      wrap_attributes: 'auto',
+      wrap_attributes: "auto",
     });
   } catch (e) {
     return smartIndentCode(code);
@@ -298,9 +395,9 @@ const formatHtmlWithPrettier = async (code) => {
  * Format CSS code using Prettier
  */
 const formatCssWithPrettier = async (code) => {
-  const formatted = await formatWithPrettier(code, 'css');
+  const formatted = await formatWithPrettier(code, "css");
   if (formatted) return formatted;
-  
+
   // Fallback to js-beautify
   try {
     return beautify.css(code, {
@@ -319,9 +416,9 @@ const formatCssWithPrettier = async (code) => {
  * Format JSON code using Prettier
  */
 const formatJsonWithPrettier = async (code) => {
-  const formatted = await formatWithPrettier(code, 'json');
+  const formatted = await formatWithPrettier(code, "json");
   if (formatted) return formatted;
-  
+
   // Fallback to native JSON stringify
   try {
     return JSON.stringify(JSON.parse(code), null, INDENT_SIZE);
@@ -334,9 +431,9 @@ const formatJsonWithPrettier = async (code) => {
  * Format JavaScript code using Prettier
  */
 const formatJavaScriptWithPrettier = async (code) => {
-  const formatted = await formatWithPrettier(code, 'babel');
+  const formatted = await formatWithPrettier(code, "babel");
   if (formatted) return formatted;
-  
+
   // Fallback to js-beautify
   try {
     return beautify.js(code, {
@@ -357,9 +454,9 @@ const formatJavaScriptWithPrettier = async (code) => {
  * Format TypeScript code using Prettier
  */
 const formatTypeScriptWithPrettier = async (code) => {
-  const formatted = await formatWithPrettier(code, 'typescript');
+  const formatted = await formatWithPrettier(code, "typescript");
   if (formatted) return formatted;
-  
+
   // Fallback to js-beautify
   try {
     return beautify.js(code, {
@@ -381,10 +478,12 @@ const formatTypeScriptWithPrettier = async (code) => {
  * Never use js-beautify.js() for JSX as it corrupts the markup
  */
 const formatJsx = async (code) => {
-  const formatted = await formatWithPrettier(code, 'babel');
-  if (formatted) return formatted;
-  
-  // Fallback to smart indent (never use js-beautify for JSX)
+  const formatted = await formatWithPrettier(code, "babel");
+
+  if (formatted) {
+    return formatted;
+  }
+
   return smartIndentCode(code);
 };
 
@@ -394,10 +493,12 @@ const formatJsx = async (code) => {
  * Never use js-beautify.js() for TSX as it corrupts the markup
  */
 const formatTsx = async (code) => {
-  const formatted = await formatWithPrettier(code, 'typescript');
-  if (formatted) return formatted;
-  
-  // Fallback to smart indent (never use js-beautify for JSX)
+  const formatted = await formatWithPrettier(code, "typescript");
+
+  if (formatted) {
+    return formatted;
+  }
+
   return smartIndentCode(code);
 };
 
@@ -405,7 +506,7 @@ const formatTsx = async (code) => {
  * Main formatter function
  * Takes code and language identifier, returns formatted code
  */
-export const formatCode = async (code, language = 'auto-detect') => {
+export const formatCode = async (code, language = "auto-detect") => {
   try {
     if (!code || code.trim().length === 0) {
       return code;
@@ -416,59 +517,56 @@ export const formatCode = async (code, language = 'auto-detect') => {
 
     // Route to appropriate formatter
     switch (lang) {
-      case 'javascript':
-      case 'js':
+      case "javascript":
+      case "js":
         return await formatJavaScriptWithPrettier(trimmedCode);
-      
-      case 'typescript':
-      case 'ts':
+
+      case "typescript":
+      case "ts":
         return await formatTypeScriptWithPrettier(trimmedCode);
-      
-      case 'jsx':
+
+      case "jsx":
         return await formatJsx(trimmedCode);
-      
-      case 'tsx':
+
+      case "tsx":
         return await formatTsx(trimmedCode);
-      
-      case 'python':
-      case 'py': {
-        const pythonFormatted = await formatPythonWithBackend(trimmedCode);
-        if (pythonFormatted) return pythonFormatted;
+
+      case "python":
+      case "py":
         return formatPython(trimmedCode);
-      }
-      
-      case 'java':
+
+      case "java":
         return formatJava(trimmedCode);
-      
-      case 'c':
+
+      case "c":
         return formatC(trimmedCode);
-      
-      case 'cpp':
-      case 'c++':
+
+      case "cpp":
+      case "c++":
         return formatCpp(trimmedCode);
-      
-      case 'csharp':
-      case 'c#':
+
+      case "csharp":
+      case "c#":
         return formatCsharp(trimmedCode);
-      
-      case 'php':
+
+      case "php":
         return formatPhp(trimmedCode);
-      
-      case 'html':
+
+      case "html":
         return await formatHtmlWithPrettier(trimmedCode);
-      
-      case 'css':
+
+      case "css":
         return await formatCssWithPrettier(trimmedCode);
-      
-      case 'json':
+
+      case "json":
         return await formatJsonWithPrettier(trimmedCode);
-      
-      case 'plaintext':
+
+      case "plaintext":
       default:
         return trimmedCode;
     }
   } catch (error) {
-    console.error('Formatting error:', error);
+    console.error("Formatting error:", error);
     // Return original code on any error
     return code;
   }
@@ -478,7 +576,7 @@ export const formatCode = async (code, language = 'auto-detect') => {
  * Synchronous version of formatCode (for use in React state updates)
  * Note: This is the blocking version without Prettier async support
  */
-export const formatCodeSync = (code, language = 'auto-detect') => {
+export const formatCodeSync = (code, language = "auto-detect") => {
   try {
     if (!code || code.trim().length === 0) {
       return code;
@@ -489,61 +587,60 @@ export const formatCodeSync = (code, language = 'auto-detect') => {
 
     // Route to appropriate formatter
     switch (lang) {
-      case 'javascript':
-      case 'js':
+      case "javascript":
+      case "js":
         return formatJavaScript(trimmedCode);
-      
-      case 'typescript':
-      case 'ts':
+
+      case "typescript":
+      case "ts":
         return formatTypeScript(trimmedCode);
-      
-      case 'jsx':
+
+      case "jsx":
         // CRITICAL: Never use js-beautify for JSX - it corrupts the markup
         // Use smart indentation which preserves JSX syntax
         return smartIndentCode(trimmedCode);
-      
-      case 'tsx':
+
+      case "tsx":
         // CRITICAL: Never use js-beautify for TSX - it corrupts the markup
         // Use smart indentation which preserves JSX syntax
         return smartIndentCode(trimmedCode);
-      
-      case 'python':
-      case 'py':
-        // Python formatting must be handled by the backend Black formatter in the async path.
-        return trimmedCode;
-      
-      case 'java':
+
+   case "python":
+     case "py":
+  return formatPython(trimmedCode);
+
+      case "java":
         return formatJava(trimmedCode);
-      
-      case 'c':
+
+      case "c":
         return formatC(trimmedCode);
-      
-      case 'cpp':
-      case 'c++':
+
+      case "cpp":
+      case "c++":
         return formatCpp(trimmedCode);
-      
-      case 'csharp':
-      case 'c#':
+
+      case "csharp":
+      case "c#":
         return formatCsharp(trimmedCode);
-      
-      case 'php':
+
+      case "php":
         return formatPhp(trimmedCode);
-      
-      case 'html':
+
+      case "html":
         return formatHtml(trimmedCode);
-      
-      case 'css':
+
+      case "css":
         return formatCss(trimmedCode);
-      
-      case 'json':
+
+      case "json":
         return formatJson(trimmedCode);
-      
-      case 'plaintext':
+
+      case "plaintext":
       default:
         return trimmedCode;
     }
   } catch (error) {
-    console.error('Formatting error:', error);
+    console.error("Formatting error:", error);
     // Return original code on any error
     return code;
   }

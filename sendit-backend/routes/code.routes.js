@@ -2,7 +2,6 @@ import express from "express";
 import {
   sendCode,
   receiveCode,
-  formatCodeForLanguage,
   getSentCodesHistory,
   getReceivedCodesHistory,
   getAdminCodeHistory
@@ -15,8 +14,7 @@ const router = express.Router();
 // Guests can send code (auth is optional for tracking senderId)
 router.post("/code/send", authOptional, sendCode);
 
-// Format code before previewing/sending it
-router.post("/code/format", authOptional, formatCodeForLanguage);
+
 
 // Guests can receive code
 router.post("/code/receive", authOptional, receiveCode);
