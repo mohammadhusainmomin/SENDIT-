@@ -1,0 +1,455 @@
+.drop-hero,
+.drop-submit-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.drop-submit-hero {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.drop-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.44fr) minmax(0, 0.56fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.drop-dashboard,
+.drop-submit-layout {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.drop-submit-layout {
+  grid-template-columns: minmax(300px, 0.42fr) minmax(0, 0.58fr);
+  align-items: start;
+}
+
+.drop-create-card,
+.drop-panel-card,
+.drop-login-card {
+  padding: 1.4rem;
+}
+
+.drop-login-card {
+  max-width: 720px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+
+.drop-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.15rem;
+}
+
+.drop-section-title svg {
+  flex-shrink: 0;
+  color: var(--si-primary);
+}
+
+.drop-section-title h2,
+.drop-room-toolbar h2,
+.drop-submission-head h3 {
+  margin: 0;
+}
+
+.drop-section-title p,
+.drop-submission-head p {
+  margin: 0.2rem 0 0;
+  color: var(--si-text-soft);
+}
+
+.drop-field {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 0.95rem;
+}
+
+.drop-field span {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--si-text-faint);
+}
+
+.drop-field input,
+.drop-field textarea,
+.drop-field select,
+.drop-code-lookup input {
+  margin-bottom: 0;
+}
+
+.drop-required-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.drop-required-row,
+.drop-code-lookup,
+.drop-create-footer,
+.drop-room-code-box,
+.drop-actions-row,
+.drop-file-row,
+.drop-submission-head,
+.drop-room-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.drop-required-row input {
+  min-width: 0;
+}
+
+.drop-icon-button {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.drop-add-button {
+  width: fit-content;
+  margin-top: 0.65rem;
+}
+
+.drop-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.drop-form-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.drop-create-footer {
+  justify-content: space-between;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--si-border);
+}
+
+.drop-create-footer strong {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.drop-room-list,
+.drop-submission-list,
+.drop-submission-files,
+.drop-upload-slots {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.drop-room-item {
+  width: 100%;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: var(--si-surface-strong);
+  border: 1px solid var(--si-border);
+  box-shadow: none;
+  color: var(--si-text);
+  text-align: left;
+}
+
+.drop-room-item.active,
+.drop-room-item:hover:not(:disabled) {
+  background: rgba(13, 110, 253, 0.08);
+  border-color: rgba(13, 110, 253, 0.24);
+  color: var(--si-text);
+  transform: translateY(-1px);
+}
+
+.drop-room-item span:first-child {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.drop-room-item small {
+  color: var(--si-text-soft);
+}
+
+.drop-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(13, 110, 253, 0.1);
+  color: var(--si-primary-deep);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.drop-status.open,
+.drop-status.complete {
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+}
+
+.drop-status.closed,
+.drop-status.expired,
+.drop-status.partial {
+  background: rgba(245, 158, 11, 0.14);
+  color: #92400e;
+}
+
+.drop-room-toolbar,
+.drop-submission-head {
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.drop-room-code-box {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: var(--si-surface-strong);
+  border: 1px solid var(--si-border);
+}
+
+.drop-room-code-box strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 1.6rem;
+  letter-spacing: 0.18em;
+}
+
+.drop-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.drop-stats-grid > div {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem;
+  border-radius: 0.95rem;
+  background: var(--si-surface-strong);
+  border: 1px solid var(--si-border);
+}
+
+.drop-stats-grid strong {
+  font-size: 0.95rem;
+}
+
+.drop-document-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.drop-document-chips span {
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(13, 110, 253, 0.08);
+  color: var(--si-primary-deep);
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.drop-actions-row {
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.drop-actions-row .danger {
+  color: #b91c1c;
+  border-color: rgba(185, 28, 28, 0.24);
+}
+
+.drop-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  padding: 2rem 1rem;
+  color: var(--si-text-soft);
+  text-align: center;
+}
+
+.drop-empty-state svg {
+  font-size: 2rem;
+  color: var(--si-primary);
+}
+
+.drop-empty-state strong {
+  color: var(--si-text);
+}
+
+.drop-submission-card {
+  padding: 1rem;
+  border-radius: 1rem;
+  background: var(--si-surface-strong);
+  border: 1px solid var(--si-border);
+}
+
+.drop-missing-row {
+  margin-top: 0.8rem;
+  padding: 0.75rem;
+  border-radius: 0.8rem;
+  background: rgba(245, 158, 11, 0.12);
+  color: #92400e;
+  font-weight: 700;
+}
+
+.drop-submission-files {
+  margin-top: 0.8rem;
+}
+
+.drop-file-row {
+  justify-content: space-between;
+  padding: 0.8rem;
+  border-radius: 0.85rem;
+  background: rgba(13, 110, 253, 0.04);
+}
+
+.drop-file-row div {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.drop-file-row span {
+  color: var(--si-text-soft);
+  overflow-wrap: anywhere;
+}
+
+.drop-public-link {
+  width: fit-content;
+}
+
+.drop-code-lookup {
+  align-items: stretch;
+}
+
+.drop-code-lookup input {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.drop-room-summary {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.drop-instructions {
+  padding: 0.85rem;
+  border-radius: 0.9rem;
+  background: rgba(13, 110, 253, 0.07);
+  color: var(--si-text-soft);
+  line-height: 1.6;
+}
+
+.drop-submit-card {
+  min-height: 420px;
+}
+
+.drop-upload-slot {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--si-border);
+  border-radius: 1rem;
+  background: var(--si-surface-strong);
+}
+
+.drop-upload-slot-copy {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.drop-upload-slot-copy strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.drop-upload-slot-copy small {
+  color: var(--si-text-soft);
+}
+
+.drop-submit-button {
+  margin-top: 1rem;
+}
+
+.drop-receipt {
+  min-height: 320px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.7rem;
+  text-align: center;
+}
+
+.drop-receipt svg {
+  font-size: 3rem;
+  color: #047857;
+}
+
+@media (max-width: 1000px) {
+  .drop-layout,
+  .drop-submit-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .drop-create-card {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .drop-hero,
+  .drop-submit-hero {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .drop-hero {
+    flex-direction: column;
+  }
+
+  .drop-form-grid,
+  .drop-form-grid.two,
+  .drop-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .drop-required-row,
+  .drop-code-lookup,
+  .drop-create-footer,
+  .drop-file-row,
+  .drop-submission-head,
+  .drop-room-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .drop-icon-button {
+    width: 100%;
+  }
+
+  .drop-room-code-box {
+    align-items: stretch;
+  }
+}

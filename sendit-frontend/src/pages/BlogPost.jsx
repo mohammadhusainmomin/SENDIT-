@@ -5,7 +5,7 @@ import posts from "../data/blogPosts.json";
 import NotFound from "./NotFound";
 import "../styles/Blog.css";
 
-const SITE = "https://senditsystem.netlify.app";
+const SITE = "https://senditsystem.in";
 
 function formatDate(value) {
   return new Date(value).toLocaleDateString("en-GB", {

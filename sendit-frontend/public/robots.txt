@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api
 
-Sitemap: https://senditsystem.netlify.app/sitemap.xml
+Sitemap: https://senditsystem.in/sitemap.xml

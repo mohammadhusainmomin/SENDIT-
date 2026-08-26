@@ -105,7 +105,7 @@ export default function FAQ() {
       <SEO
         title="SendIt FAQ - Frequently Asked Questions"
         description="Get answers to common questions about SendIt file sharing. Learn about features, expiry, support, and how to use the platform."
-        url="https://senditsystem.netlify.app/faq"
+        url="https://senditsystem.in/faq"
       />
 
       <div className="content-page-wrapper">

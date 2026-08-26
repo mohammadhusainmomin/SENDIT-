@@ -28,7 +28,7 @@ function Home() {
       "@type": "WebApplication",
       name: "SendIt",
       description: "Free temporary file sharing and code sharing platform with secure access codes, sender-set expiry, and simple receive workflow. Share files online without long URLs.",
-      url: "https://senditsystem.netlify.app",
+      url: "https://senditsystem.in",
       applicationCategory: "UtilityApplication",
       operatingSystem: "All",
       offers: {
@@ -86,7 +86,7 @@ function Home() {
         title="SendIt - Free Temporary File Sharing and Code Sharing Platform"
         description="SendIt is a secure, free file sharing and code sharing platform. Send files online with temporary access codes, sender-set expiry, and simple receive workflow. No registration required."
         keywords="file sharing, send files online, temporary file sharing, code sharing, secure file transfer, free file sharing app, temporary access code, send files with code"
-        url="https://senditsystem.netlify.app"
+        url="https://senditsystem.in"
         structuredData={homeStructuredData}
       />
 

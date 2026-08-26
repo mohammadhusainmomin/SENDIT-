@@ -12,7 +12,7 @@ export default function Privacy() {
       <SEO
         title="Privacy Policy - SendIt"
         description="SendIt's comprehensive privacy policy explaining data collection, cookies, advertising, and your privacy rights. Learn how we protect your information."
-        url="https://senditsystem.netlify.app/privacy"
+        url="https://senditsystem.in/privacy"
       />
 
       <div className="content-page-wrapper">
@@ -24,7 +24,7 @@ export default function Privacy() {
           <section className="content-section">
             <h2>1. Introduction & Privacy Commitment</h2>
             <p>
-              This Privacy Policy explains how SendIt ("we," "us," or "SendIt") collects, uses, discloses, retains, and protects your information when you visit and use our website at senditsystem.netlify.app (the "Service"). By accessing and using SendIt, you acknowledge that you have read, understood, and agree to be bound by all the terms of this Privacy Policy.
+              This Privacy Policy explains how SendIt ("we," "us," or "SendIt") collects, uses, discloses, retains, and protects your information when you visit and use our website at senditsystem.in (the "Service"). By accessing and using SendIt, you acknowledge that you have read, understood, and agree to be bound by all the terms of this Privacy Policy.
             </p>
             <p>
               <strong>Your privacy is important to us.</strong> SendIt is designed with privacy-first principles. We minimize data collection, limit data retention, and never sell your personal information to advertisers or third parties. We believe that temporary file sharing should not require permanent data collection.

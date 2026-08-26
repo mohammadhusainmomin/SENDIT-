@@ -74,7 +74,7 @@ function CodeReceive() {
       <SEO
         title="Receive Code - SendIt Code Viewer"
         description="Receive code snippets securely using the SendIt 4-digit access code."
-        url="https://senditsystem.netlify.app/code/receive"
+        url="https://senditsystem.in/code/receive"
       />
 
       <section className="page-section">

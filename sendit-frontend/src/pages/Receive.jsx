@@ -8,7 +8,7 @@ function Receive() {
         title="Receive Shared Files | SendIt Access Code Retrieval"
         description="Receive shared files with SendIt by entering the access code and downloading files through a clean secure retrieval flow."
         keywords="receive shared files, file retrieval with code, sendit receive files, secure file download"
-        url="https://senditsystem.netlify.app/receive"
+        url="https://senditsystem.in/receive"
       />
 
       <section className="page-section">

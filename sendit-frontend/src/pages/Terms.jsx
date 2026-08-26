@@ -12,7 +12,7 @@ export default function Terms() {
       <SEO
         title="Terms of Service - SendIt"
         description="Read SendIt's terms of service to understand the rules for using the platform."
-        url="https://senditsystem.netlify.app/terms"
+        url="https://senditsystem.in/terms"
       />
 
       <div className="content-page-wrapper">

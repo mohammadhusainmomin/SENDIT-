@@ -136,7 +136,7 @@ export default function Contact() {
         title="Contact SendIt | Support, Location, and Business Contact"
         description="Contact SendIt for support, transfer issues, policy questions, and location details."
         keywords="contact sendit, sendit support, sendit location, sendit email"
-        url="https://senditsystem.netlify.app/contact"
+        url="https://senditsystem.in/contact"
       />
 
       <div className="contact-page">

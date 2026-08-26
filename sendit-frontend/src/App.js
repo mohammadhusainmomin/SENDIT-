@@ -5,7 +5,6 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CookieConsent from "./components/CookieConsent";
 import ToastContainer from "./components/ToastContainer";
-import AdUnits from "./components/AdUnits";
 import ScrollToTop from "./components/ScrollToTop";
 import { ToastProvider } from "./context/ToastContext";
 import "./styles/global.css";
@@ -67,7 +66,6 @@ function App() {
             </Suspense>
           </ErrorBoundary>
           <CookieConsent />
-          <AdUnits />
           <Footer />
         </div>
       </BrowserRouter>

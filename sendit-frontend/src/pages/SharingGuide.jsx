@@ -13,7 +13,7 @@ export default function SharingGuide() {
         title="SendIt Sharing Guide | How to Send & Receive Files Safely"
         description="Complete step-by-step guide to using SendIt for temporary file sharing and code sharing. Learn best practices, security tips, and common scenarios."
         keywords="sendit guide, how to use sendit, send files safely, share code snippets, temporary sharing"
-        url="https://senditsystem.netlify.app/guide"
+        url="https://senditsystem.in/guide"
       />
 
       <div className="content-page-wrapper">
@@ -54,7 +54,7 @@ export default function SharingGuide() {
             </p>
             <h3>Step 1: Visit the Send File Page</h3>
             <p>
-              Go to senditsystem.netlify.app/send to access the file sharing interface. You'll see an upload area where you can add files.
+              Go to senditsystem.in/send to access the file sharing interface. You'll see an upload area where you can add files.
             </p>
             <h3>Step 2: Upload Your Files</h3>
             <p>
@@ -90,7 +90,7 @@ export default function SharingGuide() {
               <li>Any trusted communication method</li>
             </ul>
             <p>
-              <strong>Important:</strong> Also tell the recipient to visit the receive file page and enter the code there. Provide clear instructions like: "Go to senditsystem.netlify.app/receive and enter code 1234."
+              <strong>Important:</strong> Also tell the recipient to visit the receive file page and enter the code there. Provide clear instructions like: "Go to senditsystem.in/receive and enter code 1234."
             </p>
             <h3>Step 6: Recipient Accesses the Files</h3>
             <p>
@@ -102,7 +102,7 @@ export default function SharingGuide() {
             <h2>📥 How to Receive a File: Step-by-Step</h2>
             <h3>Step 1: Visit the Receive File Page</h3>
             <p>
-              Go to senditsystem.netlify.app/receive to access the file receive interface. You'll see an input field for the temporary code.
+              Go to senditsystem.in/receive to access the file receive interface. You'll see an input field for the temporary code.
             </p>
             <h3>Step 2: Enter the Temporary Code</h3>
             <p>
@@ -126,7 +126,7 @@ export default function SharingGuide() {
             <h2>💻 How to Share Code Snippets: Step-by-Step</h2>
             <h3>Step 1: Visit the Send Code Page</h3>
             <p>
-              Go to senditsystem.netlify.app/code/send to access the code sharing interface. You'll see a text editor and settings for your snippet.
+              Go to senditsystem.in/code/send to access the code sharing interface. You'll see a text editor and settings for your snippet.
             </p>
             <h3>Step 2: Paste or Type Your Code</h3>
             <p>
@@ -150,7 +150,7 @@ export default function SharingGuide() {
             </p>
             <h3>Step 7: Recipient Accesses the Code</h3>
             <p>
-              The recipient visits senditsystem.netlify.app/code/receive, enters your code, and sees the code snippet with proper syntax highlighting, ready for review or copying.
+              The recipient visits senditsystem.in/code/receive, enters your code, and sees the code snippet with proper syntax highlighting, ready for review or copying.
             </p>
           </section>
 
@@ -199,7 +199,7 @@ export default function SharingGuide() {
               <li>Uploads her homework.pdf file</li>
               <li>Sets an expiry that gives everyone time to review</li>
               <li>Generates code: 5847</li>
-              <li>Sends a group text: "Here's the homework for review. Go to senditsystem.netlify.app/receive and enter code 5847"</li>
+              <li>Sends a group text: "Here's the homework for review. Go to senditsystem.in/receive and enter code 5847"</li>
               <li>Classmates receive the code, visit the receive page, enter the code, and download the PDF</li>
               <li>After the selected expiry time, the file is no longer available</li>
             </ol>

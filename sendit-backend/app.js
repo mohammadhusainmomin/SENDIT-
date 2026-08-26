@@ -26,7 +26,7 @@ const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
       "http://localhost:3000",
-      "https://senditsystem.netlify.app",
+      "https://senditsystem.in",
       "https://senditsystemadmin.netlify.app"
     ];
 

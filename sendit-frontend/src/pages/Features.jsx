@@ -13,7 +13,7 @@ export default function Features() {
         title="SendIt Features | Temporary File & Code Sharing Platform"
         description="Explore SendIt's complete feature set: temporary file sharing with access codes, code snippet sharing with syntax highlighting, sender-set expiry options, secure transfers, and a simple user-friendly interface."
         keywords="sendit features, file sharing features, code sharing features, temporary access codes, secure file transfer, syntax highlighting, sender-set expiry"
-        url="https://senditsystem.netlify.app/features"
+        url="https://senditsystem.in/features"
       />
 
       <div className="content-page-wrapper">

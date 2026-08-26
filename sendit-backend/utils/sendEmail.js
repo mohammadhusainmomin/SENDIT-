@@ -336,9 +336,9 @@ export const sendOtpEmail = async (to, otp) => {
         <!-- Footer -->
         <div class="email-footer">
             <div class="footer-links">
-                <a href="https://senditsystem.netlify.app">Visit SENDIT</a>
+                <a href="https://senditsystem.in">Visit SENDIT</a>
                 <a href="mailto:support@sendit.com">Support</a>
-                <a href="https://senditsystem.netlify.app/privacy">Privacy</a>
+                <a href="https://senditsystem.in/privacy">Privacy</a>
             </div>
             <div class="footer-brand">
                 <p>© 2024 <strong>SENDIT</strong>. All rights reserved.</p>

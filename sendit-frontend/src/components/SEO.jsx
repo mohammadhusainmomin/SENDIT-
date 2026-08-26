@@ -15,8 +15,8 @@ export default function SEO({
   title = "SendIt - Secure File Sharing and Code Sharing Platform",
   description = "SendIt is a secure file sharing and code sharing platform for sending files online with temporary access codes and a clean receive flow.",
   keywords = "sendit, sendit file sharing, secure file sharing, send files online, file sharing platform, code sharing platform, receive files with code, temporary access code, share code online",
-  url = "https://senditsystem.netlify.app/",
-  image = "https://senditsystem.netlify.app/images/Sendit_logo.png",
+  url = "https://senditsystem.in/",
+  image = "https://senditsystem.in/images/Sendit_logo.png",
   type = "website",
   structuredData = null,
   robots = "index, follow",
@@ -85,7 +85,7 @@ export default function SEO({
       isPartOf: {
         "@type": "WebSite",
         name: "SendIt",
-        url: "https://senditsystem.netlify.app/",
+        url: "https://senditsystem.in/",
       },
     };
 

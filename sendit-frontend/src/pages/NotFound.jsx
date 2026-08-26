@@ -7,7 +7,7 @@ function NotFound() {
       <SEO
         title="Page Not Found | SendIt"
         description="The page you are looking for does not exist. Continue sharing files securely with SendIt."
-        url="https://senditsystem.netlify.app/404"
+        url="https://senditsystem.in/404"
       />
       <section className="notfound-card">
         <h1>404</h1>

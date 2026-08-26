@@ -39,7 +39,7 @@ function About() {
         title="About SendIt | Temporary File and Code Sharing"
         description="Learn what SendIt does, who builds it, and how the platform is designed for temporary file and code sharing."
         keywords="about sendit, sendit team, temporary file sharing, code sharing platform"
-        url="https://senditsystem.netlify.app/about"
+        url="https://senditsystem.in/about"
       />
 
       <section className="about-copy-hero">

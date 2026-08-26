@@ -12,7 +12,7 @@ export default function Disclaimer() {
       <SEO
         title="Disclaimer - SendIt"
         description="Read SendIt's disclaimer about temporary file sharing, service availability, and informational content."
-        url="https://senditsystem.netlify.app/disclaimer"
+        url="https://senditsystem.in/disclaimer"
       />
 
       <div className="content-page-wrapper">

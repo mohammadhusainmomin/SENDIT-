@@ -9,7 +9,6 @@ import {
 } from "react-icons/fi";
 import api from "../services/api";
 import CountdownTimer from "../components/CountdownTimer";
-import { MobileAdGate } from "../components/AdUnits";
 import SEO from "../components/SEO";
 import ScrollValuePicker from "../components/ScrollValuePicker";
 import LanguageSelector from "../components/LanguageSelector";
@@ -29,7 +28,6 @@ function CodeShare() {
   const [totalExpiryMinutes, setTotalExpiryMinutes] = useState(0);
   const [expiresInHours, setExpiresInHours] = useState("0");
   const [expiresInMinutes, setExpiresInMinutes] = useState("0");
-  const [showAdGate, setShowAdGate] = useState(false);
   const formatTimeoutRef = useRef(null);
   const { success, error } = useToast();
   const { user } = useAuth();
@@ -132,13 +130,10 @@ function CodeShare() {
   };
 
   const handleSend = () => {
-    setShowAdGate(true);
+      performSend();
   };
 
-  const handleAdContinue = () => {
-    setShowAdGate(false);
-    performSend();
-  };
+
 
   const handleReset = () => {
     setRawCode("");
@@ -160,7 +155,7 @@ function CodeShare() {
       <SEO
         title="Send Code - SendIt Secure Snippet Sharing"
         description="Paste code, format it, and generate a secure access code using SendIt."
-        url="https://senditsystem.netlify.app/code/send"
+        url="https://senditsystem.in/code/send"
       />
 
       <section className="page-section">
@@ -332,11 +327,7 @@ function CodeShare() {
             >
               <FiZap /> {loading ? "Generating..." : "Generate Share Code"}
             </button>
-            <MobileAdGate
-              open={showAdGate}
-              onContinue={handleAdContinue}
-              title="Sponsored Message"
-            />
+         
 
             {rawCode && !shareCode && (
               <button

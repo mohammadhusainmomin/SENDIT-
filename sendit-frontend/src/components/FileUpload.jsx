@@ -10,7 +10,7 @@ import {
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
 import CountdownTimer from "./CountdownTimer";
-import { MobileAdGate } from "./AdUnits";
+
 
 function FileUpload({
   expiresInHours,
@@ -28,7 +28,6 @@ function FileUpload({
   const [copied, setCopied] = useState(false);
   const [totalExpiryMinutes, setTotalExpiryMinutes] = useState(0);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [showAdGate, setShowAdGate] = useState(false);
   const inputRef = useRef(null);
   const { success, error: showError } = useToast();
 
@@ -145,13 +144,10 @@ function FileUpload({
       return;
     }
 
-    setShowAdGate(true);
-  };
-
-  const handleAdContinue = () => {
-    setShowAdGate(false);
     performUpload();
   };
+
+
 
   const handleReset = () => {
     setFiles([]);
@@ -321,11 +317,7 @@ function FileUpload({
           </button>
         </div>
       </div>
-      <MobileAdGate
-        open={showAdGate}
-        onContinue={handleAdContinue}
-        title="Sponsored Message"
-      />
+     
     </div>
   );
 }

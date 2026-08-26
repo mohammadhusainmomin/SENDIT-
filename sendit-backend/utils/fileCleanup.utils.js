@@ -4,6 +4,8 @@ import File from "../models/File.js";
 import FileHistory from "../models/FileHistory.js";
 import Code from "../models/Code.js";
 import CodeHistory from "../models/CodeHistory.js";
+import DropRoom from "../models/DropRoom.js";
+import DropSubmission from "../models/DropSubmission.js";
 
 /**
  * Delete a single file from disk
@@ -79,12 +81,14 @@ export const startCleanupScheduler = async (intervalMinutes = 5) => {
   // Run immediately on startup
   await cleanupExpiredFiles();
   await cleanupExpiredCodes();
+  await cleanupExpiredDropRooms();
 
   // Then run both cleanup tasks periodically
   const intervalMs = intervalMinutes * 60 * 1000;
   return setInterval(async () => {
     await cleanupExpiredFiles();
     await cleanupExpiredCodes();
+    await cleanupExpiredDropRooms();
   }, intervalMs);
 };
 
@@ -119,6 +123,51 @@ export const cleanupExpiredCodes = async () => {
 
   } catch (error) {
     console.error("Code cleanup error:", error);
+    return 0;
+  }
+};
+
+/**
+ * Clean up encrypted files submitted to expired drop rooms.
+ * Room metadata stays for organizer history; stored documents are removed.
+ */
+export const cleanupExpiredDropRooms = async () => {
+  try {
+    const now = new Date();
+
+    const expiredRooms = await DropRoom.find({
+      expiresAt: { $lte: now },
+      isClosed: { $ne: true },
+    });
+
+    for (const room of expiredRooms) {
+      const submissions = await DropSubmission.find({
+        roomId: room._id,
+        isDeleted: { $ne: true },
+      });
+
+      for (const submission of submissions) {
+        for (const file of submission.files) {
+          if (file.encryptedPath && fs.existsSync(file.encryptedPath)) {
+            fs.unlinkSync(file.encryptedPath);
+          }
+        }
+
+        submission.isDeleted = true;
+        submission.status = "expired";
+        submission.deletedAt = now;
+        submission.deletionReason = "expired";
+        await submission.save();
+      }
+
+      room.isClosed = true;
+      room.closedAt = now;
+      await room.save();
+    }
+
+    return expiredRooms.length;
+  } catch (error) {
+    console.error("Drop room cleanup error:", error);
     return 0;
   }
 };

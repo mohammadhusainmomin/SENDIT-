@@ -15,12 +15,12 @@
 const fs = require("fs");
 const path = require("path");
 
-const SITE = "https://senditsystem.netlify.app";
+const SITE = "https://senditsystem.in";
 const BUILD_DIR = path.join(__dirname, "..", "build");
 const TEMPLATE = path.join(BUILD_DIR, "index.html");
-const ADSTERRA_POPUNDER_SRC =
-  "https://pl30781420.effectivecpmnetwork.com/b5/cc/1e/b5cc1e5eeaa32d60ebc552f38326c580.js";
-const posts = require(path.join(__dirname, "..", "src", "data", "blogPosts.json"));
+const posts = require(
+  path.join(__dirname, "..", "src", "data", "blogPosts.json"),
+);
 
 const escapeHtml = (value) =>
   String(value)
@@ -28,23 +28,6 @@ const escapeHtml = (value) =>
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
-
-const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-function keepPopunderLastInHead(html) {
-  const popunderPattern = new RegExp(
-    `\\s*(?:<!-- Adsterra Popunder -->\\s*)?<script src="${escapeRegExp(
-      ADSTERRA_POPUNDER_SRC
-    )}"></script>`,
-    "g"
-  );
-  const htmlWithoutPopunder = html.replace(popunderPattern, "");
-
-  return htmlWithoutPopunder.replace(
-    "</head>",
-    `    <!-- Adsterra Popunder -->\n    <script src="${ADSTERRA_POPUNDER_SRC}"></script>\n  </head>`
-  );
-}
 
 const staticPages = [
   {
@@ -77,7 +60,10 @@ const staticPages = [
     links: [
       ["/receive", "Receive a file"],
       ["/guide", "Sharing guide"],
-      ["/blog/share-files-securely-without-email", "How to share files securely without email"],
+      [
+        "/blog/share-files-securely-without-email",
+        "How to share files securely without email",
+      ],
     ],
   },
   {
@@ -108,13 +94,17 @@ const staticPages = [
     ],
     links: [
       ["/code/receive", "Receive a code snippet"],
-      ["/blog/share-code-snippets-with-your-team", "How to share code snippets with your team"],
+      [
+        "/blog/share-code-snippets-with-your-team",
+        "How to share code snippets with your team",
+      ],
     ],
   },
   {
     path: "/code/receive",
     title: "Receive a Code Snippet | SendIt",
-    description: "Enter your access code to view a code snippet shared through SendIt with syntax highlighting.",
+    description:
+      "Enter your access code to view a code snippet shared through SendIt with syntax highlighting.",
     heading: "Receive a shared code snippet",
     body: [
       "Enter the access code you were given to open the snippet. Snippets are displayed with syntax highlighting and can be copied in one action.",
@@ -224,7 +214,8 @@ const staticPages = [
   {
     path: "/terms",
     title: "Terms of Service | SendIt",
-    description: "The rules for using SendIt: acceptable use, prohibited content, availability, liability and account terms.",
+    description:
+      "The rules for using SendIt: acceptable use, prohibited content, availability, liability and account terms.",
     heading: "Terms of service",
     body: [
       "These terms cover acceptable use of SendIt, prohibited content, service availability, limitation of liability and the conditions attached to optional accounts.",
@@ -239,7 +230,8 @@ const staticPages = [
   {
     path: "/disclaimer",
     title: "Disclaimer | SendIt",
-    description: "Editorial and service disclaimer for SendIt, including the scope of guidance published on our blog.",
+    description:
+      "Editorial and service disclaimer for SendIt, including the scope of guidance published on our blog.",
     heading: "Disclaimer",
     body: [
       "SendIt is provided as-is. Guidance published on this site, including blog articles, is general information and not legal, financial or professional security advice.",
@@ -281,43 +273,41 @@ function buildHtml(template, page) {
   const url = `${SITE}${page.path === "/" ? "/" : page.path}`;
   let html = template;
 
-  html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${escapeHtml(page.title)}</title>`);
+  html = html.replace(
+    /<title>[\s\S]*?<\/title>/,
+    `<title>${escapeHtml(page.title)}</title>`,
+  );
   html = html.replace(
     /<meta\s+name="description"[\s\S]*?\/>/,
-    `<meta name="description" content="${escapeHtml(page.description)}" />`
+    `<meta name="description" content="${escapeHtml(page.description)}" />`,
   );
   html = html.replace(
     /<link rel="canonical"[^>]*>/,
-    `<link rel="canonical" href="${url}" />`
+    `<link rel="canonical" href="${url}" />`,
   );
   html = html.replace(
     /<meta\s+property="og:title"[\s\S]*?\/>/,
-    `<meta property="og:title" content="${escapeHtml(page.title)}" />`
+    `<meta property="og:title" content="${escapeHtml(page.title)}" />`,
   );
   html = html.replace(
     /<meta\s+property="og:description"[\s\S]*?\/>/,
-    `<meta property="og:description" content="${escapeHtml(page.description)}" />`
+    `<meta property="og:description" content="${escapeHtml(page.description)}" />`,
   );
   html = html.replace(
     /<meta\s+property="og:url"[\s\S]*?\/>/,
-    `<meta property="og:url" content="${url}" />`
+    `<meta property="og:url" content="${url}" />`,
   );
   html = html.replace(
     /<meta\s+property="og:type"[\s\S]*?\/>/,
-    `<meta property="og:type" content="${page.type || "website"}" />`
+    `<meta property="og:type" content="${page.type || "website"}" />`,
   );
-
   const extraHead = page.jsonLd
     ? `\n    <script type="application/ld+json">${JSON.stringify(page.jsonLd)}</script>`
     : "";
 
-  if (extraHead && html.includes("<!-- Adsterra Popunder -->")) {
-    html = html.replace("    <!-- Adsterra Popunder -->", `${extraHead}\n    <!-- Adsterra Popunder -->`);
-  } else {
+  if (extraHead) {
     html = html.replace("</head>", `${extraHead}\n  </head>`);
   }
-
-  html = keepPopunderLastInHead(html);
 
   const nav = [
     ["/", "Home"],
@@ -337,7 +327,9 @@ function buildHtml(template, page) {
     .join(" ");
 
   const links = (page.links || [])
-    .map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`)
+    .map(
+      ([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`,
+    )
     .join("");
 
   const content = `
@@ -354,7 +346,10 @@ function buildHtml(template, page) {
         </footer>
       </div>`;
 
-  html = html.replace('<div id="root"></div>', `<div id="root">${content}</div>`);
+  html = html.replace(
+    '<div id="root"></div>',
+    `<div id="root">${content}</div>`,
+  );
   return html;
 }
 
@@ -366,7 +361,9 @@ function writePage(html, routePath) {
 
 function main() {
   if (!fs.existsSync(TEMPLATE)) {
-    console.error("prerender: build/index.html not found. Run react-scripts build first.");
+    console.error(
+      "prerender: build/index.html not found. Run react-scripts build first.",
+    );
     process.exit(1);
   }
 
@@ -388,7 +385,11 @@ function main() {
       },
     };
     writePage(buildHtml(template, enriched), page.path);
-    routes.push({ path: page.path, lastmod: null, priority: page.path === "/" ? "1.0" : "0.7" });
+    routes.push({
+      path: page.path,
+      lastmod: null,
+      priority: page.path === "/" ? "1.0" : "0.7",
+    });
   });
 
   posts.forEach((post) => {
@@ -401,7 +402,7 @@ function main() {
       heading: post.title,
       type: "article",
       meta: `<p><em>Published ${escapeHtml(post.date)} &middot; Updated ${escapeHtml(
-        post.updated
+        post.updated,
       )} &middot; ${escapeHtml(post.readTime)} &middot; By the SENDIT team</em></p>`,
       bodyHtml: `<p>${escapeHtml(post.description)}</p>\n${renderBlocks(post.content)}`,
       links: [
@@ -423,7 +424,10 @@ function main() {
         publisher: {
           "@type": "Organization",
           name: "SENDIT",
-          logo: { "@type": "ImageObject", url: `${SITE}/images/Sendit_logo.png` },
+          logo: {
+            "@type": "ImageObject",
+            url: `${SITE}/images/Sendit_logo.png`,
+          },
         },
       },
     };
@@ -443,14 +447,16 @@ function main() {
         "  </url>",
       ]
         .filter(Boolean)
-        .join("\n")
+        .join("\n"),
     ),
     "</urlset>",
   ].join("\n");
 
   fs.writeFileSync(path.join(BUILD_DIR, "sitemap.xml"), xml);
 
-  console.log(`prerender: wrote ${routes.length} static HTML pages and sitemap.xml`);
+  console.log(
+    `prerender: wrote ${routes.length} static HTML pages and sitemap.xml`,
+  );
 }
 
 main();

@@ -4,7 +4,7 @@ import SEO from "../components/SEO";
 import posts from "../data/blogPosts.json";
 import "../styles/Blog.css";
 
-const SITE = "https://senditsystem.netlify.app";
+const SITE = "https://senditsystem.in";
 
 const sorted = [...posts].sort((a, b) => (a.date < b.date ? 1 : -1));
 

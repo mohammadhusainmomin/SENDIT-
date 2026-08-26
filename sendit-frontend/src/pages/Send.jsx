@@ -38,7 +38,7 @@ function Send() {
         title="Send Files Online | SendIt File Sharing"
         description="Upload and send files online with SendIt using temporary access codes and a fast secure file sharing flow."
         keywords="send files online, sendit send files, secure file upload, file sharing platform, temporary access code"
-        url="https://senditsystem.netlify.app/send"
+        url="https://senditsystem.in/send"
       />
 
       <section className="page-section">
