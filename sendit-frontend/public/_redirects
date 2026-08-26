@@ -1,7 +1,11 @@
+# Redirect Netlify default domain to main domain
+https://senditsystem.netlify.app/* https://senditsystem.in/:splat 301!
+
 # Redirect www to non-www
 https://www.senditsystem.in/* https://senditsystem.in/:splat 301!
+
+# Redirect HTTP to HTTPS
 http://senditsystem.in/* https://senditsystem.in/:splat 301!
 
-# Prerendered static HTML files are served first by Netlify.
-# Everything else falls back to the SPA shell.
+# Prerendered pages / SPA fallback
 /* /index.html 200
