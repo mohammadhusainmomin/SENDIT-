@@ -41,6 +41,14 @@ function parsePagination(raw, fallbackPage) {
 }
 
 function Dashboard({ user, onLogout }) {
+  const adminToken = sessionStorage.getItem("adminToken");
+  const adminFetch = (url, options = {}) => fetch(url, {
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+      Authorization: `Bearer ${adminToken}`,
+    },
+  });
   const getInitialSidebarState = () =>
     typeof window === "undefined" ? true : window.innerWidth >= 1024;
 
@@ -140,8 +148,8 @@ function Dashboard({ user, onLogout }) {
   const fetchOverviewData = async () => {
     try {
       const [statsRes, trendRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/admin/stats`),
-        fetch(`${API_BASE_URL}/admin/trend`),
+        adminFetch(`${API_BASE_URL}/admin/stats`),
+        adminFetch(`${API_BASE_URL}/admin/trend`),
       ]);
 
       if (!statsRes.ok || !trendRes.ok) {
@@ -169,7 +177,7 @@ function Dashboard({ user, onLogout }) {
     setUsersLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/users?limit=${PAGE_LIMIT}&page=${page}`);
+      const response = await adminFetch(`${API_BASE_URL}/admin/users?limit=${PAGE_LIMIT}&page=${page}`);
       if (!response.ok) throw new Error("Failed to fetch users");
 
       const data = await response.json();
@@ -194,7 +202,7 @@ function Dashboard({ user, onLogout }) {
     setFilesLoading(true);
 
     try {
-      const response = await fetch(
+      const response = await adminFetch(
         `${API_BASE_URL}/admin/file-history?limit=${PAGE_LIMIT}&page=${page}`,
       );
       if (!response.ok) throw new Error("Failed to fetch files");
@@ -221,7 +229,7 @@ function Dashboard({ user, onLogout }) {
     setCodesLoading(true);
 
     try {
-      const response = await fetch(
+      const response = await adminFetch(
         `${API_BASE_URL}/admin/code-history?limit=${PAGE_LIMIT}&page=${page}`,
       );
       if (!response.ok) throw new Error("Failed to fetch codes");
@@ -248,7 +256,7 @@ function Dashboard({ user, onLogout }) {
     setActivityLoading(true);
 
     try {
-      const response = await fetch(
+      const response = await adminFetch(
         `${API_BASE_URL}/admin/activity?limit=${PAGE_LIMIT}&page=${page}`,
       );
       if (!response.ok) throw new Error("Failed to fetch activity");
@@ -422,22 +430,28 @@ function App() {
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("adminUser");
-    if (savedEmail) {
+    const savedToken = sessionStorage.getItem("adminToken");
+    if (savedEmail && savedToken) {
       setUserEmail(savedEmail);
       setIsLoggedIn(true);
+    } else {
+      localStorage.removeItem("adminUser");
+      sessionStorage.removeItem("adminToken");
     }
   }, []);
 
-  const handleLogin = (email) => {
+  const handleLogin = (email, token) => {
     setUserEmail(email);
     setIsLoggedIn(true);
     localStorage.setItem("adminUser", email);
+    sessionStorage.setItem("adminToken", token);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserEmail("");
     localStorage.removeItem("adminUser");
+    sessionStorage.removeItem("adminToken");
   };
 
   return !isLoggedIn ? (

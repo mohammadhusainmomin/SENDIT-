@@ -33,12 +33,7 @@ function CodeInput() {
     return nameParts[nameParts.length - 1].slice(0, 4).toUpperCase();
   };
 
-  const handleGetFiles = async () => {
-    if (code.length !== 4) {
-      showError("Please enter a valid 4-digit code");
-      return;
-    }
-
+  const performGetFiles = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
@@ -72,6 +67,15 @@ function CodeInput() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGetFiles = () => {
+    if (code.length !== 4) {
+      showError("Please enter a valid 4-digit code");
+      return;
+    }
+
+    performGetFiles();
   };
 
   const handleDownloadFile = async (fileIndex, providedFiles = filesList) => {
@@ -145,8 +149,9 @@ function CodeInput() {
   };
 
   return (
-    <div className="si-grid">
-      <div className="si-card" style={{ padding: "1.5rem" }}>
+    <>
+      <div className="si-grid">
+        <div className="si-card" style={{ padding: "1.5rem" }}>
         <div className="code-input-hero">
           <input
             type="text"
@@ -251,7 +256,8 @@ function CodeInput() {
           </button>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
 

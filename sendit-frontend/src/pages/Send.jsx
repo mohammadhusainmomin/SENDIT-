@@ -57,20 +57,24 @@ function Send() {
                 code with the receiver.
               </p>
 
-              <div className="send-easy-steps">
-                <div className="send-step-card">
+              {/* Issue 5: aria-hidden so screen readers don't announce these as interactive;
+                  CSS will be updated to remove the button-like background fill */}
+              <div className="send-easy-steps" aria-hidden="true">
+                <div className="send-step-card send-step-indicator">
                   <div className="si-meta-label">Step 1</div>
                   <strong>Choose files</strong>
                 </div>
-                <div className="send-step-card">
+                <div className="send-step-card send-step-indicator">
                   <div className="si-meta-label">Step 2</div>
                   <strong>Set expiry</strong>
                 </div>
-                <div className="send-step-card">
+                <div className="send-step-card send-step-indicator">
                   <div className="si-meta-label">Step 3</div>
                   <strong>Share code</strong>
                 </div>
               </div>
+              {/* Screen-reader-only progress description */}
+              <p className="sr-only">To send a file: first choose files, then set the expiry time, then share the generated code.</p>
             </div>
 
             <FileUpload
@@ -150,17 +154,19 @@ function Send() {
             </div>
 
             <div className="si-card send-control-card send-sidebar-expiry-card">
-              <div className="send-control-header">
+              {/* Issue 4: paddingTop gives EXPIRY label breathing room at the top */}
+              <div className="send-control-header" style={{ paddingTop: "0.5rem" }}>
                 <div>
                   <div className="si-meta-label">Expiry</div>
                   <h3 style={{ margin: "0.35rem 0 0" }}>
                     How long should the code work?
                   </h3>
                 </div>
-                <div className="send-expiry-badge">
+                {/* Issue 3: show actual selected value (or "Not set") — removes ambiguity */}
+                <div className="send-expiry-badge" aria-live="polite">
                   {selectedExpiryMinutes > 0
                     ? `${selectedExpiryMinutes} min`
-                    : "Choose time"}
+                    : "Not set"}
                 </div>
               </div>
 

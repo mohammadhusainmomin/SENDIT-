@@ -54,7 +54,11 @@ export default function SEO({
     updateMetaTag("og:url", url, true);
     updateMetaTag("og:image", image, true);
     updateMetaTag("og:site_name", "SendIt", true);
+    updateMetaTag("og:locale", "en_IN", true);
     updateMetaTag("og:image:alt", "SendIt secure file sharing platform", true);
+    updateMetaTag("og:image:width", "1200", true);
+    updateMetaTag("og:image:height", "630", true);
+    updateMetaTag("og:image:type", "image/png", true);
 
     // Twitter Card meta tags
     updateMetaTag("twitter:card", "summary_large_image");
@@ -71,6 +75,20 @@ export default function SEO({
       document.head.appendChild(canonical);
     }
     canonical.setAttribute("href", url);
+
+    // hreflang alternate links — update per-page so Google maps each URL to the domain
+    const updateAlternate = (hreflang, href) => {
+      let tag = document.querySelector(`link[rel='alternate'][hreflang='${hreflang}']`);
+      if (!tag) {
+        tag = document.createElement("link");
+        tag.setAttribute("rel", "alternate");
+        tag.setAttribute("hreflang", hreflang);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute("href", href);
+    };
+    updateAlternate("en", url);
+    updateAlternate("x-default", url);
 
     // Structured Data (JSON-LD)
     const existingManagedSchemas = document.querySelectorAll('script[data-seo-schema="true"]');

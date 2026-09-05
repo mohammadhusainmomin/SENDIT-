@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  FiAlertCircle,
   FiCheckCircle,
   FiClock,
   FiCopy,
@@ -57,10 +58,38 @@ function formatDuration(minutes = 0) {
     .join(" ") || "0m";
 }
 
+function validateForm(form, requiredFiles, totalExpiryMinutes) {
+  const errors = {};
+  if (!form.title.trim()) {
+    errors.title = "Room name is required";
+  } else if (form.title.trim().length < 3) {
+    errors.title = "Room name must be at least 3 characters";
+  }
+  const docs = requiredFiles.map((f) => f.trim()).filter(Boolean);
+  if (docs.length === 0) {
+    errors.requiredFiles = "Add at least one required document";
+  } else {
+    const lower = docs.map((d) => d.toLowerCase());
+    const hasDupe = lower.some((d, i) => lower.indexOf(d) !== i);
+    if (hasDupe) errors.requiredFiles = "Document names must be unique";
+  }
+  if (totalExpiryMinutes < 60) {
+    errors.expiry = "Minimum deadline is 1 hour";
+  } else if (totalExpiryMinutes > 7 * 24 * 60) {
+    errors.expiry = "Maximum deadline is 7 days";
+  }
+  const mb = Number.parseInt(form.maxFileSizeMB, 10);
+  if (!mb || mb < 1 || mb > 100) {
+    errors.maxFileSizeMB = "Max file size must be between 1-100 MB";
+  }
+  return errors;
+}
+
 function DropRooms() {
   const { user } = useAuth();
   const { success, error } = useToast();
   const [form, setForm] = useState(INITIAL_FORM);
+  const [formErrors, setFormErrors] = useState({});
   const [requiredFiles, setRequiredFiles] = useState(INITIAL_REQUIRED_FILES);
   const [rooms, setRooms] = useState([]);
   const [selectedRoomId, setSelectedRoomId] = useState("");
@@ -68,6 +97,7 @@ function DropRooms() {
   const [loadingRooms, setLoadingRooms] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [closingRoomId, setClosingRoomId] = useState("");
   const [downloadingFileId, setDownloadingFileId] = useState("");
   const [downloadingAll, setDownloadingAll] = useState(false);
 
@@ -115,11 +145,13 @@ function DropRooms() {
   }, [fetchRooms]);
 
   useEffect(() => {
+    setRoomDetails(null);
     fetchRoomDetails(selectedRoomId);
   }, [fetchRoomDetails, selectedRoomId]);
 
   const updateForm = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    if (formErrors[key]) setFormErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
   const updateRequiredFile = (index, value) => {
@@ -127,31 +159,26 @@ function DropRooms() {
   };
 
   const addRequiredFile = () => {
+    if (requiredFiles.length >= 12) { error("Maximum 12 documents allowed"); return; }
     setRequiredFiles((prev) => [...prev, ""]);
   };
 
   const removeRequiredFile = (index) => {
+    if (requiredFiles.length <= 1) { error("At least one required document is needed"); return; }
     setRequiredFiles((prev) => prev.filter((_, itemIndex) => itemIndex !== index));
   };
 
   const handleCreateRoom = async (event) => {
     event.preventDefault();
 
+    const errors = validateForm(form, requiredFiles, totalExpiryMinutes);
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      error(Object.values(errors)[0]);
+      return;
+    }
+
     const documents = requiredFiles.map((item) => item.trim()).filter(Boolean);
-    if (!form.title.trim()) {
-      error("Room title is required");
-      return;
-    }
-
-    if (documents.length === 0) {
-      error("Add at least one required document");
-      return;
-    }
-
-    if (totalExpiryMinutes <= 0 || totalExpiryMinutes > 7 * 24 * 60) {
-      error("Choose a deadline between 1 hour and 7 days");
-      return;
-    }
 
     try {
       setCreating(true);
@@ -166,6 +193,7 @@ function DropRooms() {
 
       const newRoom = response.data.room;
       success(`Drop room ready: ${newRoom.code}`);
+      setFormErrors({});
       setForm(INITIAL_FORM);
       setRequiredFiles(INITIAL_REQUIRED_FILES);
       await fetchRooms();
@@ -178,23 +206,31 @@ function DropRooms() {
   };
 
   const copyRoomCode = async (room) => {
-    await navigator.clipboard.writeText(room.code);
-    success("Room code copied");
+    try {
+      await navigator.clipboard.writeText(room.code);
+      success("Room code copied!");
+    } catch { error("Failed to copy code"); }
   };
 
   const copyRoomLink = async (room) => {
-    await navigator.clipboard.writeText(`${window.location.origin}/drop/${room.code}`);
-    success("Drop room link copied");
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/drop/${room.code}`);
+      success("Drop room link copied!");
+    } catch { error("Failed to copy link"); }
   };
 
   const closeRoom = async (roomId) => {
+    if (!window.confirm("Close this room? Submitters will no longer be able to upload files.")) return;
     try {
+      setClosingRoomId(roomId);
       await api.post(`/drop-rooms/${roomId}/close`);
       success("Drop room closed");
       await fetchRooms();
       await fetchRoomDetails(roomId);
     } catch (err) {
       error(err.response?.data?.message || "Failed to close room");
+    } finally {
+      setClosingRoomId("");
     }
   };
 
@@ -283,6 +319,7 @@ function DropRooms() {
           title="Drop Rooms - SendIt"
           description="Create temporary rooms to collect required documents with SendIt."
           url="https://senditsystem.in/drop-rooms"
+          robots="noindex, follow"
         />
         <section className="page-section">
           <div className="drop-login-card si-card">
@@ -303,6 +340,7 @@ function DropRooms() {
         title="Drop Rooms - SendIt Document Collection"
         description="Create temporary SendIt rooms for structured document collection."
         url="https://senditsystem.in/drop-rooms"
+        robots="noindex, follow"
       />
 
       <section className="page-section">
@@ -330,13 +368,17 @@ function DropRooms() {
             </div>
 
             <label className="drop-field">
-              <span>Room name</span>
+              <span>Room name <span style={{color:"red"}}>*</span></span>
               <input
                 value={form.title}
                 onChange={(event) => updateForm("title", event.target.value)}
                 placeholder="Internship Documents"
                 maxLength={80}
+                className={formErrors.title ? "input-error" : ""}
               />
+              {formErrors.title && (
+                <span className="drop-field-error"><FiAlertCircle /> {formErrors.title}</span>
+              )}
             </label>
 
             <label className="drop-field">
@@ -361,28 +403,33 @@ function DropRooms() {
             </label>
 
             <div className="drop-field">
-              <span>Required documents</span>
+              <span>Required documents <span style={{color:"red"}}>*</span></span>
               <div className="drop-required-list">
                 {requiredFiles.map((item, index) => (
-                  <div className="drop-required-row" key={`${index}-${item}`}>
+                  <div className="drop-required-row" key={index}>
                     <input
                       value={item}
                       onChange={(event) => updateRequiredFile(index, event.target.value)}
-                      placeholder="Document name"
+                      placeholder={`Document ${index + 1} name`}
                       maxLength={50}
+                      className={formErrors.requiredFiles && !item.trim() ? "input-error" : ""}
                     />
                     <button
                       className="si-button-secondary drop-icon-button"
                       type="button"
                       onClick={() => removeRequiredFile(index)}
                       aria-label="Remove document"
+                      title="Remove"
                     >
                       <FiX />
                     </button>
                   </div>
                 ))}
               </div>
-              <button className="si-button-secondary drop-add-button" type="button" onClick={addRequiredFile}>
+              {formErrors.requiredFiles && (
+                <span className="drop-field-error"><FiAlertCircle /> {formErrors.requiredFiles}</span>
+              )}
+              <button className="si-button-secondary drop-add-button" type="button" onClick={addRequiredFile} disabled={requiredFiles.length >= 12}>
                 <FiPlus /> Add document
               </button>
             </div>
@@ -414,14 +461,20 @@ function DropRooms() {
                   max="100"
                   value={form.maxFileSizeMB}
                   onChange={(event) => updateForm("maxFileSizeMB", event.target.value)}
+                  className={formErrors.maxFileSizeMB ? "input-error" : ""}
                 />
+                {formErrors.maxFileSizeMB && (
+                  <span className="drop-field-error"><FiAlertCircle /> {formErrors.maxFileSizeMB}</span>
+                )}
               </label>
             </div>
 
             <div className="drop-create-footer">
               <div>
                 <span className="si-meta-label">Room window</span>
-                <strong>{formatDuration(totalExpiryMinutes)}</strong>
+                <strong style={{color: totalExpiryMinutes < 60 ? "red" : "inherit"}}>
+                  {formatDuration(totalExpiryMinutes)}{totalExpiryMinutes < 60 ? " (min 1h)" : ""}
+                </strong>
               </div>
               <button className="si-button" type="submit" disabled={creating}>
                 <FiSend /> {creating ? "Creating..." : "Create Room"}
@@ -510,12 +563,12 @@ function DropRooms() {
                 </div>
 
                 <div className="drop-actions-row">
-                  <button className="si-button-secondary" type="button" onClick={() => fetchRoomDetails(selectedRoom._id)}>
-                    <FiRefreshCw /> Refresh
+                  <button className="si-button-secondary" type="button" onClick={() => fetchRoomDetails(selectedRoom._id)} disabled={loadingDetails}>
+                    <FiRefreshCw /> {loadingDetails ? "Refreshing..." : "Refresh"}
                   </button>
                   {selectedRoom.status === "open" && (
-                    <button className="si-button-secondary danger" type="button" onClick={() => closeRoom(selectedRoom._id)}>
-                      <FiX /> Close Room
+                    <button className="si-button-secondary danger" type="button" onClick={() => closeRoom(selectedRoom._id)} disabled={closingRoomId === selectedRoom._id}>
+                      <FiX /> {closingRoomId === selectedRoom._id ? "Closing..." : "Close Room"}
                     </button>
                   )}
                 </div>
@@ -544,11 +597,22 @@ function DropRooms() {
                 )}
               </div>
 
-              {!roomDetails?.submissions?.length ? (
+              {!selectedRoomId ? (
                 <div className="drop-empty-state">
                   <FiInbox />
-                  <strong>No submissions</strong>
-                  <span>Shared room links will appear here after upload.</span>
+                  <strong>No room selected</strong>
+                  <span>Select a room from the list above to see submissions.</span>
+                </div>
+              ) : loadingDetails ? (
+                <div className="drop-empty-state">
+                  <FiRefreshCw />
+                  <strong>Loading submissions...</strong>
+                </div>
+              ) : !roomDetails?.submissions?.length ? (
+                <div className="drop-empty-state">
+                  <FiInbox />
+                  <strong>No submissions yet</strong>
+                  <span>Share the room link or code with submitters.</span>
                 </div>
               ) : (
                 <div className="drop-submission-list">
@@ -567,7 +631,7 @@ function DropRooms() {
 
                       {submission.missingSlots?.length > 0 && (
                         <div className="drop-missing-row">
-                          Missing: {submission.missingSlots.join(", ")}
+                          <FiAlertCircle /> Missing: {submission.missingSlots.join(", ")}
                         </div>
                       )}
 

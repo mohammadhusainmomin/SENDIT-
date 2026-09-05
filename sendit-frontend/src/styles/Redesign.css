@@ -80,10 +80,21 @@ body {
   border-radius: 999px;
   background: rgba(13, 110, 253, 0.08);
   color: var(--si-primary-deep);
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  /* Issue 4: bumped from 0.74rem → 0.8rem so text is ≥12 px at the 14px base */
+  font-size: 0.8rem;
+  font-weight: 700;
+  /* Issue 5: removed text-transform:uppercase + letter-spacing — long caps are slower to read */
+  letter-spacing: 0.04em;
+}
+
+/* Issue 6: stat card values styled like the former h3s but not heading elements */
+.si-stat-value {
+  margin-top: 0.35rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--si-text);
 }
 
 .si-title {
@@ -1869,6 +1880,37 @@ body {
   border-radius: 1rem;
   background: var(--si-surface-muted);
   border: 1px solid rgba(114, 119, 135, 0.12);
+}
+
+/* Issue 5: override button-like step card with a flat, non-interactive look */
+.send-step-card.send-step-indicator {
+  background: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding: 0.5rem 0.75rem;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Issue 10: "click to browse" link-style affordance inside dropzone label */
+.upload-browse-trigger {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: var(--si-primary);
+  font-weight: 700;
+}
+
+/* Accessible visually-hidden text for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .send-summary-card {
@@ -3932,5 +3974,438 @@ body {
     font-size: 1.42rem;
     letter-spacing: 0.12em;
     text-indent: 0.12em;
+  }
+}
+
+/* ================================ SENDIT CHATBOT ================================ */
+
+.sendit-chatbot {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 1200;
+  display: grid;
+  justify-items: end;
+  gap: 0.75rem;
+  font-family: "Inter", sans-serif;
+}
+
+.sendit-chatbot-panel {
+  width: min(410px, calc(100vw - 28px));
+  max-height: min(680px, calc(100vh - 40px));
+  overflow: hidden;
+  border: 1px solid var(--si-border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 28px 70px rgba(12, 41, 82, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.85) inset;
+  backdrop-filter: blur(18px);
+  display: grid;
+  grid-template-rows: auto minmax(220px, 1fr) auto auto;
+  animation: senditChatbotEnter 0.22s ease-out;
+}
+
+[data-theme="dark"] .sendit-chatbot-panel {
+  background: rgba(21, 29, 34, 0.96);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.38);
+}
+
+.sendit-chatbot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--si-border);
+  background:
+    linear-gradient(135deg, rgba(13, 110, 253, 0.12), rgba(0, 102, 138, 0.08)),
+    var(--si-surface-strong);
+}
+
+.sendit-chatbot-brand {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sendit-chatbot-brand > div {
+  min-width: 0;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.sendit-chatbot-avatar {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--si-primary-deep), var(--si-secondary));
+  box-shadow: 0 14px 28px rgba(13, 110, 253, 0.22);
+}
+
+.sendit-chatbot-header strong {
+  color: var(--si-text);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.sendit-chatbot-kicker {
+  color: var(--si-primary-deep);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sendit-chatbot-header-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sendit-chatbot-language {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.62rem;
+  border: 1px solid var(--si-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--si-text-soft);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+[data-theme="dark"] .sendit-chatbot-language {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sendit-chatbot-icon-button,
+.sendit-chatbot-toggle,
+.sendit-chatbot-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  cursor: pointer;
+  letter-spacing: 0;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.sendit-chatbot-icon-button::before,
+.sendit-chatbot-send::before,
+.sendit-chatbot-toggle::before {
+  display: none;
+}
+
+.sendit-chatbot-icon-button {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  padding: 0;
+  border-radius: 8px;
+  background: var(--si-surface-strong);
+  color: var(--si-text);
+}
+
+.sendit-chatbot-icon-button:hover,
+.sendit-chatbot-icon-button:focus-visible {
+  background: rgba(13, 110, 253, 0.1);
+  color: var(--si-primary-deep);
+}
+
+.sendit-chatbot svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  display: block;
+  color: currentColor;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  position: relative;
+  z-index: 1;
+}
+
+.sendit-chatbot-messages {
+  min-height: 230px;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background:
+    linear-gradient(180deg, rgba(13, 110, 253, 0.035), transparent 34%),
+    var(--si-surface-strong);
+}
+
+.sendit-chatbot-message {
+  max-width: min(90%, 320px);
+  padding: 0.78rem 0.88rem;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  word-break: break-word;
+  box-shadow: 0 8px 20px rgba(12, 41, 82, 0.06);
+}
+
+.sendit-chatbot-message p {
+  margin: 0;
+}
+
+.sendit-chatbot-message.assistant {
+  justify-self: start;
+  color: var(--si-text);
+  background: #f4f8fc;
+  border: 1px solid rgba(114, 119, 135, 0.12);
+  border-bottom-left-radius: 6px;
+}
+
+[data-theme="dark"] .sendit-chatbot-message.assistant {
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.sendit-chatbot-message.user {
+  justify-self: end;
+  color: #fff;
+  background: linear-gradient(135deg, var(--si-primary-deep), var(--si-primary));
+  border-bottom-right-radius: 6px;
+}
+
+.sendit-chatbot-message-title {
+  margin-bottom: 0.28rem;
+  color: var(--si-primary-deep);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+[data-theme="dark"] .sendit-chatbot-message-title,
+[data-theme="dark"] .sendit-chatbot-kicker {
+  color: #79b7ff;
+}
+
+.sendit-chatbot-cta,
+.sendit-chatbot-support-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 34px;
+  margin-top: 0.7rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  color: #fff;
+  background: var(--si-primary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.sendit-chatbot-cta svg,
+.sendit-chatbot-support-links svg {
+  width: 15px;
+  height: 15px;
+}
+
+.sendit-chatbot-support-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sendit-chatbot-support-links a {
+  background: var(--si-surface-strong);
+  color: var(--si-primary-deep);
+  border: 1px solid var(--si-border);
+}
+
+.sendit-chatbot-suggestions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-top: 1px solid rgba(114, 119, 135, 0.1);
+  background: rgba(237, 245, 252, 0.45);
+}
+
+[data-theme="dark"] .sendit-chatbot-suggestions {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.sendit-chatbot-suggestions button {
+  min-width: 0;
+  min-height: 40px;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--si-border);
+  border-radius: 8px;
+  background: var(--si-surface-strong);
+  color: var(--si-text-soft);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.sendit-chatbot-suggestions button:hover,
+.sendit-chatbot-suggestions button:focus-visible {
+  border-color: rgba(13, 110, 253, 0.35);
+  color: var(--si-primary-deep);
+  background: rgba(13, 110, 253, 0.08);
+}
+
+.sendit-chatbot-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 0.55rem;
+  padding: 0.9rem 1rem 1rem;
+  border-top: 1px solid var(--si-border);
+}
+
+.sendit-chatbot-form input {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--si-border);
+  border-radius: 8px;
+  outline: none;
+  background: var(--si-surface-strong);
+  color: var(--si-text);
+  font: inherit;
+}
+
+.sendit-chatbot-form input:focus {
+  border-color: rgba(13, 110, 253, 0.55);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.13);
+}
+
+.sendit-chatbot-send {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 8px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--si-primary-deep), var(--si-primary));
+  box-shadow: 0 12px 24px rgba(13, 110, 253, 0.22);
+}
+
+.sendit-chatbot-send svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.3;
+}
+
+.sendit-chatbot-send:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+  box-shadow: none;
+}
+
+.sendit-chatbot-toggle {
+  gap: 0.55rem;
+  min-width: 132px;
+  height: 56px;
+  padding: 0 1.1rem;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--si-primary-deep), var(--si-primary));
+  box-shadow:
+    0 18px 38px rgba(13, 110, 253, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.sendit-chatbot-toggle:hover,
+.sendit-chatbot-toggle:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 44px rgba(13, 110, 253, 0.38);
+}
+
+.sendit-chatbot-toggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+.sendit-chatbot.is-open .sendit-chatbot-toggle {
+  display: none;
+}
+
+@keyframes senditChatbotEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .sendit-chatbot {
+    right: 0.65rem;
+    bottom: 0.65rem;
+  }
+
+  .sendit-chatbot-panel {
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    border-radius: 14px;
+  }
+
+  .sendit-chatbot-messages {
+    min-height: 220px;
+  }
+
+  .sendit-chatbot-toggle {
+    min-width: 58px;
+    width: 58px;
+    height: 58px;
+    padding: 0;
+    border-radius: 14px;
+  }
+
+  .sendit-chatbot-toggle span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 420px) {
+  .sendit-chatbot-header {
+    align-items: flex-start;
+  }
+
+  .sendit-chatbot-language {
+    display: none;
+  }
+
+  .sendit-chatbot-suggestions {
+    grid-template-columns: 1fr;
+  }
+
+  .sendit-chatbot-message {
+    max-width: 94%;
   }
 }

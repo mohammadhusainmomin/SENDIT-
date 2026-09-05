@@ -15,11 +15,22 @@ export default function Privacy() {
         url="https://senditsystem.in/privacy"
       />
 
-      <div className="content-page-wrapper">
-        <div className="content-container">
-          <h1 className="page-title">Privacy Policy</h1>
-
-          <div className="last-updated">Last updated: May 3, 2026</div>
+      <div className="content-page-wrapper legal-page legal-page--privacy">
+        <div className="content-container content-container--wide legal-container">
+          <div className="legal-hero">
+            <div>
+              <span className="content-eyebrow">Data and privacy</span>
+              <h1 className="page-title">Privacy Policy</h1>
+              <p className="intro-text">How SendIt handles transfer data, account information, cookies, advertising, retention, and privacy requests.</p>
+            </div>
+            <div className="legal-meta-panel">
+              <span>Document status</span>
+              <strong>Current policy</strong>
+              <small>Last updated: May 3, 2026</small>
+              <a href="mailto:mmbrothersteam@gmail.com">Ask a privacy question <span aria-hidden="true">-&gt;</span></a>
+            </div>
+          </div>
+          <div className="legal-summary-row"><span>15 sections</span><span>Operational data explained</span><span>Contact: mmbrothersteam@gmail.com</span></div>
 
           <section className="content-section">
             <h2>1. Introduction & Privacy Commitment</h2>
@@ -27,7 +38,7 @@ export default function Privacy() {
               This Privacy Policy explains how SendIt ("we," "us," or "SendIt") collects, uses, discloses, retains, and protects your information when you visit and use our website at senditsystem.in (the "Service"). By accessing and using SendIt, you acknowledge that you have read, understood, and agree to be bound by all the terms of this Privacy Policy.
             </p>
             <p>
-              <strong>Your privacy is important to us.</strong> SendIt is designed with privacy-first principles. We minimize data collection, limit data retention, and never sell your personal information to advertisers or third parties. We believe that temporary file sharing should not require permanent data collection.
+              <strong>Your privacy is important to us.</strong> SendIt is designed to limit the lifetime of shared content and avoid requiring an account for basic transfers. The service still processes operational, transfer, and account information described below.
             </p>
           </section>
 
@@ -52,7 +63,7 @@ export default function Privacy() {
             </p>
             <h3>C. Account Information (Optional)</h3>
             <ul>
-              <li><strong>Sign-in Credentials:</strong> Email address and password (encrypted) if you create an account</li>
+              <li><strong>Sign-in Credentials:</strong> Email address and a one-way bcrypt password hash if you create a local account</li>
               <li><strong>Account Preferences:</strong> Default expiry times, notification settings, and account settings</li>
               <li><strong>Transfer History:</strong> Records of files you've uploaded or code snippets you've created (metadata only)</li>
               <li><strong>Profile Information:</strong> Name and profile picture if you choose to add them</li>
@@ -90,7 +101,7 @@ export default function Privacy() {
               <li><strong>No Manual Cleanup Needed:</strong> Files don't linger indefinitely or clutter our storage.</li>
               <li><strong>Code Expiration:</strong> Access codes also expire at the same time, preventing any access attempts after expiry</li>
               <li><strong>Not a Backup Service:</strong> SendIt explicitly is NOT designed for long-term storage or backup. Do not rely on SendIt to keep files permanently.</li>
-              <li><strong>No Permanent Recovery:</strong> Once deleted, files cannot be recovered. Make sure you keep local copies if you need the files long-term.</li>
+              <li><strong>No Permanent Recovery:</strong> Once the cleanup process removes file content, it cannot be recovered through SendIt. Keep local copies if you need files long-term.</li>
             </ul>
           </section>
 
@@ -216,7 +227,7 @@ export default function Privacy() {
             <h2>11. Data Retention & Destruction</h2>
             <ul>
               <li><strong>File Data:</strong> Retained only according to the expiry time selected for the share</li>
-              <li><strong>Access Codes:</strong> Deleted after file expiry or manual removal</li>
+              <li><strong>Access Codes:</strong> Content records and codes are removed by the expiry cleanup process; normal shares do not currently offer a user-facing manual removal endpoint</li>
               <li><strong>Account Data:</strong> Retained while your account is active. Deleted upon account deletion (with some data retained for legal compliance)</li>
               <li><strong>Analytics Data:</strong> Typically retained for 26 months to identify trends and patterns</li>
               <li><strong>Legal Records:</strong> Some data may be retained longer to comply with legal obligations or to defend SendIt in disputes</li>

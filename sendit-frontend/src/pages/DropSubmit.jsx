@@ -130,6 +130,7 @@ function DropSubmit() {
         title="Submit Documents - SendIt Drop Room"
         description="Submit documents to a SendIt Drop Room."
         url="https://senditsystem.in/drop"
+        robots="noindex, follow"
       />
 
       <section className="page-section">

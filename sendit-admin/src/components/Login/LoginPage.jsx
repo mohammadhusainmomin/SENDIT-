@@ -25,7 +25,7 @@ function LoginPage({ onLogin }) {
 
       const data = await response.json();
       if (data.success) {
-        onLogin(email);
+        onLogin(email, data.token);
       } else {
         setError(data.message || "Invalid credentials");
       }

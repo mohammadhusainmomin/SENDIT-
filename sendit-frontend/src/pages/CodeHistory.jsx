@@ -65,7 +65,8 @@ function CodeHistory() {
       <SEO
         title="My Codes - SendIt Code History"
         description="View your sent and received codes."
-        url="https://senditsystem.in/code-history"
+        url="https://senditsystem.in/code/history"
+        robots="noindex, follow"
       />
 
       <div className="my-files-content">

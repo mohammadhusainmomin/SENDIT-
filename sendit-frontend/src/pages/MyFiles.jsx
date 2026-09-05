@@ -66,6 +66,7 @@ function MyFiles() {
         title="My Files - SendIt File History"
         description="View your sent and received files."
         url="https://senditsystem.in/my-files"
+        robots="noindex, follow"
       />
 
       <div className="my-files-content">

@@ -3,19 +3,31 @@ import FileHistory from "../models/FileHistory.js";
 import CodeHistory from "../models/CodeHistory.js";
 import Code from "../models/Code.js";
 import File from "../models/File.js";
+import jwt from "jsonwebtoken";
 
 // Admin credentials (using environment variables for production)
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "senditsystem786@gmail.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "sendit123";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET || process.env.JWT_SECRET;
 
 export const verifyAdmin = (req, res) => {
   const { email, password } = req.body;
 
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD || !ADMIN_JWT_SECRET) {
+    return res.status(503).json({ success: false, message: "Admin authentication is not configured" });
+  }
+
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    const token = jwt.sign(
+      { email: ADMIN_EMAIL, scope: "admin" },
+      ADMIN_JWT_SECRET,
+      { expiresIn: "8h" },
+    );
     return res.json({
       success: true,
       message: "Admin verified",
-      admin: email
+      admin: email,
+      token,
     });
   }
 

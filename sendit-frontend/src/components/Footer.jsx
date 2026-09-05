@@ -26,7 +26,7 @@ function Footer() {
         </div>
 
         <div>
-          <h4 className="si-footer-title">Product</h4>
+          <h3 className="si-footer-title">Product</h3>
           <Link className="si-footer-link" to="/send">Send File</Link>
           <Link className="si-footer-link" to="/receive">Receive File</Link>
           <Link className="si-footer-link" to="/code/send">Send Code</Link>
@@ -34,7 +34,7 @@ function Footer() {
         </div>
 
         <div>
-          <h4 className="si-footer-title">Resources</h4>
+          <h3 className="si-footer-title">Resources</h3>
           <Link className="si-footer-link" to="/blog">Blog</Link>
           <Link className="si-footer-link" to="/about">About Us</Link>
           <Link className="si-footer-link" to="/features">Features</Link>
@@ -44,8 +44,9 @@ function Footer() {
         </div>
 
         <div>
-          <h4 className="si-footer-title">Legal</h4>
+          <h3 className="si-footer-title">Legal</h3>
           <Link className="si-footer-link" to="/privacy">Privacy Policy</Link>
+          <Link className="si-footer-link" to="/security">Security</Link>
           <Link className="si-footer-link" to="/terms">Terms of Service</Link>
           <Link className="si-footer-link" to="/disclaimer">Disclaimer</Link>
           <span className="si-footer-copy">Clear policies, support access, and transparent product details.</span>

@@ -2,5 +2,9 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /api
+Disallow: /my-files
+Disallow: /code/history
+Disallow: /drop-rooms
+Disallow: /drop
 
 Sitemap: https://senditsystem.in/sitemap.xml

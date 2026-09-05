@@ -130,9 +130,23 @@ function CodeShare() {
   };
 
   const handleSend = () => {
-      performSend();
-  };
+    if (!rawCode.trim()) {
+      error("Please paste some code first");
+      return;
+    }
 
+    if (calculateTotalMinutes() === 0) {
+      error("Please set an expiration time");
+      return;
+    }
+
+    if (isMaxTimeExceeded()) {
+      error("Maximum expiration time is 1 day (24 hours)");
+      return;
+    }
+
+    performSend();
+  };
 
 
   const handleReset = () => {

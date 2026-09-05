@@ -15,11 +15,22 @@ export default function Terms() {
         url="https://senditsystem.in/terms"
       />
 
-      <div className="content-page-wrapper">
-        <div className="content-container">
-          <h1 className="page-title">Terms of Service</h1>
-
-          <div className="last-updated">Last updated: April 23, 2026</div>
+      <div className="content-page-wrapper legal-page legal-page--terms">
+        <div className="content-container content-container--wide legal-container">
+          <div className="legal-hero">
+            <div>
+              <span className="content-eyebrow">Service agreement</span>
+              <h1 className="page-title">Terms of Service</h1>
+              <p className="intro-text">The rules for using SendIt, sharing content responsibly, and understanding temporary availability.</p>
+            </div>
+            <div className="legal-meta-panel">
+              <span>Document status</span>
+              <strong>Current terms</strong>
+              <small>Last updated: April 23, 2026</small>
+              <a href="mailto:mmbrothersteam@gmail.com">Contact the operator <span aria-hidden="true">-&gt;</span></a>
+            </div>
+          </div>
+          <div className="legal-summary-row"><span>Acceptable use</span><span>User responsibilities</span><span>Service limitations</span></div>
 
           <section className="content-section">
             <h2>Acceptance of terms</h2>

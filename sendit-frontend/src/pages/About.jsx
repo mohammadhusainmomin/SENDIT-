@@ -103,7 +103,7 @@ function About() {
               <article className="about-copy-value-card">
                 <MdSecurity className="about-copy-value-icon" />
                 <h3>Privacy-First Design</h3>
-                <p>You control how long access lasts by setting the expiry before sending. No permanent storage. No data collection beyond what's necessary.</p>
+                <p>You control how long application access lasts by setting the expiry before sending. Uploaded content is temporary by design, while operational and history metadata can remain as described in the Privacy Policy.</p>
               </article>
               <article className="about-copy-value-card">
                 <MdSpeed className="about-copy-value-icon" />
@@ -147,7 +147,7 @@ function About() {
             </p>
             <ul>
               <li><strong>Free</strong> - No payment, no premium tiers, no upgrade walls</li>
-              <li><strong>Private</strong> - No personal data collection, no selling data to advertisers</li>
+              <li><strong>Private by default</strong> - Basic sharing does not require an account, but the service still processes operational data needed to run and support transfers</li>
               <li><strong>Simple</strong> - Upload, share a code, done. No complex permission systems.</li>
               <li><strong>Secure</strong> - HTTPS encryption, temporary codes, expiry-based cleanup, minimal logging</li>
               <li><strong>Inclusive</strong> - Works on any device, requires no registration, accessible to everyone</li>

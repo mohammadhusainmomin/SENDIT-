@@ -15,11 +15,22 @@ export default function Disclaimer() {
         url="https://senditsystem.in/disclaimer"
       />
 
-      <div className="content-page-wrapper">
-        <div className="content-container">
-          <h1 className="page-title">Disclaimer</h1>
-
-          <div className="last-updated">Last updated: April 23, 2026</div>
+      <div className="content-page-wrapper legal-page legal-page--disclaimer">
+        <div className="content-container content-container--wide legal-container">
+          <div className="legal-hero">
+            <div>
+              <span className="content-eyebrow">Important context</span>
+              <h1 className="page-title">Disclaimer</h1>
+              <p className="intro-text">What SendIt guidance covers, what the service does not guarantee, and where user responsibility begins.</p>
+            </div>
+            <div className="legal-meta-panel">
+              <span>Document status</span>
+              <strong>Current disclaimer</strong>
+              <small>Last updated: April 23, 2026</small>
+              <a href="/terms">Read the terms of service <span aria-hidden="true">-&gt;</span></a>
+            </div>
+          </div>
+          <div className="legal-summary-row"><span>General information</span><span>Temporary service</span><span>User responsibility</span></div>
 
           <section className="content-section">
             <h2>General Information</h2>
@@ -29,7 +40,7 @@ export default function Disclaimer() {
           </section>
 
           <section className="content-section">
-            <h2>No Permanent Storage Guarantee</h2>
+            <h2>Temporary access, not a storage guarantee</h2>
             <p>
               SendIt is designed for temporary sharing. Users should not treat the platform as a permanent archive, backup system, or guaranteed long-term hosting service.
             </p>

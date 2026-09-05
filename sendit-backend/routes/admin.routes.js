@@ -10,11 +10,15 @@ import {
 } from "../controllers/admin.controller.js";
 import { getAdminFileHistory } from "../controllers/file.controller.js";
 import { getAdminCodeHistory } from "../controllers/code.controller.js";
+import adminMiddleware from "../middleware/admin.middleware.js";
+import { adminLoginRateLimiter } from "../middleware/rateLimit.middleware.js";
 
 const router = express.Router();
 
 // Admin verification
-router.post("/verify", verifyAdmin);
+router.post("/verify", adminLoginRateLimiter, verifyAdmin);
+
+router.use(adminMiddleware);
 
 // Dashboard stats
 router.get("/stats", getDashboardStats);

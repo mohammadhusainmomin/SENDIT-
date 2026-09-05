@@ -8,6 +8,7 @@ import {
 } from "../controllers/code.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 import authOptional from "../middleware/authOptional.middleware.js";
+import { receiveCodeRateLimiter } from "../middleware/rateLimit.middleware.js";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.post("/code/send", authOptional, sendCode);
 
 
 // Guests can receive code
-router.post("/code/receive", authOptional, receiveCode);
+router.post("/code/receive", receiveCodeRateLimiter, authOptional, receiveCode);
 
 // History requires authentication
 router.get("/code/sent", authMiddleware, getSentCodesHistory);

@@ -1,0 +1,153 @@
+﻿/* ============================================================
+   AdInterstitial — 5-second countdown overlay before action
+   Uses SendIt design tokens from Redesign.css
+   ============================================================ */
+
+/* Full-screen backdrop */
+.adi-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 16, 24, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 1rem;
+  animation: adi-fade-in 0.22s ease both;
+}
+
+@keyframes adi-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Modal card */
+.adi-modal {
+  width: 100%;
+  max-width: 480px;
+  padding: 0;
+  border-radius: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  animation: adi-slide-up 0.26s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes adi-slide-up {
+  from { transform: translateY(32px) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0) scale(1);       opacity: 1; }
+}
+
+/* Header */
+.adi-header {
+  padding: 1.5rem 1.5rem 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--si-border);
+}
+
+.adi-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--si-text-soft);
+  line-height: 1.5;
+}
+
+/* AdSense container */
+.adi-ad-shell {
+  padding: 1rem 1.25rem;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--si-surface-muted);
+  border-bottom: 1px solid var(--si-border);
+}
+
+.adi-ad-shell ins {
+  width: 100%;
+  min-height: 100px;
+}
+
+/* Footer */
+.adi-footer {
+  padding: 1.25rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+/* Countdown text */
+.adi-countdown {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--si-text-faint);
+  text-align: center;
+}
+
+.adi-countdown strong {
+  color: var(--si-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Continue button */
+.adi-continue-btn {
+  width: 100%;
+  max-width: 260px;
+  justify-content: center;
+  transition:
+    opacity 0.2s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.adi-continue-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.adi-continue-btn.adi-ready {
+  opacity: 1;
+  animation: adi-pulse-once 0.35s ease both;
+}
+
+@keyframes adi-pulse-once {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+/* Fine-print note */
+.adi-note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--si-text-faint);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Dark theme */
+[data-theme="dark"] .adi-ad-shell {
+  background: rgba(21, 29, 34, 0.92);
+}
+
+[data-theme="dark"] .adi-backdrop {
+  background: rgba(5, 8, 12, 0.8);
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .adi-modal { border-radius: 1.2rem; max-width: 100%; }
+  .adi-header { padding: 1.2rem 1rem 0.85rem; }
+  .adi-footer { padding: 1rem 1rem 1.25rem; }
+}

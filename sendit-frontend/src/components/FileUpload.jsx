@@ -11,7 +11,6 @@ import api from "../services/api";
 import { useToast } from "../context/ToastContext";
 import CountdownTimer from "./CountdownTimer";
 
-
 function FileUpload({
   expiresInHours,
   expiresInMinutes,
@@ -64,6 +63,17 @@ function FileUpload({
 
   const handleFileChange = (event) => {
     const selectedFiles = Array.from(event.target.files || []);
+    const oversizedFile = selectedFiles.find((file) => file.size > 100 * 1024 * 1024);
+    if (selectedFiles.length > 20) {
+      showError("You can upload up to 20 files at a time");
+      event.target.value = "";
+      return;
+    }
+    if (oversizedFile) {
+      showError(`${oversizedFile.name} is larger than 100 MB`);
+      event.target.value = "";
+      return;
+    }
     if (selectedFiles.length > 0) {
       setFiles(selectedFiles);
       setCode("");
@@ -148,7 +158,6 @@ function FileUpload({
   };
 
 
-
   const handleReset = () => {
     setFiles([]);
     setCode("");
@@ -178,7 +187,8 @@ function FileUpload({
 
   if (code) {
     return (
-      <div className="si-card" style={{ padding: "1.5rem" }}>
+      <>
+        <div className="si-card" style={{ padding: "1.5rem" }}>
         <div className="code-display-redesign">
           <div
             style={{
@@ -240,11 +250,13 @@ function FileUpload({
           </div>
         </div>
       </div>
+    </>
     );
   }
 
   return (
-    <div className="send-upload-flow">
+    <>
+      <div className="send-upload-flow">
       <div className="upload-dropzone send-upload-dropzone">
         <label className="upload-dropzone-inner" htmlFor="sendit-upload-input">
           <input
@@ -261,12 +273,17 @@ function FileUpload({
             <div className="send-upload-icon-shell">
               <FiUploadCloud className="inline-icon" size={36} />
             </div>
-            <h3>Drop files here or click to browse</h3>
+            {/* Issue 2: h3 → h2 (page h1 exists, so h2 is the correct next heading level) */}
+            {/* Issue 10: "click to browse" styled with underline so it reads as interactive */}
+            <h2 style={{ fontSize: "1.2rem" }}>
+              Drop files here or{" "}
+              <span className="upload-browse-trigger">click to browse</span>
+            </h2>
             <p className="si-footer-copy">
               You can upload one file or multiple files together.
             </p>
             <div className="send-upload-helper">
-              Files stay private and are shared with a temporary 4-digit code.
+              Up to 20 files, 100 MB per file. Files are shared with a temporary 4-digit code.
             </div>
           </div>
         </label>
@@ -319,6 +336,7 @@ function FileUpload({
       </div>
      
     </div>
+    </>
   );
 }
 

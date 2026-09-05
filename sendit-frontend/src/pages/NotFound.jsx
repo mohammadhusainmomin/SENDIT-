@@ -6,7 +6,8 @@ function NotFound() {
     <main className="notfound-page">
       <SEO
         title="Page Not Found | SendIt"
-        description="The page you are looking for does not exist. Continue sharing files securely with SendIt."
+        description="The page you are looking for does not exist. Return to SendIt's file sharing and code sharing tools."
+        robots="noindex, follow"
         url="https://senditsystem.in/404"
       />
       <section className="notfound-card">

@@ -14,25 +14,12 @@ function CodeReceive() {
   const [copied, setCopied] = useState(false);
   const { success, error } = useToast();
 
-  const handleReceive = async () => {
-    if (!code.trim()) {
-      error("Please enter the 4-digit code");
-      return;
-    }
-
-    if (code.length !== 4 || Number.isNaN(Number(code))) {
-      error("Code must be exactly 4 digits");
-      return;
-    }
-
+  const performReceive = async () => {
     setLoading(true);
     try {
       const response = await api.post("/code/receive", { code });
       const receivedLanguage = response.data.language || "auto-detect";
-      
-      // Format code using the stored or detected language (with Prettier support)
       const formattedContent = await formatCode(response.data.content, receivedLanguage);
-      
       setContent(formattedContent);
       setLanguage(receivedLanguage);
       success("Code retrieved successfully");
@@ -49,6 +36,18 @@ function CodeReceive() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleReceive = () => {
+    if (!code.trim()) {
+      error("Please enter the 4-digit code");
+      return;
+    }
+    if (code.length !== 4 || Number.isNaN(Number(code))) {
+      error("Code must be exactly 4 digits");
+      return;
+    }
+    performReceive();
   };
 
   const handleCopyCode = async () => {

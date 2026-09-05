@@ -1,11 +1,16 @@
-# Redirect Netlify default domain to main domain
+# Redirect old Netlify domains to the canonical custom domain
 https://senditsystem.netlify.app/* https://senditsystem.in/:splat 301!
+https://senditsystemadmin.netlify.app/* https://senditsystem.in/:splat 301!
 
 # Redirect www to non-www
 https://www.senditsystem.in/* https://senditsystem.in/:splat 301!
 
 # Redirect HTTP to HTTPS
 http://senditsystem.in/* https://senditsystem.in/:splat 301!
+
+# Redirect the old history route to the registered React route
+/code-history /code/history 301!
+/code-history/ /code/history 301!
 
 # Prerendered pages / SPA fallback
 /* /index.html 200

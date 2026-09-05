@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import SendItChatbot from "./components/SendItChatbot";
 import CookieConsent from "./components/CookieConsent";
 import ToastContainer from "./components/ToastContainer";
 import ScrollToTop from "./components/ScrollToTop";
@@ -17,6 +18,8 @@ const MyFiles = lazy(() => import("./pages/MyFiles"));
 const CodeHistory = lazy(() => import("./pages/CodeHistory"));
 const CodeShare = lazy(() => import("./pages/CodeShare"));
 const CodeReceive = lazy(() => import("./components/CodeReceive"));
+const DropRooms = lazy(() => import("./pages/DropRooms"));
+const DropSubmit = lazy(() => import("./pages/DropSubmit"));
 const About = lazy(() => import("./pages/About"));
 const Features = lazy(() => import("./pages/Features"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -25,6 +28,7 @@ const FAQ = lazy(() => import("./pages/FAQ"));
 const Contact = lazy(() => import("./pages/Contact"));
 const SharingGuide = lazy(() => import("./pages/SharingGuide"));
 const Disclaimer = lazy(() => import("./pages/Disclaimer"));
+const Security = lazy(() => import("./pages/Security"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -50,6 +54,9 @@ function App() {
                 <Route path="/code/send" element={<CodeShare />} />
                 <Route path="/code/receive" element={<CodeReceive />} />
                 <Route path="/code/history" element={<CodeHistory />} />
+                <Route path="/drop-rooms" element={<DropRooms/>} />
+                <Route path="/drop" element={<DropSubmit/>} />
+                <Route path="/drop/:code" element={<DropSubmit/>} />
                 <Route path="/about" element={<About />} />
                 <Route path="/features" element={<Features />} />
                 <Route path="/guide" element={<SharingGuide />} />
@@ -58,6 +65,7 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/disclaimer" element={<Disclaimer />} />
+                <Route path="/security" element={<Security />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="*" element={<NotFound />} />
@@ -66,6 +74,7 @@ function App() {
             </Suspense>
           </ErrorBoundary>
           <CookieConsent />
+          <SendItChatbot />
           <Footer />
         </div>
       </BrowserRouter>

@@ -453,3 +453,17 @@
     align-items: stretch;
   }
 }
+
+.drop-field-error {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: #e05;
+  margin-top: 0.25rem;
+}
+
+.input-error {
+  border-color: #e05 !important;
+  outline-color: #e05 !important;
+}

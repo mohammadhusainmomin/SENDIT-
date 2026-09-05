@@ -38,7 +38,7 @@ const staticPages = [
     heading: "Share files and code with temporary access codes",
     body: [
       "SendIt lets you upload a file or a code snippet and share a short temporary access code instead of a long download URL. The recipient enters the code on the receive page and collects the content. When the expiry you selected passes, the share stops working.",
-      "No account is required to send or receive. Uploads are transferred over HTTPS, access is gated by a code rather than a bare link, and shares are removed after expiry rather than kept indefinitely.",
+      "No account is required to send or receive. Uploads are transferred over HTTPS, access is gated by a code rather than a bare link, and application access ends after expiry before scheduled cleanup removes stored content.",
     ],
     links: [
       ["/send", "Send a file"],
@@ -89,7 +89,7 @@ const staticPages = [
       "Paste a code snippet, pick the language for syntax highlighting, set an expiry, and share a short access code with your team.",
     heading: "Share a code snippet with an access code",
     body: [
-      "Paste your snippet, select the language so it renders with syntax highlighting, add a short description of what you want the reader to look at, and choose an expiry.",
+      "Paste your snippet, select the language so it renders with syntax highlighting, and choose an expiry.",
       "Expiring snippet shares keep chat channels readable and stop half-finished code from being linked in documentation months later.",
     ],
     links: [
@@ -119,11 +119,12 @@ const staticPages = [
     path: "/features",
     title: "Features | SendIt File and Code Sharing",
     description:
-      "Temporary access codes, sender-controlled expiry, code snippet sharing with syntax highlighting, QR handoff and account-free transfers.",
+      "Temporary access codes, sender-controlled expiry, code snippet sharing with syntax highlighting, and account-free transfers.",
     heading: "What SendIt does",
     body: [
       "SendIt combines file transfer and code snippet sharing behind the same idea: a short access code instead of a permanent link, and an expiry window you choose at the moment of sharing.",
-      "Features include multi-file uploads, expiry control, syntax-highlighted snippet sharing, QR handoff between devices, optional accounts for transfer history, and automatic removal after expiry.",
+      "The current product supports up to 20 files at 100 MB per file, expiry control up to 24 hours in the normal file flow, syntax-highlighted snippets across 14 language choices, optional account history, and scheduled cleanup after expiry. Normal shares do not currently have a manual revoke endpoint.",
+      "SendIt is not end-to-end encrypted or a backup service. The security page explains what HTTPS, encrypted stored files, access codes, and expiry do and do not protect.",
     ],
     links: [
       ["/guide", "Sharing guide"],
@@ -139,7 +140,8 @@ const staticPages = [
     heading: "How to use SendIt, step by step",
     body: [
       "This guide walks through the full workflow: preparing a file, choosing an expiry, sharing the access code on a separate channel, and confirming the recipient collected it.",
-      "It also covers the habits that matter more than the tool: neutral filenames, stripping metadata, sending only what is needed, and closing shares early once collection is confirmed.",
+      "It explains single-file and multi-file receiving, repeat downloads while a share is active, code snippet sharing, supported language choices, troubleshooting, and the fact that normal file sharing has no Download All ZIP or manual revoke control.",
+      "Use the shortest practical expiry, share codes privately, remove secrets before uploading, and keep an independent copy of important files.",
     ],
     links: [
       ["/send", "Send a file"],
@@ -155,7 +157,7 @@ const staticPages = [
     heading: "About SENDIT",
     body: [
       "SENDIT is built and operated by an independent team based in Ahmedabad, Gujarat, India. We built it because the ordinary ways of moving a file between two people — email attachments and permanent cloud links — leave copies behind forever.",
-      "Our approach is deliberately narrow: one file, one short code, one expiry window, then nothing. We publish guides explaining the reasoning so people can apply the same habits with any tool they use.",
+      "Our approach is deliberately narrow: one file, one short code, one expiry window, then access closes. Scheduled cleanup and metadata retention are explained in the Privacy and Security pages.",
     ],
     links: [
       ["/contact", "Contact us"],
@@ -170,7 +172,8 @@ const staticPages = [
       "Answers about file size limits, expiry, accounts, supported file types, code snippet sharing, privacy and data retention on SendIt.",
     heading: "Frequently asked questions",
     body: [
-      "Common questions cover whether SendIt is free, whether an account is required, how the temporary code system works, how long shared content stays available, what file types are supported and how deletion works.",
+      "Common questions cover whether an account is required, how codes work, how files are downloaded, the 24-hour normal expiry ceiling, practical file-size limits, code languages, repeated downloads, cleanup timing, and the absence of a normal manual revoke endpoint.",
+      "SendIt uses HTTPS for transport and encrypts uploaded file content before storage, but it is not end-to-end encrypted. A four-digit code is a convenience credential, not a high-assurance secret.",
       "If your question is not answered here, contact the SENDIT team at mmbrothersteam@gmail.com and we will reply within 24-48 hours.",
     ],
     links: [
@@ -240,6 +243,22 @@ const staticPages = [
     links: [
       ["/terms", "Terms of service"],
       ["/privacy", "Privacy policy"],
+    ],
+  },
+  {
+    path: "/security",
+    title: "SendIt Security | How Temporary Sharing Works",
+    description:
+      "A plain-language explanation of SendIt transport encryption, access codes, expiry, storage cleanup, and the limits users should understand.",
+    heading: "SendIt security",
+    body: [
+      "SendIt reduces the time a shared file or code snippet remains available. Browser-to-server traffic uses HTTPS, uploaded file content is encrypted before storage, and the receive API checks the access code and expiry before returning content.",
+      "A four-digit code is convenient, not a high-assurance secret. Recipients can copy delivered content, expiry blocks application access before scheduled cleanup, and SendIt is not end-to-end encrypted. Read the full security page for practical precautions and current limitations.",
+    ],
+    links: [
+      ["/privacy", "Privacy policy"],
+      ["/guide", "Sharing guide"],
+      ["/contact", "Report a concern"],
     ],
   },
   {
@@ -317,6 +336,7 @@ function buildHtml(template, page) {
     ["/blog", "Blog"],
     ["/features", "Features"],
     ["/guide", "Guide"],
+    ["/security", "Security"],
     ["/faq", "FAQ"],
     ["/about", "About"],
     ["/contact", "Contact"],

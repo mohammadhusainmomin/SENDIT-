@@ -399,6 +399,11 @@ export const downloadSubmissionFile = async (req, res) => {
     }
 
     const decryptedPath = `uploads/drop-tmp-${Date.now()}-${crypto.randomUUID()}`;
+
+    if (!file.encryptedPath || !fs.existsSync(file.encryptedPath)) {
+      return res.status(410).json({ message: "File is no longer available on the server" });
+    }
+
     await decryptFile(file.encryptedPath, decryptedPath);
 
     const safeSubmitter = submission.submitterName.replace(/[^\w.-]+/g, "_");
@@ -473,18 +478,36 @@ export const downloadAllDropRoomFiles = async (req, res) => {
 
     for (const submission of submissions) {
       const safeSubmitter = submission.submitterName.replace(/[^\w.-]+/g, "_");
-      
-      for (const file of submission.files) {
-        if (!fs.existsSync(file.encryptedPath)) continue;
 
-        const decryptedPath = `uploads/drop-tmp-${Date.now()}-${crypto.randomUUID()}`;
-        await decryptFile(file.encryptedPath, decryptedPath);
+      for (const file of submission.files) {
+        if (!fs.existsSync(file.encryptedPath)) {
+          console.warn("Skipping missing encrypted file:", file.encryptedPath);
+          continue;
+        }
+
+        let decryptedPath;
+        try {
+          decryptedPath = `uploads/drop-tmp-${Date.now()}-${crypto.randomUUID()}`;
+          await decryptFile(file.encryptedPath, decryptedPath);
+        } catch (decryptErr) {
+          console.error("Failed to decrypt file, skipping:", file.encryptedPath, decryptErr);
+          continue;
+        }
+
         decryptedPathsToCleanup.push(decryptedPath);
 
         const safeSlot = file.slotLabel.replace(/[^\w.-]+/g, "_");
         const fileName = `${safeSlot}_${file.originalName}`;
-        
-        archive.file(decryptedPath, { name: `Submissions/${safeSubmitter}/${fileName}` });
+
+        // Use a ReadStream with an explicit error handler so a missing/corrupt
+        // decrypted file doesn't emit an unhandled 'error' event that crashes
+        // the server process.
+        const readStream = fs.createReadStream(decryptedPath);
+        readStream.on("error", (streamErr) => {
+          console.error("ReadStream error for file, skipping entry:", decryptedPath, streamErr);
+        });
+
+        archive.append(readStream, { name: `Submissions/${safeSubmitter}/${fileName}` });
       }
     }
 

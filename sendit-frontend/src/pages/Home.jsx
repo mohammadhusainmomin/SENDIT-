@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { FiArrowRight, FiCalendar, FiClock, FiHash, FiLock, FiShield, FiZap, FiCheck, FiUsers, FiBook } from "react-icons/fi";
+import { FiArrowRight, FiCalendar, FiClock, FiDownload, FiHash, FiLock, FiShield, FiZap, FiCheck, FiUsers, FiBook } from "react-icons/fi";
 import { FileTransferIllustration } from "../components/Illustrations";
 import SEO from "../components/SEO";
 import posts from "../data/blogPosts.json";
@@ -93,37 +93,42 @@ function Home() {
       <section className="page-section">
         <div className="hero-layout">
           <div>
-            <span className="si-chip">Temporary Sharing Made Simple</span>
+            {/* Issue 5: sentence-case chip label (CSS uppercase removed separately) */}
+            <span className="si-chip">Temporary sharing made simple</span>
             <h1 className="si-title" style={{ marginTop: "1rem", marginBottom: "1.4rem" }}>
               Send Files and Code
               <br />
               <span className="si-gradient-text">Securely, Without Permanent Links.</span>
             </h1>
             <p className="si-subtitle">
-              SendIt provides a fast, secure way to share files and code snippets using temporary access codes with expiry set by the sender. No long URLs. No permanent storage. No registration needed for basic sharing. Perfect for students, developers, teams, and anyone who values privacy and simplicity.
+              SendIt provides a fast way to share files and code snippets using temporary access codes with expiry set by the sender. No long URLs and no registration for basic sharing. Active content is temporary, while operational metadata may remain as described in the Privacy Policy.
             </p>
 
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "2rem" }}>
+              {/* Issues 12+13: "Send File & Code" clarifies both use-cases; matches nav singular */}
               <button className="si-button" onClick={() => navigate("/send")} type="button">
-                Send Files <FiArrowRight />
+                Send File & Code <FiArrowRight />
               </button>
+              {/* Issue 11: added FiDownload to match visual weight of primary CTA */}
               <button className="si-button-secondary" onClick={() => navigate("/receive")} type="button">
-                Receive File
+                Receive File <FiDownload />
               </button>
             </div>
 
+            {/* Issue 6: h3 → p.si-stat-value to avoid H1→H3 heading skip */}
             <div className="si-stats-row">
               <div className="si-stat-card">
                 <div className="si-meta-label">Setup Time</div>
-                <h3 style={{ marginTop: "0.35rem" }}>Under 30 seconds</h3>
+                {/* Issue 14: "Under 30s" fits on one line across all card widths */}
+                <p className="si-stat-value">Under 30s</p>
               </div>
               <div className="si-stat-card">
                 <div className="si-meta-label">No Account</div>
-                <h3 style={{ marginTop: "0.45rem" }}>Share instantly</h3>
+                <p className="si-stat-value">Share instantly</p>
               </div>
               <div className="si-stat-card">
                 <div className="si-meta-label">Expiry Control</div>
-                <h3 style={{ marginTop: "0.45rem" }}>Set by sender</h3>
+                <p className="si-stat-value">Set by sender</p>
               </div>
             </div>
           </div>
@@ -157,7 +162,7 @@ function Home() {
       {/* Why Use SendIt Section */}
       <section className="page-section">
         <div style={{ marginBottom: "1.6rem" }}>
-          <span className="si-chip">Why Choose SendIt</span>
+          <span className="si-chip">Why choose SendIt</span>
           <h2 className="si-heading" style={{ marginTop: "1rem" }}>The Secure Alternative to Email and Cloud Storage</h2>
           <p className="si-subtitle" style={{ marginTop: "0.8rem", fontSize: "1.05rem" }}>
             Traditional file sharing methods leave data exposed indefinitely. SendIt lets the sender choose how long access should stay available.
@@ -180,7 +185,7 @@ function Home() {
           <div className="si-card span-2">
             <FiShield className="inline-icon" size={34} />
             <h3 style={{ marginTop: "1rem" }}>Privacy First</h3>
-            <p>No account tracking. No permanent logs. No marketing. Your files are transferred and deleted according to your expiry choice.</p>
+            <p>Basic sharing does not require an account. SendIt still processes the operational data described in its Privacy Policy, and expiry limits access rather than making a share anonymous.</p>
           </div>
 
           <div className="si-card span-3">
@@ -195,7 +200,7 @@ function Home() {
             <FiZap className="inline-icon" size={34} />
             <h3 style={{ marginTop: "1rem", color: "#fff" }}>Fast & Free</h3>
             <p style={{ color: "rgba(255,255,255,0.82)", fontSize: "1rem", lineHeight: 1.8 }}>
-              No registration. No payment. No limits on free sharing. Upload, share the code, done. SendIt focuses on speed and accessibility over complex features.
+              No registration is required for basic sharing. Hosting, network, storage, and operational limits still apply, so SendIt is for short-term transfers rather than backups.
             </p>
           </div>
         </div>
@@ -204,10 +209,11 @@ function Home() {
       {/* Common Use Cases */}
       <section className="page-section">
         <div style={{ marginBottom: "1.6rem" }}>
-          <span className="si-chip">Use Cases</span>
+          <span className="si-chip">Use cases</span>
           <h2 className="si-heading" style={{ marginTop: "1rem" }}>Perfect for Real-World Sharing Scenarios</h2>
         </div>
 
+        {/* Issue 9: 6 × span-2 = full even rows, no orphaned item in last row */}
         <div className="feature-bento">
           <div className="si-card span-2">
             <FiBook className="inline-icon" size={34} />
@@ -227,16 +233,22 @@ function Home() {
             <p><strong>Freelancers & Agencies:</strong> Send proposals, invoices, and sample work to clients with controlled, time-limited access.</p>
           </div>
 
-          <div className="si-card span-3">
+          <div className="si-card span-2">
             <FiLock className="inline-icon" size={34} />
             <h3 style={{ marginTop: "1rem" }}>Personal Use</h3>
             <p><strong>File Transfer Between Devices:</strong> Quickly move files between your laptop, phone, or tablet. Share photos with friends who only need temporary access. Transfer large files that email can't handle.</p>
           </div>
 
-          <div className="si-card span-3">
+          <div className="si-card span-2">
             <FiArrowRight className="inline-icon" size={34} />
             <h3 style={{ marginTop: "1rem" }}>Development</h3>
             <p><strong>Developers:</strong> Share code snippets, debug sessions, and scripts without cluttering chat threads. Syntax highlighting and code formatting make sharing clean and professional.</p>
+          </div>
+
+          <div className="si-card span-2">
+            <FiZap className="inline-icon" size={34} />
+            <h3 style={{ marginTop: "1rem" }}>Quick Transfers</h3>
+            <p><strong>Any Device:</strong> Share anything instantly between devices or people using just a short code. No app installation, no account, no friction.</p>
           </div>
         </div>
       </section>
@@ -279,34 +291,35 @@ function Home() {
           <h2 className="si-heading" style={{ marginTop: "1rem" }}>Powerful Features Built for Simplicity</h2>
         </div>
 
+        {/* Issue 7: h4 → h3 (section has h2, so h3 is the correct next heading level) */}
         <div className="feature-bento">
           <div className="si-card span-2">
-            <h4 style={{ marginBottom: "0.8rem" }}>✓ Multiple File Upload</h4>
+            <h3 style={{ marginBottom: "0.8rem" }}>✓ Multiple File Upload</h3>
             <p>Upload multiple files at once. All files are bundled under one temporary code for the receiver.</p>
           </div>
 
           <div className="si-card span-2">
-            <h4 style={{ marginBottom: "0.8rem" }}>✓ Syntax Highlighting</h4>
-            <p>Share code in 50+ programming languages with proper syntax highlighting. Makes code review and collaboration easier.</p>
+            <h3 style={{ marginBottom: "0.8rem" }}>✓ Syntax Highlighting</h3>
+            <p>Share code in the supported language choices with syntax highlighting. Formatting and readable display make code review and collaboration easier.</p>
           </div>
 
           <div className="si-card span-2">
-            <h4 style={{ marginBottom: "0.8rem" }}>✓ Drag-and-Drop Upload</h4>
+            <h3 style={{ marginBottom: "0.8rem" }}>✓ Drag-and-Drop Upload</h3>
             <p>Simple drag-and-drop interface. No complex navigation. Upload in seconds from desktop or mobile.</p>
           </div>
 
           <div className="si-card span-2">
-            <h4 style={{ marginBottom: "0.8rem" }}>✓ Share History (Optional)</h4>
-            <p>Sign in to track your transfer history, manage old shares, and revisit code snippets you've sent.</p>
+            <h3 style={{ marginBottom: "0.8rem" }}>✓ Share History (Optional)</h3>
+            <p>Sign in to view available transfer history. Normal file and code shares do not currently have a user-facing manual revoke control.</p>
           </div>
 
           <div className="si-card span-2">
-            <h4 style={{ marginBottom: "0.8rem" }}>✓ Mobile Friendly</h4>
+            <h3 style={{ marginBottom: "0.8rem" }}>✓ Mobile Friendly</h3>
             <p>Full responsive design. Send and receive on any device—phone, tablet, or desktop browser.</p>
           </div>
 
           <div className="si-card span-2">
-            <h4 style={{ marginBottom: "0.8rem" }}>✓ Customizable Expiry</h4>
+            <h3 style={{ marginBottom: "0.8rem" }}>✓ Customizable Expiry</h3>
             <p>Choose the expiry duration yourself before creating the share. Full control stays with the sender.</p>
           </div>
         </div>
@@ -322,12 +335,12 @@ function Home() {
         <div className="feature-bento">
           <div className="si-card span-3">
             <h3 style={{ marginTop: "0", marginBottom: "0.8rem" }}>Temporary Codes, Not Permanent URLs</h3>
-            <p>Unlike traditional file-sharing services that generate permanent download links, SendIt uses temporary codes that expire. Once your expiry time passes, files are no longer accessible through any means.</p>
+            <p>SendIt uses temporary codes that expire. Once the expiry time passes, the application refuses access; scheduled cleanup removes stored file content separately.</p>
           </div>
 
           <div className="si-card span-3">
             <h3 style={{ marginTop: "0", marginBottom: "0.8rem" }}>No Unnecessary Data Collection</h3>
-            <p>SendIt doesn't track personal information beyond what's needed to deliver your files. No marketing databases. No selling your data. Your privacy is paramount.</p>
+            <p>SendIt processes transfer and account information as described in the Privacy Policy. Temporary access and expiry reduce exposure time, but they do not make the service anonymous.</p>
           </div>
 
           <div className="si-card span-3">
@@ -336,8 +349,8 @@ function Home() {
           </div>
 
           <div className="si-card span-3">
-            <h3 style={{ marginTop: "0", marginBottom: "0.8rem" }}>No Permanent Logs</h3>
-            <p>Temporary uploads mean temporary records. We don't maintain extensive logs of your transfers, keeping your activity private and reducing data exposure risks.</p>
+            <h3 style={{ marginTop: "0", marginBottom: "0.8rem" }}>Short-Lived Content</h3>
+            <p>Uploaded content is temporary by design. Access stops at expiry and cleanup runs separately; history and operational metadata may remain for service, support, security, or legal purposes.</p>
           </div>
 
           <div className="si-card span-3">
@@ -387,7 +400,7 @@ function Home() {
           <div className="si-card span-2">
             <FiArrowRight className="inline-icon" size={30} />
             <h3 style={{ marginTop: "1rem" }}>5. Use for Temporary Sharing Only</h3>
-            <p>SendIt is not a backup service. Use it for short-term transfers, not permanent storage. Your files will expire and be deleted.</p>
+            <p>SendIt is not a backup service. Use it for short-term transfers, not permanent storage. Access expires first, then scheduled cleanup removes stored file content.</p>
           </div>
 
           <div className="si-card span-2">
@@ -433,13 +446,11 @@ function Home() {
             <Link className="inline-resource-link" to="/features">Explore Features</Link>
           </div>
 
+          {/* Issue 10: 2 links → 1 to match all other cards (consistent CTA count) */}
           <div className="si-card span-2">
             <h3>🔒 Privacy & Security</h3>
             <p>Read our privacy policy, terms of service, and security practices. Understand exactly how SendIt protects your data, handles temporary files, and ensures user privacy.</p>
-            <div className="home-resource-stack">
-              <Link className="inline-resource-link" to="/privacy">Privacy Policy</Link>
-              <Link className="inline-resource-link" to="/terms">Terms of Service</Link>
-            </div>
+            <Link className="inline-resource-link" to="/privacy">Privacy & Terms</Link>
           </div>
 
           <div className="si-card span-2">

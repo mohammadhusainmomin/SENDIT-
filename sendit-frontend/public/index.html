@@ -4,14 +4,14 @@
     <meta charset="utf-8" />
     <link rel="icon" href="/images/sendit svg.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="
+   <meta
+  http-equiv="Content-Security-Policy"
+  content="
     default-src 'self';
     script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:;
     style-src 'self' 'unsafe-inline' https:;
     img-src 'self' data: https: blob:;
-    connect-src 'self' https: wss: localhost;
+    connect-src 'self' http://localhost:5000 https: wss:;
     frame-src 'self' https:;
     font-src 'self' data: https:;
     media-src 'self' https:;
@@ -19,7 +19,7 @@
     base-uri 'self';
     form-action 'self';
   "
-    />
+/>
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta
@@ -43,6 +43,7 @@
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_IN" />
     <meta
       property="og:title"
       content="SendIt - Secure File Sharing and Code Sharing Platform"
@@ -57,6 +58,10 @@
       property="og:image"
       content="https://senditsystem.in/images/Sendit_logo.png"
     />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="SendIt - Secure File Sharing and Code Sharing Platform" />
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -72,9 +77,14 @@
       name="twitter:image"
       content="https://senditsystem.in/images/Sendit_logo.png"
     />
+    <meta name="twitter:image:alt" content="SendIt - Secure File Sharing and Code Sharing Platform" />
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://senditsystem.in/" />
+
+    <!-- hreflang — tells Google this is the English version for all regions -->
+    <link rel="alternate" hreflang="en" href="https://senditsystem.in/" />
+    <link rel="alternate" hreflang="x-default" href="https://senditsystem.in/" />
 
     <!-- Preconnect to improve performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -183,7 +193,7 @@
   <body>
     <noscript>
       <header>
-        <h1>SendIt: Temporary File Sharing and Code Sharing Platform</h1>
+        <p><strong>SendIt: Temporary File Sharing and Code Sharing Platform</strong></p>
         <p>
           SendIt is a web application for temporary digital sharing. It helps
           users send files and code snippets using short access codes and

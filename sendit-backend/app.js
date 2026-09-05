@@ -1,6 +1,15 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+// ── Global error guards (must be registered before anything else) ──────────
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION – server kept alive:", err);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("UNHANDLED REJECTION – server kept alive:", reason);
+});
+
 
 import express from "express";
 import cors from "cors";
@@ -10,6 +19,7 @@ import { startCleanupScheduler } from "./utils/fileCleanup.utils.js";
 import authRoutes from "./routes/auth.routes.js";
 import fileRoutes from "./routes/file.routes.js";
 import codeRoutes from "./routes/code.routes.js";
+import dropRoomRoutes from "./routes/dropRoom.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import contactRoutes from "./routes/contact.routes.js";
 
@@ -46,14 +56,31 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());
-
+app.use(express.json({ limit: "1mb" }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api", fileRoutes);
 app.use("/api", codeRoutes);
+app.use("/api", dropRoomRoutes);
 app.use("/api", contactRoutes);
 app.use("/api/admin", adminRoutes);
+
+app.use((err, req, res, next) => {
+  if (err?.type === "entity.too.large") {
+    return res.status(413).json({ message: "Request body is too large" });
+  }
+  if (err?.code === "LIMIT_FILE_SIZE") {
+    return res.status(413).json({ message: "Each file must be 100 MB or smaller" });
+  }
+  if (err?.code === "LIMIT_FILE_COUNT") {
+    return res.status(413).json({ message: "A transfer can contain at most 20 files" });
+  }
+  if (err?.name === "MulterError") {
+    return res.status(400).json({ message: "Invalid upload request" });
+  }
+  console.error("REQUEST ERROR:", err);
+  return res.status(500).json({ message: "Internal server error" });
+});
 
 app.get("/health", (req, res) => {
   res.status(200).json({
