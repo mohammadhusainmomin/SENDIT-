@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import SEO from "../components/SEO";
+import Breadcrumbs from "../components/Breadcrumbs";
 import "../styles/ContentPages.css";
 
 export default function Privacy() {
@@ -17,6 +18,7 @@ export default function Privacy() {
 
       <div className="content-page-wrapper legal-page legal-page--privacy">
         <div className="content-container content-container--wide legal-container">
+          <Breadcrumbs current="Privacy Policy" />
           <div className="legal-hero">
             <div>
               <span className="content-eyebrow">Data and privacy</span>

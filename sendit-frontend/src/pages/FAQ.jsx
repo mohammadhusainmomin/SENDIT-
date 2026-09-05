@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SEO from "../components/SEO";
+import Breadcrumbs from "../components/Breadcrumbs";
 import "../styles/ContentPages.css";
 
 const faqs = [
@@ -24,6 +25,7 @@ const faqs = [
 
 export default function FAQ() {
   const [activeIndex, setActiveIndex] = useState(null);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -38,6 +40,13 @@ export default function FAQ() {
       acceptedAnswer: { "@type": "Answer", text: answer },
     })),
   };
+  const filteredFaqs = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return faqs;
+    return faqs.filter(([question, answer]) =>
+      `${question} ${answer}`.toLowerCase().includes(normalizedQuery),
+    );
+  }, [query]);
 
   return (
     <>
@@ -49,6 +58,7 @@ export default function FAQ() {
       />
       <div className="content-page-wrapper content-page-wrapper--faq">
         <div className="content-container content-container--wide">
+          <Breadcrumbs current="FAQ" />
           <div className="content-hero">
             <div>
               <span className="content-eyebrow">Support library</span>
@@ -66,8 +76,18 @@ export default function FAQ() {
             <div><strong>24h</strong><span>maximum normal expiry</span></div>
             <div><strong>100 MB</strong><span>maximum per file</span></div>
           </div>
+          <label className="faq-search">
+            <span>Search answers</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search expiry, downloads, security..."
+            />
+          </label>
           <section className="faq-section" aria-label="SendIt frequently asked questions">
-            {faqs.map(([question, answer], index) => {
+            {filteredFaqs.map(([question, answer]) => {
+              const index = faqs.findIndex(([itemQuestion]) => itemQuestion === question);
               const isOpen = activeIndex === index;
               const answerId = `faq-answer-${index}`;
               return (
@@ -86,6 +106,7 @@ export default function FAQ() {
                 </div>
               );
             })}
+            {filteredFaqs.length === 0 && <p className="faq-empty">No answer matched that search. Try a different term or contact SendIt support.</p>}
           </section>
         </div>
       </div>

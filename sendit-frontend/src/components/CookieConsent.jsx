@@ -15,6 +15,7 @@ function CookieConsent() {
 
   const handleChoice = (value) => {
     localStorage.setItem(STORAGE_KEY, value);
+    window.dispatchEvent(new CustomEvent("sendit-consent", { detail: value }));
     setVisible(false);
   };
 
@@ -25,8 +26,8 @@ function CookieConsent() {
       <div className="cookie-banner__content">
         <strong>Cookie Notice</strong>
         <p>
-          SendIt uses essential cookies for login state and basic site functionality. If advertising or analytics are enabled in the future, this notice and the
-          <Link to="/privacy"> Privacy Policy</Link> explain how those tools work.
+          SendIt uses essential cookies for login state and basic site functionality. Optional analytics loads only after you choose Accept. The
+          <Link to="/privacy"> Privacy Policy</Link> explains how these tools work.
         </p>
       </div>
       <div className="cookie-banner__actions">

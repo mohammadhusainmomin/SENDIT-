@@ -1196,6 +1196,18 @@ body {
   overflow: hidden;
 }
 
+.hero-brand-image {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  z-index: 1;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  opacity: 0.92;
+  filter: drop-shadow(0 8px 16px rgba(13, 71, 161, 0.16));
+}
+
 .hero-visual-image {
   width: 100%;
   height: 100%;

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import SEO from "../components/SEO";
+import Breadcrumbs from "../components/Breadcrumbs";
 import "../styles/ContentPages.css";
 
 export default function SharingGuide() {
@@ -16,6 +17,7 @@ export default function SharingGuide() {
       />
       <div className="content-page-wrapper content-page-wrapper--guide">
         <div className="content-container content-container--wide">
+          <Breadcrumbs current="Sharing Guide" />
           <div className="content-hero">
             <div>
               <span className="content-eyebrow">Practical handbook</span>

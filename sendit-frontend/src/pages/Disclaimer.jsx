@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import SEO from "../components/SEO";
+import Breadcrumbs from "../components/Breadcrumbs";
 import "../styles/ContentPages.css";
 
 export default function Disclaimer() {
@@ -17,6 +18,7 @@ export default function Disclaimer() {
 
       <div className="content-page-wrapper legal-page legal-page--disclaimer">
         <div className="content-container content-container--wide legal-container">
+          <Breadcrumbs current="Disclaimer" />
           <div className="legal-hero">
             <div>
               <span className="content-eyebrow">Important context</span>

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import SEO from "../components/SEO";
+import Breadcrumbs from "../components/Breadcrumbs";
 import "../styles/ContentPages.css";
 
 export default function Security() {
@@ -17,6 +18,7 @@ export default function Security() {
 
       <div className="content-page-wrapper legal-page legal-page--security">
         <div className="content-container content-container--wide legal-container">
+          <Breadcrumbs current="Security" />
           <div className="legal-hero">
             <div>
               <span className="content-eyebrow">Protection overview</span>

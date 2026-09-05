@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import SEO from "../components/SEO";
+import Breadcrumbs from "../components/Breadcrumbs";
 import "../styles/ContentPages.css";
 
 const fileFeatures = [
@@ -29,6 +30,7 @@ export default function Features() {
       />
       <div className="content-page-wrapper content-page-wrapper--features">
         <div className="content-container content-container--wide">
+          <Breadcrumbs current="Features" />
           <div className="content-hero">
             <div>
               <span className="content-eyebrow">Product map</span>

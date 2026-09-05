@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 
-const GA_ID = "G-98LH16YFVT";
+const GA_ID = "G-7MW614RB50";
 
 const loadAnalytics = () => {
-  if (window.__senditGaLoaded) return;
+  if (window.__senditGaLoaded || localStorage.getItem("sendit-cookie-consent") !== "accepted") return;
   window.__senditGaLoaded = true;
 
   const script = document.createElement("script");
@@ -56,11 +56,14 @@ if (process.env.NODE_ENV === "production") {
     }
   };
 
-  if (document.readyState === "complete") {
-    scheduleAnalytics();
-  } else {
-    window.addEventListener("load", scheduleAnalytics, { once: true });
-  }
+  const loadAfterConsent = () => {
+    if (document.readyState === "complete") scheduleAnalytics();
+    else window.addEventListener("load", scheduleAnalytics, { once: true });
+  };
+  if (localStorage.getItem("sendit-cookie-consent") === "accepted") loadAfterConsent();
+  window.addEventListener("sendit-consent", (event) => {
+    if (event.detail === "accepted") loadAfterConsent();
+  });
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

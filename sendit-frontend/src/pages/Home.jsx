@@ -135,6 +135,15 @@ function Home() {
 
           <div className="hero-visual">
             <div className="hero-visual-core">
+              <img
+                className="hero-brand-image"
+                src="/images/Sendit_logo.png"
+                alt="SendIt temporary file and code sharing logo"
+                width="180"
+                height="180"
+                loading="lazy"
+                decoding="async"
+              />
               <div className="hero-visual-illustration" aria-label="Animated file transfer illustration" role="img">
                 <FileTransferIllustration />
               </div>

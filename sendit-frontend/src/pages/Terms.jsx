@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import SEO from "../components/SEO";
+import Breadcrumbs from "../components/Breadcrumbs";
 import "../styles/ContentPages.css";
 
 export default function Terms() {
@@ -17,6 +18,7 @@ export default function Terms() {
 
       <div className="content-page-wrapper legal-page legal-page--terms">
         <div className="content-container content-container--wide legal-container">
+          <Breadcrumbs current="Terms of Service" />
           <div className="legal-hero">
             <div>
               <span className="content-eyebrow">Service agreement</span>
