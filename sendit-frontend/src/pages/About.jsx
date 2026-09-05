@@ -57,6 +57,8 @@ function About() {
               alt="Abstract representation of digital file transfer"
               loading="lazy"
               decoding="async"
+              width="1200"
+              height="675"
               referrerPolicy="no-referrer"
             />
             <div className="about-copy-overlay" />
@@ -79,7 +81,7 @@ function About() {
                 Many situations call for temporary sharing—assignments that expire after grading, client deliverables that should be accessible only for review, confidential information that should self-destruct after viewing. But existing solutions force you to choose: either simplicity with permanent access, or complexity with temporary controls.
               </p>
               <p>
-                <strong>SendIt solves this problem.</strong> We combine simplicity (upload, share, done) with temporary access (sender-set expiry, expiry-based cleanup). No complex permission systems. No manual cleanup. No files lingering on servers.
+                <strong>SendIt solves this problem.</strong> We combine simplicity (upload, share, done) with temporary access (sender-set expiry, expiry-based cleanup). No complex permission systems. Access ends at expiry, while scheduled cleanup and metadata retention are explained in the Security and Privacy pages.
               </p>
             </div>
             <div className="about-copy-stats">

@@ -98,7 +98,7 @@ export default function Privacy() {
             <ul>
               <li><strong>You Choose the Expiry:</strong> When uploading files, you select the access duration </li>
               <li><strong>Expiry-Based Cleanup:</strong> After the selected expiry time passes, files are removed from active access</li>
-              <li><strong>No Manual Cleanup Needed:</strong> Files don't linger indefinitely or clutter our storage.</li>
+              <li><strong>Scheduled Cleanup:</strong> Expired file content is removed by the server cleanup process; access is blocked first and operational metadata may remain.</li>
               <li><strong>Code Expiration:</strong> Access codes also expire at the same time, preventing any access attempts after expiry</li>
               <li><strong>Not a Backup Service:</strong> SendIt explicitly is NOT designed for long-term storage or backup. Do not rely on SendIt to keep files permanently.</li>
               <li><strong>No Permanent Recovery:</strong> Once the cleanup process removes file content, it cannot be recovered through SendIt. Keep local copies if you need files long-term.</li>
@@ -160,7 +160,7 @@ export default function Privacy() {
             </p>
             <ul>
               <li><strong>Netlify:</strong> Hosts SendIt. May process usage data and error logs. See Netlify's Privacy Policy: https://www.netlify.com/privacy</li>
-              <li><strong>Google Analytics:</strong> Tracks user behavior and site performance. See Google Analytics Privacy: https://policies.google.com/privacy</li>
+              <li><strong>Analytics:</strong> If analytics is enabled in the future, this policy will identify the provider and the relevant controls before it is used.</li>
               <li><strong>Authentication Services:</strong> If sign-in with Google or other OAuth providers is available, those services process authentication data</li>
               <li><strong>Email Services:</strong> Third-party email providers may handle password reset or notification emails</li>
             </ul>
