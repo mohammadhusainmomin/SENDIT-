@@ -78,6 +78,23 @@ export default function Security() {
           </section>
 
           <section className="content-section">
+            <h2>How to evaluate a transfer risk</h2>
+            <p>Security is not one setting. Consider the sensitivity of the content, the people who need it, the lifetime of access, and what happens after delivery. A short expiry reduces the window for an exposed code, but it cannot undo a download or prevent a recipient from making a copy.</p>
+            <ol>
+              <li><strong>Classify the content:</strong> ordinary documents are different from credentials, identity records, health information, or confidential business material.</li>
+              <li><strong>Minimise the payload:</strong> send only the files and pages the recipient needs.</li>
+              <li><strong>Control the code:</strong> do not post it publicly or send it to a group that does not need access.</li>
+              <li><strong>Confirm the outcome:</strong> ask the recipient to verify the download, then remove unnecessary local copies.</li>
+            </ol>
+          </section>
+
+          <section className="content-section">
+            <h2>Reporting abuse or a suspected issue</h2>
+            <p>If a code was exposed, contact the sender and support as soon as possible with the approximate time, affected route, and a description of the problem. Do not email live passwords, private keys, or the shared file itself. For malicious or illegal content, include enough information for the team to locate the report without redistributing the material.</p>
+            <p>Support contact: <a href="mailto:mmbrothersteam@gmail.com">mmbrothersteam@gmail.com</a>. The team may ask for additional details needed to investigate, but should not need your account password.</p>
+          </section>
+
+          <section className="content-section">
             <h2>Related information</h2>
             <p>
               Read the <a href="/privacy">Privacy Policy</a> for data categories and retention details, or follow the <a href="/guide">Sharing Guide</a> for practical file and code workflows.

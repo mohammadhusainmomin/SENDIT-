@@ -64,6 +64,8 @@ const staticPages = [
     body: [
       "Choose a file, set the expiry window that matches how quickly your recipient will collect it, and SendIt generates a short access code. Share that code through any channel you trust and the recipient uses it on the receive page.",
       "Shorter expiry windows are safer. Most transfers are collected within the first hour, so there is rarely a reason to leave a share open for days.",
+      "Before uploading, check that you have permission to share the file and remove passwords, private keys, document history, and unnecessary personal information. Keep an independent copy until the recipient confirms the transfer.",
+      "The normal file flow accepts up to 20 files with a maximum of 100 MB per file. SendIt is a transfer tool, not a backup service, permanent drive, or end-to-end encrypted vault.",
     ],
     links: [
       ["/receive", "Receive a file"],
@@ -83,6 +85,8 @@ const staticPages = [
     body: [
       "Enter the short access code the sender gave you. If the code is valid and has not expired, the file downloads immediately.",
       "If the code no longer works, the share has passed its expiry window. Ask the sender to upload it again; re-sending takes under a minute.",
+      "Confirm that you expected the file and that you are using the official receive page before entering a code. Check the filename and size, use your device security tools, and avoid opening unexpected content.",
+      "A recipient can download an active share again, and SendIt cannot control a copy after delivery. Delete local copies when they are no longer needed, especially on shared devices.",
     ],
     links: [
       ["/send", "Send a file"],
@@ -99,6 +103,8 @@ const staticPages = [
     body: [
       "Paste your snippet, select the language so it renders with syntax highlighting, and choose an expiry.",
       "Expiring snippet shares keep chat channels readable and stop half-finished code from being linked in documentation months later.",
+      "Remove API keys, passwords, private URLs, tokens, and proprietary material before sharing. SendIt formats and displays code as text; it does not execute, certify, or validate the snippet.",
+      "Choose the shortest expiry that gives the recipient time to read the example, then share the four-digit code privately with the intended reviewer.",
     ],
     links: [
       ["/code/receive", "Receive a code snippet"],
@@ -117,6 +123,7 @@ const staticPages = [
     body: [
       "Enter the access code you were given to open the snippet. Snippets are displayed with syntax highlighting and can be copied in one action.",
       "Snippet shares expire on the schedule the sender chose, so old links do not linger in team channels.",
+      "Treat the code as a bearer credential: anyone who obtains it may be able to view the snippet before expiry. Confirm the sender and remove the snippet from local notes when it is no longer needed.",
     ],
     links: [
       ["/code/send", "Share a code snippet"],
@@ -133,6 +140,9 @@ const staticPages = [
       "SendIt combines file transfer and code snippet sharing behind the same idea: a short access code instead of a permanent link, and an expiry window you choose at the moment of sharing.",
       "The current product supports up to 20 files at 100 MB per file, expiry control up to 24 hours in the normal file flow, syntax-highlighted snippets across 14 language choices, optional account history, and scheduled cleanup after expiry. Normal shares do not currently have a manual revoke endpoint.",
       "SendIt is not end-to-end encrypted or a backup service. The security page explains what HTTPS, encrypted stored files, access codes, and expiry do and do not protect.",
+      "SendIt is a good fit for a short handoff: moving a document between devices, sending a draft for review, handing in an assignment, or discussing a small debugging example. It is not a replacement for a managed workspace when a team needs folders, permissions, comments, version history, or guaranteed retention.",
+      "Before every transfer, confirm permission to share, remove unnecessary metadata and sensitive values, choose the shortest practical expiry, send the code privately, and keep an independent copy until receipt is confirmed.",
+      "Use SendIt when speed and a simple receive code matter most. Use cloud storage for ongoing access, and use an end-to-end encrypted service when the provider must not be able to read the content.",
     ],
     links: [
       ["/guide", "Sharing guide"],
@@ -150,6 +160,8 @@ const staticPages = [
       "This guide walks through the full workflow: preparing a file, choosing an expiry, sharing the access code on a separate channel, and confirming the recipient collected it.",
       "It explains single-file and multi-file receiving, repeat downloads while a share is active, code snippet sharing, supported language choices, troubleshooting, and the fact that normal file sharing has no Download All ZIP or manual revoke control.",
       "Use the shortest practical expiry, share codes privately, remove secrets before uploading, and keep an independent copy of important files.",
+      "For moving a file between your own devices, use a short expiry and retrieve it immediately. For a client draft, remove internal notes and send the code separately. For a code example, share only the relevant text and remove credentials before selecting the language.",
+      "Recipients should confirm who sent the code, check the receive page address, review the filename and size, use local security tools, and delete local copies when the task is finished. A successful download does not prove that a file is safe or authorised.",
     ],
     links: [
       ["/send", "Send a file"],
@@ -166,6 +178,9 @@ const staticPages = [
     body: [
       "SENDIT is built and operated by an independent team based in Ahmedabad, Gujarat, India. We built it because the ordinary ways of moving a file between two people — email attachments and permanent cloud links — leave copies behind forever.",
       "Our approach is deliberately narrow: one file, one short code, one expiry window, then access closes. Scheduled cleanup and metadata retention are explained in the Privacy and Security pages.",
+      "The product is maintained by a small team working across the React frontend, Node.js and Express API, MongoDB data models, encrypted file storage, cleanup routines, and deployment workflow. The team documents current limits instead of presenting temporary sharing as a universal replacement for storage or collaboration software.",
+      "Our priorities are clear workflows, honest security communication, accessible browser-based sharing, and reducing unnecessary retention. That means we also publish limitations: normal shares are not end-to-end encrypted, recipients can copy delivered content, and a manual revoke control is not currently available for normal shares.",
+      "Questions, privacy requests, support reports, and responsible security disclosures can be sent to mmbrothersteam@gmail.com. The Contact page lists the support hours and the information that helps us investigate a problem without asking users to send passwords or live secrets.",
     ],
     links: [
       ["/contact", "Contact us"],
@@ -183,6 +198,9 @@ const staticPages = [
       "Common questions cover whether an account is required, how codes work, how files are downloaded, the 24-hour normal expiry ceiling, practical file-size limits, code languages, repeated downloads, cleanup timing, and the absence of a normal manual revoke endpoint.",
       "SendIt uses HTTPS for transport and encrypts uploaded file content before storage, but it is not end-to-end encrypted. A four-digit code is a convenience credential, not a high-assurance secret.",
       "If your question is not answered here, contact the SENDIT team at mmbrothersteam@gmail.com and we will reply within 24-48 hours.",
+      "SendIt is best understood as a short-lived transfer workflow. It can help with a device-to-device handoff, a client draft, a student assignment, or a code review example, but it does not provide folders, comments, guaranteed retention, one-time viewing, or a normal manual revoke button.",
+      "For every transfer, verify that the content is yours to share, remove unnecessary sensitive values, choose a practical expiry, send the code privately, and keep a separate copy until receipt is confirmed. The Security and Sharing Guide pages explain these choices in more detail.",
+      "Support requests should include the affected page, approximate time, and a clear description of what happened. Never include your password, private key, API token, or the full contents of a sensitive file in a support email.",
     ],
     links: [
       ["/guide", "Sharing guide"],
@@ -215,6 +233,10 @@ const staticPages = [
     body: [
       "This policy explains what data SendIt collects, how long it is retained, and how shared files and code snippets are removed after expiry.",
       "It also discloses our use of cookies and local storage, and that third parties including Google may place and read cookies on your browser, or use web beacons and IP addresses, to serve and measure advertising on this site. Opt-out options are described in full on the page.",
+      "SendIt must receive and temporarily store file or code content to provide the transfer. Uploaded file content is encrypted before storage and access ends after expiry; scheduled cleanup and operational metadata can occur separately. Shared content is not used for advertising or sold to advertisers.",
+      "Transfer content is separate from transfer metadata. File names, sizes, timestamps, expiry settings, access events, account records, and security logs may be processed to operate the service, prevent abuse, answer support questions, and meet legal obligations.",
+      "Basic sharing does not require an account, but no online service should be treated as anonymous or risk-free. Avoid uploading secrets that do not need to be transferred, use the shortest practical expiry, and contact support for privacy requests at mmbrothersteam@gmail.com.",
+      "The policy also explains browser storage, optional analytics consent, Google advertising disclosures, international processing, children’s privacy, data rights, retention, and how policy changes are communicated. Users should read the full policy rather than relying only on this summary.",
     ],
     links: [
       ["/terms", "Terms of service"],
@@ -262,6 +284,8 @@ const staticPages = [
     body: [
       "SendIt reduces the time a shared file or code snippet remains available. Browser-to-server traffic uses HTTPS, uploaded file content is encrypted before storage, and the receive API checks the access code and expiry before returning content.",
       "A four-digit code is convenient, not a high-assurance secret. Recipients can copy delivered content, expiry blocks application access before scheduled cleanup, and SendIt is not end-to-end encrypted. Read the full security page for practical precautions and current limitations.",
+      "Evaluate the risk by considering the content, recipient, access lifetime, and what happens after delivery. Remove unnecessary data, use the shortest expiry, keep the code private, confirm receipt, and delete local copies when they are no longer needed.",
+      "If a code is exposed or a security issue is suspected, contact mmbrothersteam@gmail.com with the affected route, approximate time, and reproduction details. Do not send live passwords, private keys, or sensitive file contents in the report.",
     ],
     links: [
       ["/privacy", "Privacy policy"],

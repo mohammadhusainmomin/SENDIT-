@@ -61,7 +61,7 @@ export default function Privacy() {
               <li><strong>Upload/Download Activity:</strong> Timestamps of when transfers occur</li>
             </ul>
             <p>
-              Important: We do NOT collect the actual content of your files. We do NOT store file contents beyond the temporary retention period selected for the share.
+              Important: SendIt must receive and temporarily store the file or code content in order to provide the transfer. Uploaded file content is encrypted before storage and is removed from active access after expiry; scheduled cleanup and operational metadata may remain separately. We do not use shared content for advertising or sell it to advertisers.
             </p>
             <h3>C. Account Information (Optional)</h3>
             <ul>
@@ -104,6 +104,18 @@ export default function Privacy() {
               <li><strong>Code Expiration:</strong> Access codes also expire at the same time, preventing any access attempts after expiry</li>
               <li><strong>Not a Backup Service:</strong> SendIt explicitly is NOT designed for long-term storage or backup. Do not rely on SendIt to keep files permanently.</li>
               <li><strong>No Permanent Recovery:</strong> Once the cleanup process removes file content, it cannot be recovered through SendIt. Keep local copies if you need files long-term.</li>
+            </ul>
+          </section>
+
+          <section className="content-section">
+            <h2>4A. Practical Privacy Choices</h2>
+            <p>Privacy is shared between the service controls and the choices made by the sender and recipient. The following habits reduce unnecessary exposure when using a temporary transfer.</p>
+            <ul>
+              <li><strong>Minimise content:</strong> Upload only the files or code the recipient actually needs.</li>
+              <li><strong>Remove hidden data:</strong> Check document properties, revision history, comments, screenshots, and embedded personal information before uploading.</li>
+              <li><strong>Use a short expiry:</strong> Select the smallest window that allows the task to finish, then keep your own copy separately.</li>
+              <li><strong>Protect the code:</strong> Treat the four-digit access code as a bearer credential and share it privately.</li>
+              <li><strong>Remember delivery:</strong> Expiry can stop later application access but cannot erase a copy already downloaded by a recipient.</li>
             </ul>
           </section>
 

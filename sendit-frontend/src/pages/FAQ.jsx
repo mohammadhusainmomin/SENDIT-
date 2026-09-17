@@ -21,6 +21,12 @@ const faqs = [
   ["What should I avoid uploading?", "Do not upload passwords, private keys, production tokens, malware, illegal material, copyrighted material you do not have permission to share, or sensitive documents unless you understand the risks and have authorization."],
   ["What should I do if a download fails?", "Check the code, matching receive page, expiry, browser download permissions, connection, and device storage. If the share has expired, ask the sender to create a new one. Contact support for a reproducible issue."],
   ["How do I report a security issue?", "Email mmbrothersteam@gmail.com with a clear description, reproduction steps, and relevant timestamps. Do not include live secrets or private user files in the report."],
+  ["Can I use SendIt for confidential business files?", "Only after considering the limits described in the Security page. SendIt uses HTTPS and encrypts stored file content, but it is not end-to-end encrypted and cannot control copies after download. Remove unnecessary sensitive information, share the code privately, use a short expiry, and follow your organisation's approved transfer policy."],
+  ["What happens after a file expires?", "The receive API rejects access after the stored expiry time. A scheduled cleanup process removes encrypted file content later, while some operational or history metadata may remain. Expiry is an access control, not a promise that every record disappears at the exact second."],
+  ["Can a recipient download the same file more than once?", "Yes. Normal file shares can be downloaded again while the share is active. SendIt does not currently promise one-time viewing or prevent a recipient from saving and forwarding a downloaded copy."],
+  ["How should I choose an expiry time?", "Choose the shortest period that covers the real task. A few minutes may be enough for moving a file between your own devices; a client review may need longer. Keep an independent copy and create a new share if the recipient misses the window."],
+  ["Does SendIt scan or execute uploaded code?", "No. Code snippets are formatted and displayed as text with syntax highlighting. SendIt does not execute snippets. You are responsible for removing credentials and confirming that you have permission to share the code."],
+  ["How can I contact SendIt?", "Email mmbrothersteam@gmail.com for support, privacy requests, transfer problems, policy questions, or abuse reports. Include a clear description and approximate time, but never include a password or live secret."],
 ];
 
 export default function FAQ() {
@@ -72,7 +78,7 @@ export default function FAQ() {
             </div>
           </div>
           <div className="content-stat-row" aria-label="FAQ highlights">
-            <div><strong>17</strong><span>practical answers</span></div>
+            <div><strong>23</strong><span>practical answers</span></div>
             <div><strong>24h</strong><span>maximum normal expiry</span></div>
             <div><strong>100 MB</strong><span>maximum per file</span></div>
           </div>

@@ -96,7 +96,29 @@ export default function Features() {
           </section>
 
           <section className="content-section">
-            <div className="section-heading-row"><span className="section-number">06</span><div><span className="section-kicker">Continue exploring</span><h2>Useful next steps</h2></div></div>
+            <div className="section-heading-row"><span className="section-number">06</span><div><span className="section-kicker">Choose the right tool</span><h2>When SendIt is a good fit</h2></div></div>
+            <p>SendIt is useful when two people need a quick handoff and the content should not become a permanent shared folder. Typical examples include moving a presentation from a laptop to a phone, sending a draft to a client for review, handing in an assignment, or sharing a small debugging example with a teammate.</p>
+            <p>It is less suitable when a team needs comments, version history, role-based permissions, audit exports, guaranteed retention, or a long-running workspace. In those situations, use a managed document or collaboration platform and keep SendIt for short-lived transfers.</p>
+            <ul>
+              <li><strong>Use SendIt:</strong> when speed, a simple receive code, and a defined expiry matter most.</li>
+              <li><strong>Use cloud storage:</strong> when people need ongoing access, folders, permissions, or revision history.</li>
+              <li><strong>Use encrypted collaboration:</strong> when the provider must not be able to read the content.</li>
+            </ul>
+          </section>
+
+          <section className="content-section">
+            <div className="section-heading-row"><span className="section-number">07</span><div><span className="section-kicker">Before uploading</span><h2>A short transfer checklist</h2></div></div>
+            <ol>
+              <li>Confirm that you have permission to share every file or snippet.</li>
+              <li>Remove unnecessary names, comments, document history, passwords, and personal information.</li>
+              <li>Choose the shortest expiry that gives the recipient enough time.</li>
+              <li>Send the code through a private channel and tell the recipient which page to open.</li>
+              <li>Keep an independent copy until the recipient confirms successful receipt.</li>
+            </ol>
+          </section>
+
+          <section className="content-section">
+            <div className="section-heading-row"><span className="section-number">08</span><div><span className="section-kicker">Continue exploring</span><h2>Useful next steps</h2></div></div>
             <p>Use the <a href="/send">Send File</a> page for a transfer, read the <a href="/guide">Sharing Guide</a> for practical workflows, or review <a href="/security">Security</a> for the protection model and limitations.</p>
           </section>
         </div>

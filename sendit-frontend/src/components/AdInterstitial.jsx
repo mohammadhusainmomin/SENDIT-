@@ -4,8 +4,8 @@ import "./styles/AdInterstitial.css";
 const COUNTDOWN_SECONDS = 5;
 
 /**
- * AdInterstitial — full-screen overlay with a Google AdSense display ad
- * and a 5-second countdown before the Continue button unlocks.
+ * AdInterstitial — full-screen transfer preparation overlay
+ * with a 5-second countdown before the Continue button unlocks.
  *
  * Props:
  *   onContinue {function} — called exactly once when the user clicks Continue
@@ -20,15 +20,6 @@ function AdInterstitial({ onContinue, title = "Just a moment…" }) {
   useEffect(() => {
     onContinueRef.current = onContinue;
   }, [onContinue]);
-
-  // Push the ad unit once on mount (no-op if AdSense blocked)
-  useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (_) {
-      // AdSense unavailable — interstitial still works
-    }
-  }, []);
 
   // Countdown timer
   useEffect(() => {
@@ -54,16 +45,8 @@ function AdInterstitial({ onContinue, title = "Just a moment…" }) {
           <p className="adi-title">{title}</p>
         </div>
 
-        {/* AdSense display ad */}
-        <div className="adi-ad-shell">
-          <ins
-            className="adsbygoogle"
-            style={{ display: "block" }}
-            data-ad-client="ca-pub-6553893786189981"
-            data-ad-slot="3404933040"
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-          />
+        <div className="adi-ad-shell" aria-label="Transfer preparation">
+          <p>Your transfer is being prepared. Please wait for the action to become available.</p>
         </div>
 
         {/* Footer */}
@@ -85,7 +68,7 @@ function AdInterstitial({ onContinue, title = "Just a moment…" }) {
           </button>
 
           <p className="adi-note">
-            Advertisement helps keep SendIt free for everyone.
+            SendIt is free for everyday temporary transfers.
           </p>
         </div>
       </div>

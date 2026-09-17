@@ -161,6 +161,24 @@ function About() {
         </div>
       </section>
 
+      <section className="about-copy-mission">
+        <div className="about-copy-wrap">
+          <span className="about-copy-section-tag">HOW WE WORK</span>
+          <h2 className="about-copy-section-title">Small product, explicit boundaries</h2>
+          <div className="about-copy-body">
+            <p>
+              SendIt is maintained as a focused transfer tool rather than a general-purpose storage suite. The team works across the React interface, Node.js and Express API, MongoDB models, encrypted file handling, expiry checks, cleanup routines, and deployment configuration. This lets us improve the complete handoff instead of treating the upload button as the whole product.
+            </p>
+            <p>
+              We document the boundaries because a useful privacy product must also be honest about what it cannot do. SendIt does not provide end-to-end encryption, one-time viewing, guaranteed long-term retention, or a user-facing manual revoke control for normal shares. Recipients can save delivered content, and operational metadata may remain after access expires.
+            </p>
+            <p>
+              Product questions, privacy requests, support reports, and responsible security disclosures can be sent to <a href="mailto:mmbrothersteam@gmail.com">mmbrothersteam@gmail.com</a>. Please describe the affected page and approximate time without sending passwords, API keys, private keys, or sensitive file contents.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="about-copy-stack">
         <div className="about-copy-wrap">
           <div className="about-copy-center-head">

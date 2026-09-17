@@ -82,6 +82,27 @@ export default function SharingGuide() {
             </ul>
           </section>
 
+          <section className="content-section">
+            <div className="section-heading-row"><span className="section-number">05</span><div><span className="section-kicker">Real-world examples</span><h2>Three useful sharing patterns</h2></div></div>
+            <h3>Moving a file between your own devices</h3>
+            <p>Upload the file from the device where it currently exists, choose a short expiry, and open the receive page on the second device. This is convenient for a document or image that you need once. It is not a replacement for device backup, because the share can expire before you remember to retrieve it.</p>
+            <h3>Sending a client draft</h3>
+            <p>Remove internal notes and metadata before uploading, use an expiry that covers the review period, and send the code in a separate message. Ask the client to confirm receipt rather than leaving the share open longer than necessary.</p>
+            <h3>Discussing a code example</h3>
+            <p>Copy only the relevant example, remove credentials and private URLs, select the matching language, and explain what the recipient should look at. SendIt displays code but does not run, scan, or certify it.</p>
+          </section>
+
+          <section className="content-section">
+            <div className="section-heading-row"><span className="section-number">06</span><div><span className="section-kicker">Recipient checklist</span><h2>What to verify before downloading</h2></div></div>
+            <ul>
+              <li>Confirm who sent the code and whether you expected the file.</li>
+              <li>Check the receive page address before entering a code.</li>
+              <li>Make sure the filename and size look reasonable before opening the download.</li>
+              <li>Scan files with your device security tools and follow your organisation's rules.</li>
+              <li>Delete local copies when they are no longer needed, especially on shared devices.</li>
+            </ul>
+          </section>
+
           <section className="content-section" id="guide-troubleshooting">
             <h2>Troubleshooting</h2>
             <h3>“Invalid” or “expired” code</h3>
