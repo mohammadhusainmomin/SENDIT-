@@ -11,6 +11,7 @@ import CodesPage from "./components/Codes/CodesPage";
 import UsersPage from "./components/Users/UsersPage";
 import ActivityPage from "./components/Activity/ActivityPage";
 import DropRoomsPage from "./components/DropRooms/DropRoomsPage";
+import ApiLoader from "./components/ApiLoader";
 import { FiActivity, FiArchive, FiCode, FiFile, FiGrid, FiServer, FiTrendingUp, FiUsers } from "react-icons/fi";
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/+$/, "");
@@ -414,7 +415,7 @@ function Dashboard({ user, onLogout }) {
               </div>
             </div>
           ) : loading && !stats ? (
-            <div className="loading">Loading dashboard...</div>
+            <div className="loading"><ApiLoader label="Loading dashboard" /></div>
           ) : (
             <>
               {selectedTab === "overview" && (

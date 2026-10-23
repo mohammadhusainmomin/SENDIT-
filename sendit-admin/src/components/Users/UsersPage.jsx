@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import ApiLoader from "../ApiLoader";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import "./UsersPage.css";
 
@@ -108,7 +109,7 @@ function UsersPage({ users, totalCount, hasMore, isLoading, onLoadMore }) {
           ))}
         </div>
         <div className="users-loading-state">
-          {isLoading && <span>Loading more users...</span>}
+          {isLoading && <ApiLoader label="Loading users" compact />}
           {!hasMore && users.length > 0 && <span>All users loaded</span>}
         </div>
       </div>

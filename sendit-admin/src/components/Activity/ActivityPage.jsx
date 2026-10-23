@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import ApiLoader from "../ApiLoader";
 import SectionHeader from "../SectionHeader/SectionHeader";
 import "./ActivityPage.css";
 
@@ -105,7 +106,7 @@ function ActivityPage({
           ))}
         </div>
         <div className="activity-loading-state">
-          {isLoading && <span>Loading more activity...</span>}
+          {isLoading && <ApiLoader label="Loading activity" compact />}
           {!hasMore && recentActivity.length > 0 && <span>All activities loaded</span>}
         </div>
       </div>

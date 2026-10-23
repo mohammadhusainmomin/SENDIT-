@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import ApiLoader from "../ApiLoader";
 import "./DataTable.css";
 
 function DataTable({
@@ -61,7 +62,7 @@ function DataTable({
         </tbody>
       </table>
       <div className="table-loading-state">
-        {isLoading && <span>Loading more...</span>}
+        {isLoading && <ApiLoader label="Loading more" compact />}
         {!hasMore && data.length > 0 && <span>All records loaded</span>}
       </div>
     </div>
