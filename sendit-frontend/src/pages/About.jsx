@@ -24,6 +24,12 @@ const teamMembers = [
     bio: "Works on APIs, storage flow, cleanup routines, and the server-side logic behind temporary sharing.",
     image: "/images/azim.jpeg",
   },
+  {
+    name: "Raheman Ali",
+    role: "Backend Developer and Security Specialist",
+    bio: "Specializes in backend development and ensures the security and integrity of the platform.",
+    image: "/images/raheman.jpeg",
+  },
 ];
 
 function About() {

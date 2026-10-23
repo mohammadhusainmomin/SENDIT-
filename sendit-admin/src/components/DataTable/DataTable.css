@@ -112,6 +112,18 @@
   border: 1px solid rgba(1, 174, 223, 0.2);
 }
 
+.status-open {
+  background-color: #d1fae5;
+  color: #047857;
+  border: 1px solid #10b98133;
+}
+
+.status-closed {
+  background-color: #e5e7eb;
+  color: #374151;
+  border: 1px solid #9ca3af33;
+}
+
 .table-empty-message {
   text-align: center;
   color: var(--text-light);

@@ -83,7 +83,7 @@ function CodeReceive() {
             Access Your Shared Code
           </h1>
           <p className="si-subtitle" style={{ margin: "0 auto" }}>
-            Enter the current 4-digit snippet code used by your backend and retrieve the formatted code in a clean read-only viewer.
+            Enter the 4-digit code you received to view and copy the shared snippet.
           </p>
         </div>
 
@@ -114,7 +114,7 @@ function CodeReceive() {
                     <span />
                   </div>
                   <span className="si-chip">Read Only</span>
-                  <span className="si-footer-copy">Secure sandbox rendering</span>
+                  <span className="si-footer-copy">Read-only code preview</span>
                 </div>
                 {content && (
                   <button className="si-button-secondary" onClick={handleCopyCode} type="button">
@@ -132,12 +132,12 @@ function CodeReceive() {
             <div className="si-card" style={{ padding: "1.5rem" }}>
               <h3>Ephemeral Access</h3>
               <p className="si-footer-copy">
-                The code viewer stays aligned with the temporary access model already implemented on your backend.
+                Shared snippets are available only for the time selected by the sender.
               </p>
               <div className="muted-list" style={{ marginTop: "1rem" }}>
-                <div className="muted-list-item">Language detection via formatting utility</div>
-                <div className="muted-list-item">4-digit code compatibility preserved</div>
-                <div className="muted-list-item">No editor mutation after retrieval</div>
+                <div className="muted-list-item">Formatted for easier reading</div>
+                <div className="muted-list-item">Copy the snippet when needed</div>
+                <div className="muted-list-item">The preview cannot change the shared code</div>
               </div>
             </div>
 

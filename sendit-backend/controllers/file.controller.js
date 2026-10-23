@@ -17,7 +17,7 @@ export const sendFile = async (req, res) => {
     }
 
     const code = await generateUniqueCode();
-    const { expiresIn, expiresAt, error: expiryError } = resolveExpiryWindow(
+    const { expiresIn, error: expiryError } = resolveExpiryWindow(
       req.query.expiresIn,
     );
 
@@ -44,6 +44,8 @@ export const sendFile = async (req, res) => {
         size: file.size,
       });
     }
+
+    const expiresAt = new Date(Date.now() + expiresIn * 60 * 1000);
 
     // Create file document
     const fileDoc = await File.create({

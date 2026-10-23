@@ -62,115 +62,79 @@ const smartIndentCode = (code) => {
   return formattedLines.join("\n");
 };
 
-/**
- * Format Python code with basic smart formatting
- */const formatPython = (code) => {
-  try {
-    const lines = code.replace(/\r\n/g, "\n").split("\n");
-    const result = [];
-    let indentLevel = 0;
-    let bracketDepth = 0;
+const blockHeaderRegex =
+  /^(async\s+def|def|class|if|elif|else|for|while|try|except|finally|with|match|case)\b.*:\s*(?:#.*)?$/;
+const clauseRegex = /^(elif|else|except|finally|case)\b/;
+let ruffFormatterPromise;
 
-    const blockStartRegex =
-      /^(if|elif|else|for|while|def|class|try|except|finally|with|match|case)\b/;
+export const repairPythonIndentation = (code) => {
+  const lines = code.replace(/\r\n/g, "\n").split("\n");
+  const expandedLines = lines.map((line) => line.replace(/\t/g, "    "));
+  const nonEmptyLines = expandedLines.filter((line) => line.trim());
+  if (!nonEmptyLines.length) return code;
 
-    const dedentRegex =
-      /^(elif|else|except|finally|case)\b/;
+  const commonIndent = Math.min(
+    ...nonEmptyLines.map((line) => line.match(/^ */)[0].length),
+  );
+  const indentationWidths = nonEmptyLines
+    .map((line) => line.match(/^ */)[0].length - commonIndent)
+    .filter((width) => width > 0);
+  const gcd = (left, right) => (right ? gcd(right, left % right) : left);
+  const inferredIndent = indentationWidths.reduce(gcd, 0);
+  const indentWidth = inferredIndent === 2 || inferredIndent === 4 ? inferredIndent : 4;
+  const output = [];
+  let previousLevel = 0;
+  let previousWasBlockHeader = false;
 
-    const isContinuationLine = (line) => {
-      return (
-        bracketDepth > 0 ||
-        /[([{]\s*$/.test(line) ||
-        /[,\\]$/.test(line)
-      );
-    };
-
-    const updateBracketDepth = (line) => {
-      let single = false;
-      let double = false;
-      let escaped = false;
-
-      for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-
-        if (escaped) {
-          escaped = false;
-          continue;
-        }
-
-        if (char === "\\") {
-          escaped = true;
-          continue;
-        }
-
-        if (char === "'" && !double) {
-          single = !single;
-          continue;
-        }
-
-        if (char === '"' && !single) {
-          double = !double;
-          continue;
-        }
-
-        if (single || double) {
-          continue;
-        }
-
-        if (char === "(" || char === "[" || char === "{") {
-          bracketDepth++;
-        }
-
-        if (char === ")" || char === "]" || char === "}") {
-          bracketDepth = Math.max(0, bracketDepth - 1);
-        }
-      }
-    };
-
-    for (let i = 0; i < lines.length; i++) {
-      const original = lines[i];
-      const trimmed = original.trim();
-
-      if (!trimmed) {
-        if (result.length > 0 && result[result.length - 1] !== "") {
-          result.push("");
-        }
-        continue;
-      }
-
-      if (trimmed.startsWith("#")) {
-        result.push(" ".repeat(indentLevel * 4) + trimmed);
-        continue;
-      }
-
-      if (dedentRegex.test(trimmed)) {
-        indentLevel = Math.max(0, indentLevel - 1);
-      }
-
-      const continuation = isContinuationLine(trimmed);
-
-      let currentIndent = indentLevel;
-
-      if (continuation && bracketDepth > 0) {
-        currentIndent = indentLevel + 1;
-      }
-
-      result.push(" ".repeat(currentIndent * 4) + trimmed);
-
-      updateBracketDepth(trimmed);
-
-      if (
-        trimmed.endsWith(":") &&
-        blockStartRegex.test(trimmed)
-      ) {
-        indentLevel++;
-      }
+  for (const line of expandedLines) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      if (output.length && output[output.length - 1] !== "") output.push("");
+      continue;
     }
 
-    return result.join("\n").replace(/\n{3,}/g, "\n\n");
-  } catch (error) {
-    console.error("Python formatting failed:", error);
-    return code;
+    const sourceIndent = Math.max(
+      0,
+      line.match(/^ */)[0].length - commonIndent,
+    );
+    const isClause = clauseRegex.test(trimmed);
+    let level = Math.floor(sourceIndent / indentWidth);
+
+    if (previousWasBlockHeader && !isClause) {
+      level = previousLevel + 1;
+    }
+
+    output.push(`${" ".repeat(level * 4)}${trimmed}`);
+    previousLevel = level;
+    previousWasBlockHeader = blockHeaderRegex.test(trimmed);
+  }
+
+  return output.join("\n").replace(/\n{3,}/g, "\n\n");
+};
+
+const formatPython = async (code) => {
+  if (!ruffFormatterPromise) {
+    ruffFormatterPromise = import("@wasm-fmt/ruff_fmt")
+      .then(({ format }) => format)
+      .catch((error) => {
+        ruffFormatterPromise = null;
+        throw error;
+      });
+  }
+
+  const format = await ruffFormatterPromise;
+  const options = {
+    indent_style: "space",
+    indent_width: 4,
+    line_width: 88,
+    quote_style: "preserve",
+  };
+
+  try {
+    return format(code, "snippet.py", options);
+  } catch {
+    const repairedCode = repairPythonIndentation(code);
+    return format(repairedCode, "snippet.py", options);
   }
 };
 /**
@@ -533,7 +497,7 @@ export const formatCode = async (code, language = "auto-detect") => {
 
       case "python":
       case "py":
-        return formatPython(trimmedCode);
+        return await formatPython(trimmedCode);
 
       case "java":
         return formatJava(trimmedCode);
@@ -607,7 +571,7 @@ export const formatCodeSync = (code, language = "auto-detect") => {
 
    case "python":
      case "py":
-  return formatPython(trimmedCode);
+  return repairPythonIndentation(trimmedCode);
 
       case "java":
         return formatJava(trimmedCode);

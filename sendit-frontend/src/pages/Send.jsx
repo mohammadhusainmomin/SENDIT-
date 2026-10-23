@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { FiClock, FiFile, FiHash, FiHardDrive } from "react-icons/fi";
 import FileUpload from "../components/FileUpload";
 import SEO from "../components/SEO";
-import ScrollValuePicker from "../components/ScrollValuePicker";
+import ExpirySelector from "../components/ExpirySelector";
 import { formatFileSize } from "../utils/formatFileSize";
 
 function Send() {
@@ -17,20 +17,8 @@ function Send() {
     totalSize: 0,
     totalExpiryMinutes: 0,
   });
-  const hourOptions = useMemo(
-    () => Array.from({ length: 25 }, (_, index) => index),
-    [],
-  );
-  const minuteOptions = useMemo(
-    () => Array.from({ length: 12 }, (_, index) => index * 5),
-    [],
-  );
-
   const hasFiles = uploadState.files.length > 0;
   const hasCompletedUpload = Boolean(uploadState.code);
-  const selectedExpiryMinutes =
-    (parseInt(expiresInHours, 10) || 0) * 60 +
-    (parseInt(expiresInMinutes, 10) || 0);
 
   return (
     <div className="page-shell">
@@ -154,62 +142,17 @@ function Send() {
             </div>
 
             <div className="si-card send-control-card send-sidebar-expiry-card">
-              {/* Issue 4: paddingTop gives EXPIRY label breathing room at the top */}
-              <div className="send-control-header" style={{ paddingTop: "0.5rem" }}>
-                <div>
-                  <div className="si-meta-label">Expiry</div>
-                  <h3 style={{ margin: "0.35rem 0 0" }}>
-                    How long should the code work?
-                  </h3>
-                </div>
-                {/* Issue 3: show actual selected value (or "Not set") — removes ambiguity */}
-                <div className="send-expiry-badge" aria-live="polite">
-                  {selectedExpiryMinutes > 0
-                    ? `${selectedExpiryMinutes} min`
-                    : "Not set"}
-                </div>
-              </div>
-
-              <div className="wheel-panel compact-wheel-panel send-wheel-panel send-sidebar-wheel-panel">
-                <div className="wheel-column">
-                  <ScrollValuePicker
-                    label="Hours"
-                    options={hourOptions}
-                    value={expiresInHours}
-                    onChange={(value) => {
-                      setExpiresInHours(value);
-                      setExpirySelected(true);
-                    }}
-                    formatter={(option) =>
-                      `${String(option).padStart(2, "0")} h`
-                    }
-                  />
-                </div>
-
-                <div className="wheel-separator">:</div>
-
-                <div className="wheel-column">
-                  <ScrollValuePicker
-                    label="Minutes"
-                    options={minuteOptions}
-                    value={expiresInMinutes}
-                    onChange={(value) => {
-                      setExpiresInMinutes(value);
-                      setExpirySelected(true);
-                    }}
-                    formatter={(option) =>
-                      `${String(option).padStart(2, "0")} m`
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="send-control-footer">
-                <div className="si-footer-copy">
-                  Scroll and stop on the time you want. The receiver can use the
-                  code until this timer ends.
-                </div>
-              </div>
+              <ExpirySelector
+                hours={expiresInHours}
+                minutes={expiresInMinutes}
+                selected={expirySelected}
+                disabled={uploadState.loading || hasCompletedUpload}
+                onChange={(nextHours, nextMinutes) => {
+                  setExpiresInHours(nextHours);
+                  setExpiresInMinutes(nextMinutes);
+                  setExpirySelected(true);
+                }}
+              />
             </div>
           </aside>
         </div>

@@ -4,6 +4,7 @@ import SEO from "../components/SEO";
 import {
   FiFileText,
   FiUploadCloud,
+  FiDownload,
   FiFile,
   FiCopy,
 } from "react-icons/fi";
@@ -15,10 +16,10 @@ function MyFiles() {
   const [files, setFiles] = useState([]);
   const [activeTab, setActiveTab] = useState("sent");
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("token");
   const { success, error: showError } = useToast();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     const fetchFiles = async () => {
@@ -30,11 +31,7 @@ function MyFiles() {
             ? "/files/sent"
             : "/files/received";
 
-        const res = await api.get(endpoint, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await api.get(endpoint);
 
         setFiles(res.data.history || []);
       } catch (err) {
@@ -46,7 +43,7 @@ function MyFiles() {
     };
 
     fetchFiles();
-  }, [token, activeTab, showError]);
+  }, [activeTab, showError]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "-";
@@ -75,7 +72,7 @@ function MyFiles() {
           <div className="header-icon">
             <FiFileText />
           </div>
-          <h2>My Files</h2>
+          <h1>My Files</h1>
           <p>View your sent and received files</p>
         </section>
 
@@ -84,6 +81,8 @@ function MyFiles() {
           <button
             className={`tab-btn ${activeTab === "sent" ? "active" : ""}`}
             onClick={() => setActiveTab("sent")}
+            type="button"
+            aria-pressed={activeTab === "sent"}
           >
             <FiUploadCloud />
             Sent Files
@@ -92,8 +91,10 @@ function MyFiles() {
           <button
             className={`tab-btn ${activeTab === "received" ? "active" : ""}`}
             onClick={() => setActiveTab("received")}
+            type="button"
+            aria-pressed={activeTab === "received"}
           >
-           
+            <FiDownload />
             Received Files
           </button>
         </div>

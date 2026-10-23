@@ -9,9 +9,11 @@ import {
   getDropRoomDetails,
   getMyDropRooms,
   getPublicDropRoom,
+  getPublicDropRoomSubmissionStatus,
   submitToDropRoom,
 } from "../controllers/dropRoom.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
+import authMiddlewareOptional from "../middleware/authOptional.middleware.js";
 
 const router = express.Router();
 
@@ -36,7 +38,17 @@ router.get("/drop-rooms", authMiddleware, getMyDropRooms);
 // ⚠️ Public routes MUST come before /:roomId routes to prevent Express
 // from matching "public" as a roomId param
 router.get("/drop-rooms/public/:code", getPublicDropRoom);
-router.post("/drop-rooms/public/:code/submissions", upload.array("documents"), submitToDropRoom);
+router.post(
+  "/drop-rooms/public/:code/submissions/status",
+  authMiddlewareOptional,
+  getPublicDropRoomSubmissionStatus,
+);
+router.post(
+  "/drop-rooms/public/:code/submissions",
+  authMiddlewareOptional,
+  upload.array("documents"),
+  submitToDropRoom,
+);
 
 // Protected routes with :roomId param
 router.get("/drop-rooms/:roomId", authMiddleware, getDropRoomDetails);

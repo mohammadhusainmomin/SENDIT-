@@ -6,7 +6,8 @@ import {
   getRecentActivity,
   getUsersList,
   getFileDetails,
-  getCodeDetails
+  getCodeDetails,
+  getAdminDropRooms
 } from "../controllers/admin.controller.js";
 import { getAdminFileHistory } from "../controllers/file.controller.js";
 import { getAdminCodeHistory } from "../controllers/code.controller.js";
@@ -31,6 +32,9 @@ router.get("/activity", getRecentActivity);
 
 // Users management
 router.get("/users", getUsersList);
+
+// Drop rooms
+router.get("/drop-rooms", getAdminDropRooms);
 
 // Files details
 router.get("/files", getFileDetails);

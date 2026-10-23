@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 export default function ScrollToTop() {
   const { pathname } = useLocation();
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     // Disable browser's automatic scroll restoration
@@ -28,5 +29,24 @@ export default function ScrollToTop() {
 
   }, [pathname]);
 
-  return null;
+  useEffect(() => {
+    let frame = 0;
+    const updateProgress = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        setScrollProgress(scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0);
+      });
+    };
+    updateProgress();
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateProgress);
+      window.removeEventListener("resize", updateProgress);
+    };
+  }, []);
+
+  return <div className="scroll-progress" aria-hidden="true" style={{ "--scroll-progress": `${scrollProgress}%` }} />;
 }

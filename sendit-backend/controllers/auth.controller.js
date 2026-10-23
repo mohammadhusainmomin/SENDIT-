@@ -23,7 +23,7 @@ export const googleAuth = async (req, res) => {
 
     const payload = ticket.getPayload();
 
-    const { sub, name, email } = payload;
+    const { sub, name, email, picture } = payload;
 
     let user = await User.findOne({ email });
 
@@ -32,8 +32,12 @@ export const googleAuth = async (req, res) => {
         name,
         email,
         googleId: sub,
+        picture: picture || "",
         authProvider: "google"
       });
+    } else if (picture && user.picture !== picture) {
+      user.picture = picture;
+      await user.save();
     }
 
     const token = jwt.sign(

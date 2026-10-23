@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FiArrowUpRight, FiChevronDown, FiClock, FiFileText, FiInbox, FiLock, FiLogOut, FiMenu, FiMoon, FiSun, FiX } from "react-icons/fi";
+import { FiArrowUpRight, FiChevronDown, FiClock, FiFileText, FiInbox, FiLock, FiLogOut, FiMenu, FiMoon, FiSun, FiUser, FiX } from "react-icons/fi";
 import { AuthContext } from "../context/AuthContext";
 import AuthModal from "./AuthModel";
 
@@ -11,6 +11,25 @@ const primaryLinks = [
   { to: "/code/receive", label: "Receive Code" },
   { to: "/blog", label: "Blog" },
 ];
+
+function UserAvatar({ user, className }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const picture = user?.picture;
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [picture]);
+
+  return (
+    <span className={className} aria-hidden="true">
+      {picture && !imageFailed ? (
+        <img src={picture} alt="" onError={() => setImageFailed(true)} />
+      ) : (
+        <FiUser />
+      )}
+    </span>
+  );
+}
 
 function Navbar() {
   const { user, logout } = useContext(AuthContext);
@@ -59,16 +78,15 @@ function Navbar() {
       <header className="navbar-container">
         <div className="navbar-wrapper">
           {/* Brand */}
-          <div className="navbar-brand" onClick={() => { navigate("/"); closeMenu(); }}>
-          
+          <NavLink to="/" className="navbar-brand" onClick={closeMenu} aria-label="SendIt home">
             <div className="brand-text">
               <div className="brand-name">SendIt</div>
               <div className="brand-tagline">Share Securely</div>
             </div>
-          </div>
+          </NavLink>
 
           {/* Desktop Navigation */}
-          <nav className="navbar-nav">
+          <nav className="navbar-nav" aria-label="Main navigation">
             {primaryLinks.map((link) => (
               <NavLink
                 key={link.to}
@@ -106,13 +124,21 @@ function Navbar() {
                     type="button"
                     aria-expanded={userMenuOpen}
                   >
-                    <div className="user-avatar">{user.name?.charAt(0).toUpperCase() || "U"}</div>
-                    <span className="user-name">{user.name?.split(" ")[0]}</span>
+                    <UserAvatar user={user} className="user-avatar" />
+                    <span className="user-name">{user.name?.split(" ")[0] || "Account"}</span>
                     <FiChevronDown size={16} className={`chevron-icon ${userMenuOpen ? "open" : ""}`} />
                   </button>
 
                   {userMenuOpen && (
                     <div className="navbar-dropdown">
+                      <div className="navbar-dropdown-profile">
+                        <UserAvatar user={user} className="navbar-dropdown-avatar" />
+                        <span className="navbar-dropdown-identity">
+                          <strong>{user.name || "SendIt account"}</strong>
+                          <span>{user.email}</span>
+                        </span>
+                      </div>
+                      <div className="navbar-dropdown-divider"></div>
                       <NavLink
                         to="/my-files"
                         className={({ isActive }) =>
@@ -193,7 +219,7 @@ function Navbar() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="navbar-mobile-menu">
-            <nav className="mobile-nav">
+            <nav className="mobile-nav" aria-label="Mobile navigation">
               {primaryLinks.map((link) => (
                 <NavLink
                   key={link.to}
@@ -212,7 +238,7 @@ function Navbar() {
             {user && (
               <div className="mobile-user-section">
                 <div className="mobile-user-header">
-                  <div className="mobile-user-avatar">{user.name?.charAt(0).toUpperCase() || "U"}</div>
+                  <UserAvatar user={user} className="mobile-user-avatar" />
                   <div className="mobile-user-info">
                     <div className="mobile-user-name">{user.name}</div>
                     <div className="mobile-user-email">{user.email || "User"}</div>

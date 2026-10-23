@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { updateCachedToken } from "../services/api";
 
 export const AuthContext = createContext();
@@ -19,6 +19,16 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     updateCachedToken(null);
   };
+
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      setUser(null);
+      updateCachedToken(null);
+    };
+
+    window.addEventListener("sendit:session-expired", handleSessionExpired);
+    return () => window.removeEventListener("sendit:session-expired", handleSessionExpired);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

@@ -36,11 +36,9 @@ function CodeInput() {
   const performGetFiles = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
       const response = await api.post(
         "/receive",
         { code },
-        { headers: { ...(token && { Authorization: `Bearer ${token}` }) } }
       );
 
       const files = response.data.files || [];
@@ -82,13 +80,11 @@ function CodeInput() {
     try {
       setLoading(true);
       setActiveDownloadIndex(fileIndex);
-      const token = localStorage.getItem("token");
       const response = await api.post(
         "/receive",
         { code, fileIndex },
         {
           responseType: "blob",
-          headers: { ...(token && { Authorization: `Bearer ${token}` }) },
         }
       );
 

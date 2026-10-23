@@ -11,9 +11,12 @@ export const resolveExpiryWindow = (rawValue) => {
     };
   }
 
-  const expiresIn = Number.parseInt(String(rawValue), 10);
+  const isNumericValue =
+    typeof rawValue === "number" ||
+    (typeof rawValue === "string" && /^\d+$/.test(rawValue));
+  const expiresIn = isNumericValue ? Number(rawValue) : NaN;
 
-  if (!Number.isInteger(expiresIn) || expiresIn <= 0) {
+  if (!Number.isSafeInteger(expiresIn) || expiresIn <= 0) {
     return {
       error: "Please provide a valid expiration time",
     };

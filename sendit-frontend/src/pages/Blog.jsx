@@ -39,7 +39,7 @@ export default function Blog() {
     "@type": "Blog",
     name: "SendIt Blog",
     description:
-      "Original guides on secure file sharing, temporary access codes, encryption, file expiry and code sharing workflows.",
+      "Practical articles on file sharing, security, code snippets, and SendIt product workflows.",
     url: `${SITE}/blog`,
     blogPost: sorted.map((post) => ({
       "@type": "BlogPosting",
@@ -55,33 +55,33 @@ export default function Blog() {
   return (
     <>
       <SEO
-        title="SendIt Blog | Guides on Secure File Sharing and Code Sharing"
-        description="In-depth, original guides on secure file transfer, temporary access codes, encryption, QR sharing, file expiry and privacy-first sharing workflows."
-        keywords="secure file sharing guide, file transfer blog, temporary access code, encrypted file transfer, share code snippets, file expiry"
+        title="SendIt Blog | Practical File Sharing and Security Guides"
+        description="Practical articles on file sharing, security, code snippets, and SendIt product workflows, with current product details and limitations."
+        keywords="file sharing guides, secure file transfer, SendIt product workflows, code sharing, file expiry"
         url={`${SITE}/blog`}
         structuredData={structuredData}
       />
 
       <div className="blog-page">
         <header className="blog-hero">
-          <span className="blog-kicker">SENDIT Blog</span>
-
-          <h1>Secure File Sharing, Transfer & Privacy Guides</h1>
+          <span className="blog-kicker">SENDIT BLOG</span>
+          <h1>Practical guides to sharing files and code</h1>
 
           <p>
-            Practical guides to secure file sharing, encrypted transfers,
-            temporary access codes, file expiry, and safer ways to share
-            sensitive data.
+            Explore practical advice and product-specific notes based on how
+            SendIt currently works. Each article distinguishes general guidance
+            from SendIt's own features and limitations.
           </p>
         </header>
 
-        <div className="blog-topics">
+        <div className="blog-topics" role="group" aria-label="Filter articles by topic">
           {topics.map((item) => (
             <button
               key={item}
               type="button"
               className={`blog-topic-btn ${topic === item ? "active" : ""}`}
               onClick={() => setTopic(item)}
+              aria-pressed={topic === item}
             >
               {item}
             </button>
@@ -96,7 +96,7 @@ export default function Blog() {
               to={`/blog/${post.slug}`}
             >
               <div className="blog-card-meta">
-                <span>{formatDate(post.date)}</span>
+                <time dateTime={post.date}>{formatDate(post.date)}</time>
                 <span>{post.readTime}</span>
               </div>
               <div className="blog-card-tags">

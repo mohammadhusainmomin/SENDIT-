@@ -1,23 +1,20 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import {
-  FiExternalLink,
+  FiCheckCircle,
   FiGlobe,
   FiMail,
   FiMessageCircle,
   FiSend,
   FiX,
-  FiZap,
 } from "react-icons/fi";
+import api from "../services/api";
+import Mascot from "./Mascot";
 import {
   CHATBOT_COPY,
   CHATBOT_SUGGESTIONS,
-  LANGUAGE_HINTS,
   LANGUAGE_NAMES,
-  LANGUAGE_PRIORITY,
   SUPPORT_LINKS,
-  chatbotFaq,
-} from "../data/chatbotFaq";
+} from "../data/chatbotContent";
 
 const initialMessage = {
   id: "welcome",
@@ -27,179 +24,24 @@ const initialMessage = {
   text: CHATBOT_COPY.welcome.en,
 };
 
+const hindiWords = /\b(mujhe|muje|kaise|kya|kyu|nahi|mera|meri|hai|bheju|bhejna|chahiye|kitna|kitni|karu)\b/i;
+const gujaratiWords = /\b(kem|shu|nathi|maro|mari|mane|chhe|moklu|melvu|joie|ketlo|ketla)\b/i;
+
 function makeId(prefix) {
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
-function normalizeText(value) {
-  return value
-    .toLocaleLowerCase()
-    .normalize("NFKD")
-    .replace(/[^\p{L}\p{M}\p{N}]+/gu, " ")
-    .trim();
-}
+function detectLanguage(value) {
+  if (/[\u0A80-\u0AFF]/.test(value)) return "gu";
+  if (/[\u0900-\u097F]/.test(value)) return "hi";
 
-function tokenize(value) {
-  return normalizeText(value).match(/[\p{L}\p{M}\p{N}]+/gu) || [];
-}
-
-function flattenKeywords() {
-  return chatbotFaq.reduce(
-    (bank, intent) => {
-      Object.entries(intent.keywords).forEach(([language, words]) => {
-        bank[language].push(...words);
-      });
-      return bank;
-    },
-    { en: [], hi: [], gu: [] },
-  );
-}
-
-function countKeywordHits(tokens, keywords) {
-  const tokenSet = new Set(tokens);
-
-  return keywords.reduce((score, keyword) => {
-    const normalizedKeyword = normalizeText(keyword);
-    const keywordTokens = tokenize(keyword);
-
-    if (!normalizedKeyword || keywordTokens.length === 0) {
-      return score;
-    }
-
-    if (keywordTokens.length > 1) {
-      for (let index = 0; index <= tokens.length - keywordTokens.length; index += 1) {
-        const phraseMatches = keywordTokens.every(
-          (token, tokenIndex) => tokens[index + tokenIndex] === token,
-        );
-
-        if (phraseMatches) {
-          return score + keywordTokens.length + 2;
-        }
-      }
-
-      return (
-        score +
-        keywordTokens.reduce(
-          (tokenScore, token) => tokenScore + (tokenSet.has(token) ? 1 : 0),
-          0,
-        )
-      );
-    }
-
-    const [keywordToken] = keywordTokens;
-    const exactMatch = tokenSet.has(keywordToken);
-    const stemMatch =
-      keywordToken.length >= 5 &&
-      tokens.some((token) => token.startsWith(keywordToken));
-
-    return score + (exactMatch || stemMatch ? 1 : 0);
-  }, 0);
-}
-
-function detectLanguage(input) {
-  const tokens = tokenize(input);
-  const scores = {
-    gu: countKeywordHits(tokens, LANGUAGE_HINTS.gu),
-    hi: countKeywordHits(tokens, LANGUAGE_HINTS.hi),
-    en: countKeywordHits(tokens, LANGUAGE_HINTS.en),
-  };
-
-  const gujaratiCharacters = input.match(/[\u0A80-\u0AFF]/g)?.length || 0;
-  const hindiCharacters = input.match(/[\u0900-\u097F]/g)?.length || 0;
-
-  scores.gu += gujaratiCharacters * 2;
-  scores.hi += hindiCharacters * 2;
-
-  const highestScore = Math.max(scores.gu, scores.hi, scores.en);
-
-  if (highestScore === 0) {
-    return "en";
+  const hindiMatches = value.match(new RegExp(hindiWords.source, "gi")) || [];
+  const gujaratiMatches = value.match(new RegExp(gujaratiWords.source, "gi")) || [];
+  if (hindiMatches.length || gujaratiMatches.length) {
+    return gujaratiMatches.length > hindiMatches.length ? "gu" : "hi";
   }
 
-  return LANGUAGE_PRIORITY.reduce((bestLanguage, language) => {
-    if (scores[language] > scores[bestLanguage]) {
-      return language;
-    }
-
-    return bestLanguage;
-  }, "gu");
-}
-
-function scoreIntent(tokens, intent, language) {
-  const allKeywords = [
-    ...intent.keywords.en,
-    ...intent.keywords.hi,
-    ...intent.keywords.gu,
-  ];
-  const baseScore = countKeywordHits(tokens, allKeywords);
-  const languageScore = countKeywordHits(tokens, intent.keywords[language]);
-
-  return baseScore + languageScore;
-}
-
-function findIntent(message, language) {
-  const tokens = tokenize(message);
-
-  return chatbotFaq.reduce(
-    (bestMatch, intent) => {
-      const score = scoreIntent(tokens, intent, language);
-
-      if (score > bestMatch.score) {
-        return { intent, score };
-      }
-
-      return bestMatch;
-    },
-    { intent: null, score: 0 },
-  );
-}
-
-function makeAssistantMessage(text, keywordBank) {
-  const language = detectLanguage(text);
-  const { intent, score } = findIntent(text, language);
-
-  if (!intent || score === 0) {
-    return {
-      id: makeId("assistant"),
-      from: "assistant",
-      language,
-      title: CHATBOT_COPY.fallbackTitle[language],
-      text: CHATBOT_COPY.fallbackAnswer[language],
-      cta: {
-        href: SUPPORT_LINKS.contact,
-        label: CHATBOT_COPY.contactButton,
-      },
-      showSupportLinks: true,
-    };
-  }
-
-  return {
-    id: makeId("assistant"),
-    from: "assistant",
-    language,
-    title: intent.title[language],
-    text: intent.answer[language],
-    cta: intent.cta,
-    showSupportLinks: intent.showSupportLinks,
-  };
-}
-
-function ChatActionLink({ href, children }) {
-  if (href.startsWith("/")) {
-    return (
-      <Link className="sendit-chatbot-cta" to={href}>
-        {children}
-        <FiExternalLink aria-hidden="true" />
-      </Link>
-    );
-  }
-
-  return (
-    <a className="sendit-chatbot-cta" href={href} target="_blank" rel="noreferrer">
-      {children}
-      <FiExternalLink aria-hidden="true" />
-    </a>
-  );
+  return "en";
 }
 
 function Message({ message }) {
@@ -211,13 +53,6 @@ function Message({ message }) {
         <div className="sendit-chatbot-message-title">{message.title}</div>
       ) : null}
       <p>{message.text}</p>
-
-      {isAssistant && message.cta ? (
-        <ChatActionLink href={message.cta.href}>
-          {message.cta.label[message.language]}
-        </ChatActionLink>
-      ) : null}
-
       {isAssistant && message.showSupportLinks ? (
         <div className="sendit-chatbot-support-links">
           <a href={`mailto:${SUPPORT_LINKS.email}`}>
@@ -238,30 +73,26 @@ function SendItChatbot() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([initialMessage]);
-  const keywordBank = useMemo(() => flattenKeywords(), []);
-  const activeLanguage = messages[messages.length - 1]?.language || "en";
+  const [sending, setSending] = useState(false);
   const chatbotRef = useRef(null);
   const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const sendingRef = useRef(false);
+  const activeLanguage = messages[messages.length - 1]?.language || "en";
 
   useEffect(() => {
     if (open) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       window.setTimeout(() => inputRef.current?.focus(), 80);
     }
-  }, [messages, open]);
+  }, [messages, open, sending]);
 
   useEffect(() => {
-    if (!open) {
-      return undefined;
-    }
+    if (!open) return undefined;
 
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
+      if (event.key === "Escape") setOpen(false);
     };
-
     const handlePointerDown = (event) => {
       if (chatbotRef.current && !chatbotRef.current.contains(event.target)) {
         setOpen(false);
@@ -270,35 +101,71 @@ function SendItChatbot() {
 
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("mousedown", handlePointerDown);
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("mousedown", handlePointerDown);
     };
   }, [open]);
 
-  const sendMessage = (messageText) => {
+  const sendMessage = async (messageText) => {
     const trimmedMessage = messageText.trim();
-
-    if (!trimmedMessage) {
-      return;
-    }
+    if (!trimmedMessage || sendingRef.current) return;
 
     const language = detectLanguage(trimmedMessage);
-    const assistantMessage = makeAssistantMessage(trimmedMessage, keywordBank);
+    const userMessage = {
+      id: makeId("user"),
+      from: "user",
+      language,
+      text: trimmedMessage,
+    };
+    const visibleHistory = [...messages, userMessage];
+    const conversation = visibleHistory
+      .filter((message) => message.id !== "welcome" && !message.isError)
+      .slice(-12)
+      .map(({ from, text }) => ({ role: from, text }));
 
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      {
-        id: makeId("user"),
-        from: "user",
-        language,
-        text: trimmedMessage,
-      },
-      assistantMessage,
-    ]);
+    setMessages(visibleHistory);
     setInput("");
     setOpen(true);
+    setSending(true);
+    sendingRef.current = true;
+
+    try {
+      const response = await api.post("/assistant/chat", {
+        messages: conversation,
+      });
+      const answer = response.data?.answer?.trim();
+      if (!answer) throw new Error("The assistant returned an empty answer.");
+
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          id: makeId("assistant"),
+          from: "assistant",
+          language,
+          title: "SendIt Assistant",
+          text: answer,
+        },
+      ]);
+    } catch (error) {
+      const message =
+        error.response?.data?.message || CHATBOT_COPY.requestError[language];
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          id: makeId("assistant-error"),
+          from: "assistant",
+          language,
+          title: "SendIt Assistant",
+          text: message,
+          showSupportLinks: true,
+          isError: true,
+        },
+      ]);
+    } finally {
+      setSending(false);
+      sendingRef.current = false;
+    }
   };
 
   const handleSubmit = (event) => {
@@ -320,19 +187,18 @@ function SendItChatbot() {
           <div className="sendit-chatbot-header">
             <div className="sendit-chatbot-brand">
               <span className="sendit-chatbot-avatar" aria-hidden="true">
-                <FiZap />
+                <Mascot size="chatbot" />
               </span>
               <div>
                 <span className="sendit-chatbot-kicker">SendIt Assistant</span>
-                <strong>Quick help</strong>
+                <strong>How can we help?</strong>
+                <span className="sendit-chatbot-subtitle">
+                  Your guide to sharing with SendIt
+                </span>
               </div>
             </div>
 
             <div className="sendit-chatbot-header-actions">
-              <span className="sendit-chatbot-language">
-                <FiGlobe aria-hidden="true" />
-                {LANGUAGE_NAMES[activeLanguage]}
-              </span>
               <button
                 className="sendit-chatbot-icon-button"
                 type="button"
@@ -343,25 +209,44 @@ function SendItChatbot() {
                 <FiX />
               </button>
             </div>
+            <span className="sendit-chatbot-online">
+              <FiCheckCircle aria-hidden="true" />
+              Here to help
+            </span>
           </div>
 
           <div className="sendit-chatbot-messages" aria-live="polite">
             {messages.map((message) => (
               <Message key={message.id} message={message} />
             ))}
+            {sending ? (
+              <div className="sendit-chatbot-message assistant" role="status">
+                <p>{CHATBOT_COPY.thinking[activeLanguage]}</p>
+              </div>
+            ) : null}
             <div ref={messagesEndRef} />
           </div>
 
           <div className="sendit-chatbot-suggestions" aria-label="Suggested questions">
-            {CHATBOT_SUGGESTIONS.map((suggestion) => (
-              <button
-                key={suggestion.en}
-                type="button"
-                onClick={() => sendMessage(suggestion[activeLanguage])}
-              >
-                {suggestion[activeLanguage]}
-              </button>
-            ))}
+            <div className="sendit-chatbot-suggestions-heading">
+              <FiGlobe aria-hidden="true" />
+              <span>QUICK QUESTIONS</span>
+              <span className="sendit-chatbot-language">
+                {LANGUAGE_NAMES[activeLanguage]}
+              </span>
+            </div>
+            <div className="sendit-chatbot-suggestion-list">
+              {CHATBOT_SUGGESTIONS.map((suggestion) => (
+                <button
+                  key={suggestion.en}
+                  type="button"
+                  onClick={() => sendMessage(suggestion[activeLanguage])}
+                  disabled={sending}
+                >
+                  {suggestion[activeLanguage]}
+                </button>
+              ))}
+            </div>
           </div>
 
           <form className="sendit-chatbot-form" onSubmit={handleSubmit}>
@@ -375,13 +260,15 @@ function SendItChatbot() {
               onChange={(event) => setInput(event.target.value)}
               placeholder={CHATBOT_COPY.placeholder[activeLanguage]}
               autoComplete="off"
+              maxLength={1500}
+              disabled={sending}
             />
             <button
               className="sendit-chatbot-send"
               type="submit"
               aria-label="Send message"
               title="Send"
-              disabled={!input.trim()}
+              disabled={!input.trim() || sending}
             >
               <FiSend />
             </button>

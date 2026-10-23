@@ -1,0 +1,146 @@
+.test-data-page .page-section {
+  padding-top: clamp(2rem, 5vw, 4rem);
+}
+
+.test-data-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.test-data-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  place-items: center;
+  border: 1px solid rgba(13, 110, 253, 0.16);
+  border-radius: 16px;
+  background: rgba(13, 110, 253, 0.08);
+  color: var(--si-primary);
+  font-size: 1.35rem;
+}
+
+.test-data-hero .si-title {
+  margin: 0.65rem 0 0.35rem;
+}
+
+.test-data-hero .si-subtitle {
+  max-width: 650px;
+  margin: 0;
+}
+
+.test-data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.test-data-card {
+  min-width: 0;
+  padding: 1.1rem;
+}
+
+.test-data-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.test-data-card-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.test-data-card-label {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.test-data-card-label > span {
+  color: var(--si-text-faint);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.test-data-copy-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 36px;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--si-border);
+  border-radius: 0.65rem;
+  background: var(--si-surface);
+  color: var(--si-text-soft);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.test-data-copy-button svg {
+  width: 15px;
+  height: 15px;
+}
+
+.test-data-copy-button:hover {
+  border-color: var(--si-primary);
+  background: rgba(13, 110, 253, 0.06);
+  color: var(--si-primary);
+}
+
+.test-data-copy-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--si-primary) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.test-data-copy-button.copied {
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #047857;
+}
+
+.test-data-card pre {
+  max-height: 260px;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  border: 1px solid var(--si-border);
+  border-radius: 0.85rem;
+  background: var(--si-surface-muted);
+  color: var(--si-text);
+  font: 0.82rem/1.65 "Consolas", "SFMono-Regular", monospace;
+  tab-size: 4;
+}
+
+.test-data-card code {
+  white-space: pre;
+}
+
+@media (max-width: 700px) {
+  .test-data-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .test-data-hero {
+    gap: 0.75rem;
+  }
+
+  .test-data-icon {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+
+  .test-data-card {
+    padding: 0.85rem;
+  }
+}

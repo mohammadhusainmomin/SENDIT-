@@ -10,13 +10,14 @@ import FilesPage from "./components/Files/FilesPage";
 import CodesPage from "./components/Codes/CodesPage";
 import UsersPage from "./components/Users/UsersPage";
 import ActivityPage from "./components/Activity/ActivityPage";
-import { FiActivity, FiCode, FiFile, FiGrid, FiServer, FiTrendingUp, FiUsers } from "react-icons/fi";
+import DropRoomsPage from "./components/DropRooms/DropRoomsPage";
+import { FiActivity, FiArchive, FiCode, FiFile, FiGrid, FiServer, FiTrendingUp, FiUsers } from "react-icons/fi";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/+$/, "");
 const PAGE_LIMIT = 10;
 const INITIAL_PAGINATION = { total: null, page: 0, pages: 0, hasMore: true };
 const ADMIN_TAB_KEY = "adminSelectedTab";
-const VALID_TABS = new Set(["overview", "files", "codes", "users", "activity"]);
+const VALID_TABS = new Set(["overview", "files", "codes", "dropRooms", "users", "activity"]);
 
 function parsePagination(raw, fallbackPage) {
   if (!raw) {
@@ -62,6 +63,7 @@ function Dashboard({ user, onLogout }) {
   const [users, setUsers] = useState([]);
   const [fileHistory, setFileHistory] = useState([]);
   const [codeHistory, setCodeHistory] = useState([]);
+  const [dropRooms, setDropRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(getInitialSidebarState);
@@ -69,16 +71,19 @@ function Dashboard({ user, onLogout }) {
   const [usersPagination, setUsersPagination] = useState(INITIAL_PAGINATION);
   const [filesPagination, setFilesPagination] = useState(INITIAL_PAGINATION);
   const [codesPagination, setCodesPagination] = useState(INITIAL_PAGINATION);
+  const [dropRoomsPagination, setDropRoomsPagination] = useState(INITIAL_PAGINATION);
   const [activityPagination, setActivityPagination] = useState(INITIAL_PAGINATION);
 
   const [usersLoading, setUsersLoading] = useState(false);
   const [filesLoading, setFilesLoading] = useState(false);
   const [codesLoading, setCodesLoading] = useState(false);
+  const [dropRoomsLoading, setDropRoomsLoading] = useState(false);
   const [activityLoading, setActivityLoading] = useState(false);
 
   const usersFetchingRef = useRef(false);
   const filesFetchingRef = useRef(false);
   const codesFetchingRef = useRef(false);
+  const dropRoomsFetchingRef = useRef(false);
   const activityFetchingRef = useRef(false);
 
   useEffect(() => {
@@ -117,6 +122,8 @@ function Dashboard({ user, onLogout }) {
       fetchFilesData(1);
     } else if (selectedTab === "codes" && codeHistory.length === 0) {
       fetchCodesData(1);
+    } else if (selectedTab === "dropRooms" && dropRooms.length === 0) {
+      fetchDropRoomsData(1);
     } else if (selectedTab === "activity" && recentActivity.length === 0) {
       fetchActivityData(1);
     }
@@ -250,6 +257,33 @@ function Dashboard({ user, onLogout }) {
     }
   };
 
+  const fetchDropRoomsData = async (page = 1) => {
+    if (dropRoomsFetchingRef.current) return;
+    dropRoomsFetchingRef.current = true;
+    setDropRoomsLoading(true);
+
+    try {
+      const response = await adminFetch(
+        `${API_BASE_URL}/admin/drop-rooms?limit=${PAGE_LIMIT}&page=${page}`,
+      );
+      if (!response.ok) throw new Error("Failed to fetch drop rooms");
+
+      const data = await response.json();
+      if (data.success) {
+        const nextRooms = data.rooms || [];
+        setDropRooms((prev) => (page === 1 ? nextRooms : [...prev, ...nextRooms]));
+        setDropRoomsPagination(parsePagination(data.pagination, page));
+      }
+      setBackendConnected(true);
+    } catch (error) {
+      console.error("Error fetching drop rooms:", error);
+      setBackendConnected(false);
+    } finally {
+      dropRoomsFetchingRef.current = false;
+      setDropRoomsLoading(false);
+    }
+  };
+
   const fetchActivityData = async (page = 1) => {
     if (activityFetchingRef.current) return;
     activityFetchingRef.current = true;
@@ -290,6 +324,11 @@ function Dashboard({ user, onLogout }) {
   const loadMoreCodes = () => {
     if (codesLoading || !codesPagination.hasMore) return;
     fetchCodesData(codesPagination.page + 1);
+  };
+
+  const loadMoreDropRooms = () => {
+    if (dropRoomsLoading || !dropRoomsPagination.hasMore) return;
+    fetchDropRoomsData(dropRoomsPagination.page + 1);
   };
 
   const loadMoreActivity = () => {
@@ -353,6 +392,7 @@ function Dashboard({ user, onLogout }) {
             { id: "overview", icon: <FiGrid />, label: "Overview" },
             { id: "files", icon: <FiFile />, label: "Files" },
             { id: "codes", icon: <FiCode />, label: "Codes" },
+            { id: "dropRooms", icon: <FiArchive />, label: "Drop Rooms" },
             { id: "users", icon: <FiUsers />, label: "Users" },
             { id: "activity", icon: <FiTrendingUp />, label: "Activity" },
           ]}
@@ -407,6 +447,15 @@ function Dashboard({ user, onLogout }) {
                   onLoadMore={loadMoreUsers}
                 />
               )}
+              {selectedTab === "dropRooms" && (
+                <DropRoomsPage
+                  rooms={dropRooms}
+                  totalCount={dropRoomsPagination.total}
+                  hasMore={dropRoomsPagination.hasMore}
+                  isLoading={dropRoomsLoading}
+                  onLoadMore={loadMoreDropRooms}
+                />
+              )}
               {selectedTab === "activity" && (
                 <ActivityPage
                   recentActivity={recentActivity}
@@ -424,21 +473,23 @@ function Dashboard({ user, onLogout }) {
   );
 }
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
+function getSavedAdminSession() {
+  const savedEmail = localStorage.getItem("adminUser");
+  const savedToken = sessionStorage.getItem("adminToken");
 
-  useEffect(() => {
-    const savedEmail = localStorage.getItem("adminUser");
-    const savedToken = sessionStorage.getItem("adminToken");
-    if (savedEmail && savedToken) {
-      setUserEmail(savedEmail);
-      setIsLoggedIn(true);
-    } else {
-      localStorage.removeItem("adminUser");
-      sessionStorage.removeItem("adminToken");
-    }
-  }, []);
+  if (savedEmail && savedToken) {
+    return { isLoggedIn: true, userEmail: savedEmail };
+  }
+
+  localStorage.removeItem("adminUser");
+  sessionStorage.removeItem("adminToken");
+  return { isLoggedIn: false, userEmail: "" };
+}
+
+function App() {
+  const [initialSession] = useState(getSavedAdminSession);
+  const [isLoggedIn, setIsLoggedIn] = useState(initialSession.isLoggedIn);
+  const [userEmail, setUserEmail] = useState(initialSession.userEmail);
 
   const handleLogin = (email, token) => {
     setUserEmail(email);

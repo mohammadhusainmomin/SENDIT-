@@ -85,10 +85,12 @@ export default function FAQ() {
           <label className="faq-search">
             <span>Search answers</span>
             <input
+              id="faq-search-input"
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search expiry, downloads, security..."
+              aria-label="Search frequently asked questions"
             />
           </label>
           <section className="faq-section" aria-label="SendIt frequently asked questions">
@@ -108,7 +110,7 @@ export default function FAQ() {
                     <span>{question}</span>
                     <span className="faq-icon" aria-hidden="true">{isOpen ? "−" : "+"}</span>
                   </button>
-                  {isOpen && <div className="faq-answer" id={answerId}><p>{answer}</p></div>}
+                  <div className="faq-answer" id={answerId} hidden={!isOpen}><p>{answer}</p></div>
                 </div>
               );
             })}

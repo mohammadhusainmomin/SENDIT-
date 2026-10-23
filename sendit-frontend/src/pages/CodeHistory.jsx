@@ -15,10 +15,10 @@ function CodeHistory() {
   const [codes, setCodes] = useState([]);
   const [activeTab, setActiveTab] = useState("sent");
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("token");
   const { success, error: showError } = useToast();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     const fetchCodes = async () => {
@@ -30,11 +30,7 @@ function CodeHistory() {
             ? "/code/sent"
             : "/code/received";
 
-        const res = await api.get(endpoint, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await api.get(endpoint);
 
         setCodes(res.data.history || []);
       } catch (err) {
@@ -46,7 +42,7 @@ function CodeHistory() {
     };
 
     fetchCodes();
-  }, [token, activeTab, showError]);
+  }, [activeTab, showError]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "-";
@@ -75,7 +71,7 @@ function CodeHistory() {
           <div className="header-icon">
             <FiCode />
           </div>
-          <h2>My Codes</h2>
+          <h1>My Codes</h1>
           <p>View your sent and received codes</p>
         </section>
 
@@ -84,6 +80,8 @@ function CodeHistory() {
           <button
             className={`tab-btn ${activeTab === "sent" ? "active" : ""}`}
             onClick={() => setActiveTab("sent")}
+            type="button"
+            aria-pressed={activeTab === "sent"}
           >
             <FiUploadCloud />
             Sent Codes
@@ -92,6 +90,8 @@ function CodeHistory() {
           <button
             className={`tab-btn ${activeTab === "received" ? "active" : ""}`}
             onClick={() => setActiveTab("received")}
+            type="button"
+            aria-pressed={activeTab === "received"}
           >
             <FiDownload />
             Received Codes

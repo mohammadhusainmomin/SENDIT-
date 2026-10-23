@@ -7,6 +7,7 @@ import SendItChatbot from "./components/SendItChatbot";
 import CookieConsent from "./components/CookieConsent";
 import ToastContainer from "./components/ToastContainer";
 import ScrollToTop from "./components/ScrollToTop";
+import PageMotion from "./components/PageMotion";
 import { ToastProvider } from "./context/ToastContext";
 import "./styles/global.css";
 import "./styles/Redesign.css";
@@ -20,6 +21,7 @@ const CodeShare = lazy(() => import("./pages/CodeShare"));
 const CodeReceive = lazy(() => import("./components/CodeReceive"));
 const DropRooms = lazy(() => import("./pages/DropRooms"));
 const DropSubmit = lazy(() => import("./pages/DropSubmit"));
+const TestData = lazy(() => import("./pages/TestData"));
 const About = lazy(() => import("./pages/About"));
 const Features = lazy(() => import("./pages/Features"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -44,8 +46,9 @@ function App() {
           <ToastContainer />
 
           <ErrorBoundary>
-            <Suspense fallback={<div className="route-loading">Loading...</div>}>
+            <Suspense fallback={<div className="route-loading" role="status" aria-label="Loading page"><span className="loader-orbit" aria-hidden="true"><span /></span><span className="route-loading-label">Getting things ready</span></div>}>
               <main className="app-main">
+              <PageMotion />
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/send" element={<Send />} />
@@ -57,6 +60,7 @@ function App() {
                 <Route path="/drop-rooms" element={<DropRooms/>} />
                 <Route path="/drop" element={<DropSubmit/>} />
                 <Route path="/drop/:code" element={<DropSubmit/>} />
+                <Route path="/testdata" element={<TestData />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/features" element={<Features />} />
                 <Route path="/guide" element={<SharingGuide />} />

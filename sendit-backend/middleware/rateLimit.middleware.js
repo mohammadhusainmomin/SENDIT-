@@ -62,3 +62,9 @@ export const contactRateLimiter = createRateLimiter({
   max: 5,
   message: "Too many contact requests. Please try again later.",
 });
+
+export const assistantRateLimiter = createRateLimiter({
+  windowMs: 10 * 60 * 1000,
+  max: 20,
+  message: "Too many assistant requests. Please try again later.",
+});

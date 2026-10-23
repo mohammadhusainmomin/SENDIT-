@@ -27,10 +27,19 @@ const INITIAL_FORM = {
   instructions: "",
   days: "1",
   hours: "0",
-  maxFileSizeMB: "10",
 };
 
-const INITIAL_REQUIRED_FILES = ["Resume", "ID Proof", "Certificate"];
+const FILE_TYPE_OPTIONS = [
+  { value: "any", label: "Any file" },
+  { value: "image", label: "Image" },
+  { value: "pdf", label: "PDF" },
+  { value: "document", label: "Document" },
+];
+
+const INITIAL_REQUIRED_FILES = [
+  { label: "Aadhar Card", fileType: "image", maxFileSizeMB: "5", required: true },
+  { label: "Certificate", fileType: "pdf", maxFileSizeMB: "10", required: true },
+];
 
 function formatDate(value) {
   if (!value) return "No deadline";
@@ -58,6 +67,30 @@ function formatDuration(minutes = 0) {
     .join(" ") || "0m";
 }
 
+function getRequiredFileErrors(requiredFiles) {
+  const seen = new Set();
+
+  return requiredFiles.map((item) => {
+    const label = item.label.trim();
+    if (!label) return "Document name is required";
+
+    const normalizedLabel = label.toLowerCase();
+    if (seen.has(normalizedLabel)) return "Document names must be unique";
+    seen.add(normalizedLabel);
+
+    if (!FILE_TYPE_OPTIONS.some((option) => option.value === item.fileType)) {
+      return "Choose a valid file type";
+    }
+
+    const size = Number(item.maxFileSizeMB);
+    if (!/^\d+$/.test(String(item.maxFileSizeMB)) || !Number.isInteger(size) || size < 1 || size > 100) {
+      return "File size must be between 1 and 100 MB";
+    }
+
+    return "";
+  });
+}
+
 function validateForm(form, requiredFiles, totalExpiryMinutes) {
   const errors = {};
   if (!form.title.trim()) {
@@ -65,22 +98,16 @@ function validateForm(form, requiredFiles, totalExpiryMinutes) {
   } else if (form.title.trim().length < 3) {
     errors.title = "Room name must be at least 3 characters";
   }
-  const docs = requiredFiles.map((f) => f.trim()).filter(Boolean);
-  if (docs.length === 0) {
+  if (requiredFiles.length === 0) {
     errors.requiredFiles = "Add at least one required document";
   } else {
-    const lower = docs.map((d) => d.toLowerCase());
-    const hasDupe = lower.some((d, i) => lower.indexOf(d) !== i);
-    if (hasDupe) errors.requiredFiles = "Document names must be unique";
+    const documentError = getRequiredFileErrors(requiredFiles).find(Boolean);
+    if (documentError) errors.requiredFiles = documentError;
   }
   if (totalExpiryMinutes < 60) {
     errors.expiry = "Minimum deadline is 1 hour";
   } else if (totalExpiryMinutes > 7 * 24 * 60) {
     errors.expiry = "Maximum deadline is 7 days";
-  }
-  const mb = Number.parseInt(form.maxFileSizeMB, 10);
-  if (!mb || mb < 1 || mb > 100) {
-    errors.maxFileSizeMB = "Max file size must be between 1-100 MB";
   }
   return errors;
 }
@@ -154,13 +181,16 @@ function DropRooms() {
     if (formErrors[key]) setFormErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
-  const updateRequiredFile = (index, value) => {
-    setRequiredFiles((prev) => prev.map((item, itemIndex) => (itemIndex === index ? value : item)));
+  const updateRequiredFile = (index, key, value) => {
+    setRequiredFiles((prev) =>
+      prev.map((item, itemIndex) => (itemIndex === index ? { ...item, [key]: value } : item)),
+    );
+    if (formErrors.requiredFiles) setFormErrors((prev) => ({ ...prev, requiredFiles: "" }));
   };
 
   const addRequiredFile = () => {
     if (requiredFiles.length >= 12) { error("Maximum 12 documents allowed"); return; }
-    setRequiredFiles((prev) => [...prev, ""]);
+    setRequiredFiles((prev) => [...prev, { label: "", fileType: "any", maxFileSizeMB: "10", required: true }]);
   };
 
   const removeRequiredFile = (index) => {
@@ -178,7 +208,14 @@ function DropRooms() {
       return;
     }
 
-    const documents = requiredFiles.map((item) => item.trim()).filter(Boolean);
+    const documents = requiredFiles
+      .map((item) => ({
+        label: item.label.trim(),
+        required: true,
+        fileType: item.fileType || "any",
+        maxFileSizeMB: Number.parseInt(item.maxFileSizeMB, 10) || 10,
+      }))
+      .filter((item) => item.label);
 
     try {
       setCreating(true);
@@ -187,8 +224,8 @@ function DropRooms() {
         description: form.description,
         instructions: form.instructions,
         expiresIn: totalExpiryMinutes,
-        maxFileSizeMB: Number.parseInt(form.maxFileSizeMB, 10) || 10,
-        requiredFiles: documents.map((label) => ({ label, required: true })),
+        maxFileSizeMB: Math.max(...documents.map((item) => item.maxFileSizeMB), 10),
+        requiredFiles: documents,
       });
 
       const newRoom = response.data.room;
@@ -345,7 +382,7 @@ function DropRooms() {
 
       <section className="page-section">
         <div className="drop-hero">
-          <div>
+          <div className="drop-hero-copy">
             <span className="si-chip">Structured Collection</span>
             <h1 className="si-title">Drop Rooms</h1>
             <p className="si-subtitle">
@@ -359,16 +396,19 @@ function DropRooms() {
 
         <div className="drop-layout">
           <form className="si-card drop-create-card" onSubmit={handleCreateRoom}>
-            <div className="drop-section-title">
-              <FiPlus />
-              <div>
-                <h2>Create Room</h2>
-                <p>Make a checklist-based upload room.</p>
+            <div className="drop-create-heading">
+              <div className="drop-section-title">
+                <span className="drop-section-icon"><FiPlus /></span>
+                <div>
+                  <h2>Create a room</h2>
+                  <p>One secure place to collect every document.</p>
+                </div>
               </div>
+              <span className="drop-secure-badge"><FiCheckCircle /> Private &amp; secure</span>
             </div>
 
             <label className="drop-field">
-              <span>Room name <span style={{color:"red"}}>*</span></span>
+              <span>Room name <span className="drop-required-mark">*</span></span>
               <input
                 value={form.title}
                 onChange={(event) => updateForm("title", event.target.value)}
@@ -403,28 +443,69 @@ function DropRooms() {
             </label>
 
             <div className="drop-field">
-              <span>Required documents <span style={{color:"red"}}>*</span></span>
+              <div className="drop-document-heading">
+                <span>Requested documents <span className="drop-required-mark">*</span></span>
+                <small>{requiredFiles.length} / 12 slots</small>
+              </div>
+              <p className="drop-form-hint">Set a name, accepted file type and size limit for each upload.</p>
               <div className="drop-required-list">
-                {requiredFiles.map((item, index) => (
+                {requiredFiles.map((item, index) => {
+                  const documentError = getRequiredFileErrors(requiredFiles)[index];
+
+                  return (
                   <div className="drop-required-row" key={index}>
-                    <input
-                      value={item}
-                      onChange={(event) => updateRequiredFile(index, event.target.value)}
-                      placeholder={`Document ${index + 1} name`}
-                      maxLength={50}
-                      className={formErrors.requiredFiles && !item.trim() ? "input-error" : ""}
-                    />
+                    <label className="drop-document-field">
+                      <span>Document name</span>
+                      <input
+                        value={item.label}
+                        onChange={(event) => updateRequiredFile(index, "label", event.target.value)}
+                        placeholder={`Document ${index + 1} name`}
+                        maxLength={50}
+                        aria-label={`Document ${index + 1} name`}
+                        className={documentError && (!item.label.trim() || documentError.includes("unique")) ? "input-error" : ""}
+                      />
+                    </label>
+                    <label className="drop-document-field">
+                      <span>File type</span>
+                      <select
+                        value={item.fileType}
+                        onChange={(event) => updateRequiredFile(index, "fileType", event.target.value)}
+                        aria-label={`Document ${index + 1} file type`}
+                        className={documentError && documentError.includes("type") ? "input-error" : ""}
+                      >
+                        {FILE_TYPE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="drop-document-field">
+                      <span>Max size (MB)</span>
+                      <input
+                        type="number"
+                        min="1"
+                        max="100"
+                        step="1"
+                        value={item.maxFileSizeMB}
+                        onChange={(event) => updateRequiredFile(index, "maxFileSizeMB", event.target.value)}
+                        aria-label={`Document ${index + 1} maximum file size in MB`}
+                        placeholder="Max MB"
+                        className={documentError && documentError.includes("size") ? "input-error" : ""}
+                      />
+                    </label>
                     <button
                       className="si-button-secondary drop-icon-button"
                       type="button"
                       onClick={() => removeRequiredFile(index)}
                       aria-label="Remove document"
                       title="Remove"
+                      disabled={requiredFiles.length <= 1}
                     >
                       <FiX />
                     </button>
+                    {documentError && <span className="drop-field-error"><FiAlertCircle /> {documentError}</span>}
                   </div>
-                ))}
+                  );
+                })}
               </div>
               {formErrors.requiredFiles && (
                 <span className="drop-field-error"><FiAlertCircle /> {formErrors.requiredFiles}</span>
@@ -434,7 +515,14 @@ function DropRooms() {
               </button>
             </div>
 
-            <div className="drop-form-grid">
+            <div className="drop-expiry-heading">
+              <div>
+                <strong>Room availability</strong>
+                <span>Choose how long people can submit files.</span>
+              </div>
+              <span className="drop-expiry-badge"><FiClock /> Up to 7 days</span>
+            </div>
+            <div className="drop-form-grid two">
               <label className="drop-field">
                 <span>Days</span>
                 <select value={form.days} onChange={(event) => updateForm("days", event.target.value)}>
@@ -453,30 +541,16 @@ function DropRooms() {
                 </select>
               </label>
 
-              <label className="drop-field">
-                <span>Max MB/file</span>
-                <input
-                  type="number"
-                  min="1"
-                  max="100"
-                  value={form.maxFileSizeMB}
-                  onChange={(event) => updateForm("maxFileSizeMB", event.target.value)}
-                  className={formErrors.maxFileSizeMB ? "input-error" : ""}
-                />
-                {formErrors.maxFileSizeMB && (
-                  <span className="drop-field-error"><FiAlertCircle /> {formErrors.maxFileSizeMB}</span>
-                )}
-              </label>
             </div>
 
             <div className="drop-create-footer">
               <div>
                 <span className="si-meta-label">Room window</span>
-                <strong style={{color: totalExpiryMinutes < 60 ? "red" : "inherit"}}>
+                <strong className={totalExpiryMinutes < 60 ? "drop-expiry-invalid" : ""}>
                   {formatDuration(totalExpiryMinutes)}{totalExpiryMinutes < 60 ? " (min 1h)" : ""}
                 </strong>
               </div>
-              <button className="si-button" type="submit" disabled={creating}>
+              <button className="si-button drop-create-button" type="submit" disabled={creating}>
                 <FiSend /> {creating ? "Creating..." : "Create Room"}
               </button>
             </div>
@@ -485,7 +559,7 @@ function DropRooms() {
           <div className="drop-dashboard">
             <div className="si-card drop-panel-card">
               <div className="drop-section-title">
-                <FiInbox />
+                <span className="drop-section-icon"><FiInbox /></span>
                 <div>
                   <h2>Your Rooms</h2>
                   <p>{loadingRooms ? "Loading rooms..." : `${rooms.length} rooms`}</p>
@@ -507,9 +581,10 @@ function DropRooms() {
                       type="button"
                       onClick={() => setSelectedRoomId(room._id)}
                     >
-                      <span>
+                      <span className="drop-room-item-icon"><FiFolder /></span>
+                      <span className="drop-room-item-copy">
                         <strong>{room.title}</strong>
-                        <small>{room.code} | {formatDate(room.expiresAt)}</small>
+                        <small><span>{room.code}</span><i />{formatDate(room.expiresAt)}</small>
                       </span>
                       <span className={`drop-status ${room.status}`}>{room.status}</span>
                     </button>
@@ -533,10 +608,10 @@ function DropRooms() {
                     <span className="si-meta-label">Room Code</span>
                     <strong>{selectedRoom.code}</strong>
                   </div>
-                  <button className="si-button-secondary" type="button" onClick={() => copyRoomCode(selectedRoom)}>
+                  <button className="si-button-secondary drop-compact-action" type="button" onClick={() => copyRoomCode(selectedRoom)}>
                     <FiCopy /> Code
                   </button>
-                  <button className="si-button-secondary" type="button" onClick={() => copyRoomLink(selectedRoom)}>
+                  <button className="si-button-secondary drop-compact-action" type="button" onClick={() => copyRoomLink(selectedRoom)}>
                     <FiExternalLink /> Link
                   </button>
                 </div>
@@ -576,9 +651,9 @@ function DropRooms() {
             )}
 
             <div className="si-card drop-panel-card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem" }}>
-                <div className="drop-section-title" style={{ margin: 0 }}>
-                  <FiFileText />
+              <div className="drop-submissions-toolbar">
+                <div className="drop-section-title">
+                  <span className="drop-section-icon"><FiFileText /></span>
                   <div>
                     <h2>Submissions</h2>
                     <p>{loadingDetails ? "Loading..." : `${roomDetails?.submissions?.length || 0} received`}</p>
@@ -586,8 +661,8 @@ function DropRooms() {
                 </div>
                 
                 {roomDetails?.submissions?.length > 0 && (
-                  <button 
-                    className="si-button" 
+                  <button
+                    className="si-button drop-compact-action"
                     type="button" 
                     onClick={downloadAllFiles}
                     disabled={downloadingAll}

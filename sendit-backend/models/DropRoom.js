@@ -11,6 +11,17 @@ const requiredFileSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    fileType: {
+      type: String,
+      enum: ["any", "image", "pdf", "document"],
+      default: "any",
+    },
+    maxFileSizeMB: {
+      type: Number,
+      default: 10,
+      min: 1,
+      max: 100,
+    },
   },
   { _id: false },
 );
@@ -41,6 +52,10 @@ const dropRoomSchema = new mongoose.Schema(
     },
     requiredFiles: {
       type: [requiredFileSchema],
+      default: [],
+    },
+    submissionEmailHashes: {
+      type: [String],
       default: [],
     },
     maxFileSizeMB: {

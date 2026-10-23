@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import SEO from "../components/SEO";
 import posts from "../data/blogPosts.json";
+import productNotes from "../data/blogProductNotes";
 import NotFound from "./NotFound";
 import "../styles/Blog.css";
 
@@ -29,6 +30,14 @@ function renderBlock(block, index) {
   return <p key={index}>{block.text}</p>;
 }
 
+function countWords(blocks) {
+  const text = blocks
+    .flatMap((block) => [block.text, ...(block.items || [])])
+    .filter(Boolean)
+    .join(" ");
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
 export default function BlogPost() {
   const { slug } = useParams();
   const post = posts.find((item) => item.slug === slug);
@@ -39,11 +48,9 @@ export default function BlogPost() {
 
   if (!post) return <NotFound />;
 
-  const related = posts
-    .filter((item) => item.slug !== post.slug && item.tags.some((tag) => post.tags.includes(tag)))
-    .slice(0, 3);
-
+  const productNote = productNotes[post.slug];
   const url = `${SITE}/blog/${post.slug}`;
+  const wordCount = countWords(post.content);
 
   const structuredData = [
     {
@@ -53,7 +60,7 @@ export default function BlogPost() {
       description: post.description,
       datePublished: post.date,
       dateModified: post.updated,
-      wordCount: post.words,
+      wordCount,
       keywords: post.tags.join(", "),
       mainEntityOfPage: { "@type": "WebPage", "@id": url },
       author: { "@type": "Organization", name: "SENDIT", url: SITE },
@@ -86,15 +93,15 @@ export default function BlogPost() {
       />
 
       <article className="blog-article">
-        <nav className="blog-breadcrumb">
-          <Link to="/">Home</Link> / <Link to="/blog">Blog</Link> / <span>{post.title}</span>
+        <nav className="blog-breadcrumb" aria-label="Breadcrumb">
+          <Link to="/">Home</Link> / <Link to="/blog">Blog</Link> / <span aria-current="page">{post.title}</span>
         </nav>
 
         <h1>{post.title}</h1>
 
         <div className="blog-article-meta">
-          <span>Published {formatDate(post.date)}</span>
-          <span>Updated {formatDate(post.updated)}</span>
+          <span>Published <time dateTime={post.date}>{formatDate(post.date)}</time></span>
+          <span>Updated <time dateTime={post.updated}>{formatDate(post.updated)}</time></span>
           <span>{post.readTime}</span>
           <span>By the SENDIT team</span>
         </div>
@@ -102,6 +109,20 @@ export default function BlogPost() {
         <p className="blog-lead">{post.description}</p>
 
         <div className="blog-body">{post.content.map(renderBlock)}</div>
+
+        {productNote && (
+          <aside className="blog-product-note" aria-labelledby="blog-product-note-title">
+            <p className="blog-product-note__eyebrow">Current SendIt product context</p>
+            <h2 id="blog-product-note-title">How this applies in SendIt</h2>
+            <p>{productNote.detail}</p>
+            <p><strong>Practical example:</strong> {productNote.example}</p>
+            <p className="blog-product-note__disclosure">
+              This is an illustrative workflow based on the current product, not a customer testimonial.
+              See <Link to="/features">features and limits</Link> and the{" "}
+              <Link to="/security">security overview</Link>.
+            </p>
+          </aside>
+        )}
 
         <div className="blog-tags">
           {post.tags.map((tag) => (
@@ -112,35 +133,35 @@ export default function BlogPost() {
         </div>
 
         <div className="blog-cta">
-          <h3>Try the workflow described here</h3>
+          <h3>Explore the current SendIt documentation</h3>
           <p>
-            SendIt lets you upload a file or a code snippet, share a short temporary access code, and let
-            the share expire automatically. No account needed to send or receive.
+            Product instructions and limits can change. Check the current sharing guide and feature details
+            before starting a transfer.
           </p>
           <div className="blog-cta-links">
-            <Link to="/send">Send a file</Link>
-            <Link className="secondary" to="/code/send">
-              Share a code snippet
-            </Link>
+            <Link to="/features">Current product features</Link>
             <Link className="secondary" to="/guide">
               Read the sharing guide
+            </Link>
+            <Link className="secondary" to="/blog">
+              Browse all articles
             </Link>
           </div>
         </div>
 
-        {related.length > 0 && (
-          <section className="blog-related">
-            <h2>Related reading</h2>
-            <div className="blog-related-list">
-              {related.map((item) => (
-                <Link key={item.slug} to={`/blog/${item.slug}`}>
-                  {item.title}
-                  <span>{item.description}</span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
+        <section className="blog-related">
+          <h2>More practical guidance</h2>
+          <div className="blog-related-list">
+            <Link to="/security">
+              SendIt security overview
+              <span>Review the protections SendIt uses and the risks that remain.</span>
+            </Link>
+            <Link to="/faq">
+              Frequently asked questions
+              <span>Find current answers about codes, expiry, and transfer limits.</span>
+            </Link>
+          </div>
+        </section>
       </article>
     </>
   );

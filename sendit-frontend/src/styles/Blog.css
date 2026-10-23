@@ -8,6 +8,39 @@
   padding: 72px 0 100px;
 }
 
+.blog-product-note {
+  margin: 2.5rem 0;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid rgba(13, 110, 253, 0.2);
+  border-left: 4px solid #0d6efd;
+  border-radius: 16px;
+  background: rgba(13, 110, 253, 0.045);
+}
+
+.blog-product-note__eyebrow {
+  margin: 0 0 0.5rem;
+  color: #0d6efd;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.blog-product-note h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+}
+
+.blog-product-note p {
+  line-height: 1.75;
+}
+
+.blog-product-note__disclosure {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  opacity: 0.78;
+}
+
 /* =========================================================
    HERO
    ========================================================= */
@@ -155,6 +188,15 @@
   color: #fff;
 
   box-shadow: 0 6px 18px rgba(13, 110, 253, 0.2);
+}
+
+.blog-topic-btn:focus-visible,
+.blog-card:focus-visible,
+.blog-breadcrumb a:focus-visible,
+.blog-cta-links a:focus-visible,
+.blog-related-list a:focus-visible {
+  outline: 3px solid rgba(13, 110, 253, 0.65);
+  outline-offset: 3px;
 }
 
 /* =========================================================
@@ -393,6 +435,11 @@
 
 .blog-breadcrumb a:hover {
   color: #0d6efd;
+}
+
+.blog-breadcrumb span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* Article title */
@@ -842,5 +889,10 @@
   .blog-cta-links a,
   .blog-related-list a {
     transition: none;
+  }
+
+  .blog-card:hover,
+  .blog-related-list a:hover {
+    transform: none;
   }
 }

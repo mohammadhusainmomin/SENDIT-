@@ -24,18 +24,6 @@ export const sendCode = async (req, res) => {
     }
 
     const shareCode = await generateUniqueCode();
-    const {
-      expiresIn: expirationTime,
-      expiresAt: expiresAtTime,
-      error: expiryError,
-    } = resolveExpiryWindow(expiresIn);
-
-    if (expiryError) {
-      return res.status(400).json({ message: expiryError });
-    }
-
-    const encryptedContent = encryptText(content);
-
     const senderId = req.user?._id || null;
     const senderEmail = req.user?.email || null;
     const senderName = req.user?.name || "Guest User";
@@ -45,6 +33,18 @@ export const sendCode = async (req, res) => {
     const normalizedLanguage = language && language !== "auto-detect" 
       ? language.toLowerCase() 
       : "auto-detect";
+
+    const encryptedContent = encryptText(content);
+
+    const {
+      expiresIn: expirationTime,
+      expiresAt: expiresAtTime,
+      error: expiryError,
+    } = resolveExpiryWindow(expiresIn);
+
+    if (expiryError) {
+      return res.status(400).json({ message: expiryError });
+    }
 
     const codeDoc = await Code.create({
       code: shareCode,

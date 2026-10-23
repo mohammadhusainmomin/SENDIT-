@@ -21,6 +21,9 @@ const TEMPLATE = path.join(BUILD_DIR, "index.html");
 const posts = require(
   path.join(__dirname, "..", "src", "data", "blogPosts.json"),
 );
+const productNotes = require(
+  path.join(__dirname, "..", "src", "data", "blogProductNotes.js"),
+);
 
 const escapeHtml = (value) =>
   String(value)
@@ -52,7 +55,7 @@ const staticPages = [
       ["/send", "Send a file"],
       ["/receive", "Receive a file"],
       ["/code/send", "Share a code snippet"],
-      ["/blog", "Read our guides"],
+      ["/guide", "Read our guide"],
     ],
   },
   {
@@ -70,10 +73,7 @@ const staticPages = [
     links: [
       ["/receive", "Receive a file"],
       ["/guide", "Sharing guide"],
-      [
-        "/blog/share-files-securely-without-email",
-        "How to share files securely without email",
-      ],
+      ["/features", "Current product features"],
     ],
   },
   {
@@ -91,7 +91,7 @@ const staticPages = [
     links: [
       ["/send", "Send a file"],
       ["/faq", "Frequently asked questions"],
-      ["/blog/why-links-expire-security", "Why download links expire"],
+      ["/features", "Current product features"],
     ],
   },
   {
@@ -108,10 +108,7 @@ const staticPages = [
     ],
     links: [
       ["/code/receive", "Receive a code snippet"],
-      [
-        "/blog/share-code-snippets-with-your-team",
-        "How to share code snippets with your team",
-      ],
+      ["/features", "Code sharing features"],
     ],
   },
   {
@@ -127,7 +124,7 @@ const staticPages = [
     ],
     links: [
       ["/code/send", "Share a code snippet"],
-      ["/blog/share-code-snippets-with-your-team", "Snippet sharing guide"],
+      ["/guide", "Sharing guide"],
     ],
   },
   {
@@ -147,7 +144,7 @@ const staticPages = [
     links: [
       ["/guide", "Sharing guide"],
       ["/faq", "FAQ"],
-      ["/blog", "Blog"],
+      ["/guide", "Sharing guide"],
     ],
   },
   {
@@ -165,8 +162,8 @@ const staticPages = [
     ],
     links: [
       ["/send", "Send a file"],
-      ["/blog/file-expiry-and-auto-delete", "Choosing an expiry window"],
-      ["/blog/file-sharing-mistakes-to-avoid", "Common file sharing mistakes"],
+      ["/features", "Expiry and product limits"],
+      ["/security", "Security information"],
     ],
   },
   {
@@ -184,7 +181,7 @@ const staticPages = [
     ],
     links: [
       ["/contact", "Contact us"],
-      ["/blog", "Our guides"],
+      ["/guide", "Sharing guide"],
       ["/privacy", "Privacy policy"],
     ],
   },
@@ -205,7 +202,7 @@ const staticPages = [
     links: [
       ["/guide", "Sharing guide"],
       ["/contact", "Contact us"],
-      ["/blog", "Blog"],
+      ["/guide", "Sharing guide"],
     ],
   },
   {
@@ -295,17 +292,29 @@ const staticPages = [
   },
   {
     path: "/blog",
-    title: "SendIt Blog | Guides on Secure File Sharing and Code Sharing",
+    title: "SendIt Blog | Practical File Sharing and Security Guides",
     description:
-      "In-depth, original guides on secure file transfer, temporary access codes, encryption, QR sharing, file expiry and privacy-first sharing workflows.",
-    heading: "SendIt blog",
+      "Practical articles on file sharing, security, code snippets, and SendIt product workflows, with current product details and limitations.",
+    heading: "Practical guides to sharing files and code",
     body: [
-      "Original, independently written guides about secure transfers, temporary access codes, encryption, expiry policies and the everyday habits that keep shared data from leaking.",
+      "Explore practical advice and product-specific notes based on how SendIt currently works. Each article distinguishes general guidance from SendIt's own features and limitations.",
     ],
     links: posts
       .slice()
       .sort((a, b) => (a.date < b.date ? 1 : -1))
       .map((post) => [`/blog/${post.slug}`, post.title]),
+  },
+  {
+    path: "/testdata",
+    title: "Code Test Data - SendIt",
+    description:
+      "Plain React, Python, C, HTML and Java snippets for checking code display.",
+    heading: "Code test data",
+    body: [
+      "This page contains plain, unformatted code samples in React JavaScript, Python, C, HTML, and Java.",
+    ],
+    robots: "noindex, follow",
+    sitemap: false,
   },
 ];
 
@@ -332,6 +341,12 @@ function buildHtml(template, page) {
     /<meta\s+name="description"[\s\S]*?\/>/,
     `<meta name="description" content="${escapeHtml(page.description)}" />`,
   );
+  if (page.robots) {
+    html = html.replace(
+      /<meta\s+name="robots"[^>]*\/>/,
+      `<meta name="robots" content="${escapeHtml(page.robots)}" />`,
+    );
+  }
   html = html.replace(
     /<link rel="canonical"[^>]*>/,
     `<link rel="canonical" href="${url}" />`,
@@ -437,16 +452,29 @@ function main() {
       },
     };
     writePage(buildHtml(template, enriched), page.path);
-    routes.push({
-      path: page.path,
-      lastmod: null,
-      priority: page.path === "/" ? "1.0" : "0.7",
-    });
+    if (page.sitemap !== false) {
+      routes.push({
+        path: page.path,
+        lastmod: null,
+        priority: page.path === "/" ? "1.0" : "0.7",
+      });
+    }
   });
 
   posts.forEach((post) => {
     const routePath = `/blog/${post.slug}`;
     const url = `${SITE}${routePath}`;
+    const productNote = productNotes[post.slug];
+    const wordCount = post.content
+      .flatMap((block) => [block.text, ...(block.items || [])])
+      .filter(Boolean)
+      .join(" ")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
+    const noteHtml = productNote
+      ? `<aside><h2>How this applies in SendIt</h2><p>${escapeHtml(productNote.detail)}</p><p><strong>Practical example:</strong> ${escapeHtml(productNote.example)}</p><p>This is an illustrative workflow based on the current product, not a customer testimonial. See <a href="/features">features and limits</a> and the <a href="/security">security overview</a>.</p></aside>`
+      : "";
     const page = {
       path: routePath,
       title: `${post.title} | SendIt Blog`,
@@ -456,7 +484,7 @@ function main() {
       meta: `<p><em>Published ${escapeHtml(post.date)} &middot; Updated ${escapeHtml(
         post.updated,
       )} &middot; ${escapeHtml(post.readTime)} &middot; By the SENDIT team</em></p>`,
-      bodyHtml: `<p>${escapeHtml(post.description)}</p>\n${renderBlocks(post.content)}`,
+      bodyHtml: `<p>${escapeHtml(post.description)}</p>\n${renderBlocks(post.content)}\n${noteHtml}`,
       links: [
         ["/blog", "All articles"],
         ["/send", "Send a file"],
@@ -469,7 +497,7 @@ function main() {
         description: post.description,
         datePublished: post.date,
         dateModified: post.updated,
-        wordCount: post.words,
+        wordCount,
         keywords: post.tags.join(", "),
         mainEntityOfPage: { "@type": "WebPage", "@id": url },
         author: { "@type": "Organization", name: "SENDIT", url: SITE },

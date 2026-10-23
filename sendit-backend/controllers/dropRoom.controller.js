@@ -8,8 +8,43 @@ import { encryptFile, decryptFile } from "../utils/encryption.utils.js";
 const ROOM_CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 const DROP_ROOM_DEFAULT_EXPIRY_MINUTES = 24 * 60;
 const DROP_ROOM_MAX_EXPIRY_MINUTES = 7 * 24 * 60;
+const ALLOWED_FILE_TYPES = new Set(["any", "image", "pdf", "document"]);
+const FILE_TYPE_LABELS = {
+  any: "Any file",
+  image: "Image",
+  pdf: "PDF",
+  document: "Document",
+};
+const DOCUMENT_MIME_TYPES = new Set([
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "text/plain",
+  "text/csv",
+]);
 
 const normalizeRoomCode = (code = "") => String(code).trim().toUpperCase();
+const normalizeSubmitterEmail = (email = "") => String(email).trim().toLowerCase();
+const hashSubmitterEmail = (email) =>
+  crypto.createHmac("sha256", process.env.JWT_SECRET)
+    .update(normalizeSubmitterEmail(email))
+    .digest("hex");
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const getExistingSubmission = (submission) => ({
+  status: submission.status,
+  submittedAt: submission.submittedAt,
+  uploadedSlots: (submission.files || []).map((file) => file.slotLabel),
+});
+
+const findSubmissionByEmail = (roomId, email) =>
+  DropSubmission.findOne({
+    roomId,
+    submitterEmail: new RegExp(`^${escapeRegex(email)}$`, "i"),
+  });
 
 const removeUploadedFiles = (files = []) => {
   files.forEach((file) => {
@@ -53,9 +88,17 @@ const normalizeRequiredFiles = (rawFiles) => {
       return {
         label,
         required: typeof item?.required === "boolean" ? item.required : true,
+        fileType: ALLOWED_FILE_TYPES.has(item?.fileType) ? item.fileType : "any",
+        maxFileSizeMB: Number.isInteger(Number.parseInt(String(item?.maxFileSizeMB), 10))
+          ? Number.parseInt(String(item.maxFileSizeMB), 10)
+          : 10,
       };
     })
     .filter((item) => item.label)
+    .map((item) => ({
+      ...item,
+      maxFileSizeMB: Math.min(100, Math.max(1, item.maxFileSizeMB)),
+    }))
     .filter((item) => {
       const key = item.label.toLowerCase();
       if (seen.has(key)) return false;
@@ -63,6 +106,43 @@ const normalizeRequiredFiles = (rawFiles) => {
       return true;
     })
     .slice(0, 12);
+};
+
+const validateRequiredFileConfig = (rawFiles) => {
+  if (rawFiles.length === 0) return "Add at least one required document";
+  if (rawFiles.length > 12) return "A room can have at most 12 required documents";
+
+  const seen = new Set();
+  for (const rawItem of rawFiles) {
+    const item = typeof rawItem === "string" ? { label: rawItem } : rawItem;
+    const label = String(item?.label || "").trim();
+    if (!label) return "Every document needs a name";
+    if (label.length > 50) return "Document names must be 50 characters or fewer";
+
+    const normalizedLabel = label.toLowerCase();
+    if (seen.has(normalizedLabel)) return "Document names must be unique";
+    seen.add(normalizedLabel);
+
+    const fileType = item?.fileType ?? "any";
+    if (!ALLOWED_FILE_TYPES.has(fileType)) return `Choose a valid file type for ${label}`;
+
+    const maxFileSizeMB = item?.maxFileSizeMB ?? 10;
+    if (!Number.isInteger(Number(maxFileSizeMB)) || Number(maxFileSizeMB) < 1 || Number(maxFileSizeMB) > 100) {
+      return `${label} file size must be between 1 MB and 100 MB`;
+    }
+  }
+
+  return "";
+};
+
+const fileMatchesType = (file, fileType) => {
+  if (!fileType || fileType === "any") return true;
+  if (fileType === "image") return file.mimetype?.startsWith("image/");
+  if (fileType === "pdf") return file.mimetype === "application/pdf";
+  if (fileType === "document") {
+    return DOCUMENT_MIME_TYPES.has(file.mimetype) || file.mimetype === "application/pdf";
+  }
+  return false;
 };
 
 const parseLabels = (value) => {
@@ -138,13 +218,19 @@ const buildRoomPayload = (room, submissionsCount = 0) => ({
 
 export const createDropRoom = async (req, res) => {
   try {
-    const { title, description = "", instructions = "", expiresIn, maxFileSizeMB } = req.body;
-    const requiredFiles = normalizeRequiredFiles(req.body.requiredFiles);
+    const { title, description = "", instructions = "", expiresIn } = req.body;
+    const rawRequiredFiles = parseRequiredFiles(req.body.requiredFiles);
 
     if (!title?.trim()) {
       return res.status(400).json({ message: "Room title is required" });
     }
 
+    const documentConfigError = validateRequiredFileConfig(rawRequiredFiles);
+    if (documentConfigError) {
+      return res.status(400).json({ message: documentConfigError });
+    }
+
+    const requiredFiles = normalizeRequiredFiles(rawRequiredFiles);
     if (requiredFiles.length === 0) {
       return res.status(400).json({ message: "Add at least one required document" });
     }
@@ -159,18 +245,13 @@ export const createDropRoom = async (req, res) => {
       return res.status(400).json({ message: expiryError });
     }
 
-    const resolvedMaxFileSize = Number.parseInt(String(maxFileSizeMB || 10), 10);
-    if (!Number.isInteger(resolvedMaxFileSize) || resolvedMaxFileSize < 1 || resolvedMaxFileSize > 100) {
-      return res.status(400).json({ message: "Max file size must be between 1 MB and 100 MB" });
-    }
-
     const room = await DropRoom.create({
       code: await generateRoomCode(),
       title: title.trim(),
       description: description.trim(),
       instructions: instructions.trim(),
       requiredFiles,
-      maxFileSizeMB: resolvedMaxFileSize,
+      maxFileSizeMB: Math.max(...requiredFiles.map((item) => item.maxFileSizeMB)),
       expiresIn: expirationTime,
       expiresAt,
       organizerId: req.user._id,
@@ -240,6 +321,36 @@ export const getPublicDropRoom = async (req, res) => {
   }
 };
 
+export const getPublicDropRoomSubmissionStatus = async (req, res) => {
+  try {
+    const code = normalizeRoomCode(req.params.code);
+    const email = normalizeSubmitterEmail(req.user?.email || req.body.submitterEmail);
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ message: "Enter a valid email address" });
+    }
+
+    const room = await DropRoom.findOne({ code }).select("_id submissionEmailHashes").lean();
+    if (!room) {
+      return res.status(404).json({ message: "Drop room not found" });
+    }
+
+    const submission = await findSubmissionByEmail(room._id, email).lean();
+    const alreadySubmitted = Boolean(
+      submission || room.submissionEmailHashes?.includes(hashSubmitterEmail(email)),
+    );
+
+    res.json({
+      success: true,
+      alreadySubmitted,
+      submission: submission ? getExistingSubmission(submission) : null,
+    });
+  } catch (error) {
+    console.error("CHECK DROP ROOM SUBMISSION ERROR:", error);
+    res.status(500).json({ message: "Failed to check previous submissions" });
+  }
+};
+
 export const getDropRoomDetails = async (req, res) => {
   try {
     const room = await DropRoom.findOne({
@@ -273,10 +384,13 @@ export const getDropRoomDetails = async (req, res) => {
 export const submitToDropRoom = async (req, res) => {
   const uploadedFiles = req.files || [];
   const encryptedPaths = [];
+  let emailClaim;
 
   try {
     const code = normalizeRoomCode(req.params.code);
     const { submitterName, submitterEmail = "" } = req.body;
+    const normalizedEmail = normalizeSubmitterEmail(req.user?.email || submitterEmail);
+    const emailHash = hashSubmitterEmail(normalizedEmail);
     const fileLabels = parseLabels(req.body.fileLabels);
 
     if (!submitterName?.trim()) {
@@ -284,8 +398,9 @@ export const submitToDropRoom = async (req, res) => {
       return res.status(400).json({ message: "Submitter name is required" });
     }
 
-    if (uploadedFiles.length === 0) {
-      return res.status(400).json({ message: "Please upload at least one document" });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      removeUploadedFiles(uploadedFiles);
+      return res.status(400).json({ message: "A valid submitter email is required" });
     }
 
     const room = await DropRoom.findOne({ code });
@@ -300,35 +415,93 @@ export const submitToDropRoom = async (req, res) => {
       return res.status(410).json({ message: `This drop room is ${status}` });
     }
 
-    const maxBytes = room.maxFileSizeMB * 1024 * 1024;
-    const tooLargeFile = uploadedFiles.find((file) => file.size > maxBytes);
-    if (tooLargeFile) {
+    const existingSubmission = await findSubmissionByEmail(room._id, normalizedEmail).lean();
+    if (existingSubmission || room.submissionEmailHashes?.includes(emailHash)) {
       removeUploadedFiles(uploadedFiles);
-      return res.status(400).json({
-        message: `${tooLargeFile.originalname} is larger than ${room.maxFileSizeMB} MB`,
+      return res.status(409).json({
+        message: "This email has already submitted documents to this room",
+        alreadySubmitted: true,
+        submission: existingSubmission ? getExistingSubmission(existingSubmission) : null,
       });
     }
 
+    if (uploadedFiles.length === 0) {
+      return res.status(400).json({ message: "Please upload at least one document" });
+    }
+
+    const slotMap = new Map(room.requiredFiles.map((item) => [item.label, item]));
     const allowedLabels = new Set(room.requiredFiles.map((item) => item.label));
     const requiredLabels = room.requiredFiles
       .filter((item) => item.required)
       .map((item) => item.label);
 
-    const fileObjects = [];
+    const validatedFiles = [];
     const submittedLabels = new Set();
 
     for (const [index, file] of uploadedFiles.entries()) {
       const rawLabel = fileLabels[index] || room.requiredFiles[index]?.label || "Document";
-      const slotLabel = allowedLabels.has(rawLabel) ? rawLabel : "Extra Document";
-      const encryptedPath = `uploads/drop-encrypted-${Date.now()}-${crypto.randomUUID()}`;
+      const slotConfig = allowedLabels.has(rawLabel) ? slotMap.get(rawLabel) : null;
 
+      if (!slotConfig) {
+        removeUploadedFiles(uploadedFiles);
+        return res.status(400).json({ message: "Choose a valid document slot for every file" });
+      }
+
+      if (submittedLabels.has(slotConfig.label)) {
+        removeUploadedFiles(uploadedFiles);
+        return res.status(400).json({ message: `${slotConfig.label} can only be uploaded once` });
+      }
+
+      const maxFileSizeMB = slotConfig.maxFileSizeMB || room.maxFileSizeMB || 10;
+      if (file.size > maxFileSizeMB * 1024 * 1024) {
+        removeUploadedFiles(uploadedFiles);
+        return res.status(400).json({
+          message: `${slotConfig.label} must be ${maxFileSizeMB} MB or smaller`,
+        });
+      }
+
+      if (!fileMatchesType(file, slotConfig.fileType)) {
+        removeUploadedFiles(uploadedFiles);
+        return res.status(400).json({
+          message: `${slotConfig.label} must be ${FILE_TYPE_LABELS[slotConfig.fileType] || "a valid file"}`,
+        });
+      }
+
+      submittedLabels.add(slotConfig.label);
+      validatedFiles.push({ file, slotLabel: slotConfig.label });
+    }
+
+    const missingSlots = requiredLabels.filter((label) => !submittedLabels.has(label));
+    if (missingSlots.length > 0) {
+      removeUploadedFiles(uploadedFiles);
+      return res.status(400).json({
+        message: `Missing required documents: ${missingSlots.join(", ")}`,
+      });
+    }
+
+    const claimResult = await DropRoom.updateOne(
+      { _id: room._id, submissionEmailHashes: { $ne: emailHash } },
+      { $addToSet: { submissionEmailHashes: emailHash } },
+    );
+    if (claimResult.modifiedCount !== 1) {
+      removeUploadedFiles(uploadedFiles);
+      const priorSubmission = await findSubmissionByEmail(room._id, normalizedEmail).lean();
+      return res.status(409).json({
+        message: "This email has already submitted documents to this room",
+        alreadySubmitted: true,
+        submission: priorSubmission ? getExistingSubmission(priorSubmission) : null,
+      });
+    }
+    emailClaim = { roomId: room._id, emailHash, normalizedEmail };
+
+    const fileObjects = [];
+    for (const { file, slotLabel } of validatedFiles) {
+      const encryptedPath = `uploads/drop-encrypted-${Date.now()}-${crypto.randomUUID()}`;
       await encryptFile(file.path, encryptedPath);
       encryptedPaths.push(encryptedPath);
       fs.unlink(file.path, (err) => {
         if (err) console.error("DROP ROOM ORIGINAL DELETE ERROR:", err);
       });
-
-      submittedLabels.add(slotLabel);
       fileObjects.push({
         slotLabel,
         encryptedPath,
@@ -338,12 +511,11 @@ export const submitToDropRoom = async (req, res) => {
       });
     }
 
-    const missingSlots = requiredLabels.filter((label) => !submittedLabels.has(label));
     const submission = await DropSubmission.create({
       roomId: room._id,
       roomCode: room.code,
       submitterName: submitterName.trim(),
-      submitterEmail: submitterEmail.trim(),
+      submitterEmail: normalizedEmail,
       files: fileObjects,
       missingSlots,
       status: missingSlots.length === 0 ? "complete" : "partial",
@@ -355,6 +527,8 @@ export const submitToDropRoom = async (req, res) => {
       status: submission.status,
       missingSlots,
       filesCount: fileObjects.length,
+      uploadedSlots: fileObjects.map((file) => file.slotLabel),
+      submittedAt: submission.submittedAt,
     });
   } catch (error) {
     removeUploadedFiles(uploadedFiles);
@@ -365,6 +539,22 @@ export const submitToDropRoom = async (req, res) => {
         });
       }
     });
+    if (emailClaim) {
+      try {
+        const savedSubmission = await findSubmissionByEmail(
+          emailClaim.roomId,
+          emailClaim.normalizedEmail,
+        ).lean();
+        if (!savedSubmission) {
+          await DropRoom.updateOne(
+            { _id: emailClaim.roomId },
+            { $pull: { submissionEmailHashes: emailClaim.emailHash } },
+          );
+        }
+      } catch (rollbackError) {
+        console.error("DROP ROOM SUBMISSION CLAIM ROLLBACK ERROR:", rollbackError);
+      }
+    }
     console.error("SUBMIT DROP ROOM ERROR:", error);
     res.status(500).json({ message: "Failed to submit documents" });
   }

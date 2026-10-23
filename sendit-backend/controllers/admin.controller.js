@@ -3,30 +3,37 @@ import FileHistory from "../models/FileHistory.js";
 import CodeHistory from "../models/CodeHistory.js";
 import Code from "../models/Code.js";
 import File from "../models/File.js";
+import DropRoom from "../models/DropRoom.js";
+import DropSubmission from "../models/DropSubmission.js";
 import jwt from "jsonwebtoken";
 
-// Admin credentials (using environment variables for production)
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET || process.env.JWT_SECRET;
+// Read admin config at request time so dotenv has been initialized by app.js.
+const getAdminConfig = () => ({
+  email: process.env.ADMIN_EMAIL,
+  password: process.env.ADMIN_PASSWORD,
+  jwtSecret: process.env.ADMIN_JWT_SECRET || process.env.JWT_SECRET,
+});
 
 export const verifyAdmin = (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body || {};
+  const adminConfig = getAdminConfig();
 
-  if (!ADMIN_EMAIL || !ADMIN_PASSWORD || !ADMIN_JWT_SECRET) {
+  if (!adminConfig.email || !adminConfig.password || !adminConfig.jwtSecret) {
     return res.status(503).json({ success: false, message: "Admin authentication is not configured" });
   }
 
-  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+  const normalizedEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+  const configuredEmail = adminConfig.email.trim().toLowerCase();
+  if (normalizedEmail === configuredEmail && password === adminConfig.password) {
     const token = jwt.sign(
-      { email: ADMIN_EMAIL, scope: "admin" },
-      ADMIN_JWT_SECRET,
+      { email: adminConfig.email, scope: "admin" },
+      adminConfig.jwtSecret,
       { expiresIn: "8h" },
     );
     return res.json({
       success: true,
       message: "Admin verified",
-      admin: email,
+      admin: configuredEmail,
       token,
     });
   }
@@ -316,6 +323,76 @@ export const getUsersList = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Error fetching users",
+    });
+  }
+};
+
+const getDropRoomStatus = (room) => {
+  if (room.isClosed) return "closed";
+  if (new Date(room.expiresAt).getTime() <= Date.now()) return "expired";
+  return "open";
+};
+
+export const getAdminDropRooms = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+    const total = await DropRoom.countDocuments();
+    const pages = Math.max(1, Math.ceil(total / limit));
+
+    const rooms = await DropRoom.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const counts = await DropSubmission.aggregate([
+      {
+        $match: {
+          roomId: { $in: rooms.map((room) => room._id) },
+          isDeleted: { $ne: true },
+        },
+      },
+      { $group: { _id: "$roomId", submissionsCount: { $sum: 1 }, filesCount: { $sum: { $size: "$files" } } } },
+    ]);
+
+    const countMap = new Map(counts.map((item) => [String(item._id), item]));
+    const formatted = rooms.map((room) => {
+      const roomCounts = countMap.get(String(room._id));
+
+      return {
+        _id: room._id,
+        code: room.code,
+        title: room.title,
+        organizerName: room.organizerName || "Unknown",
+        organizerEmail: room.organizerEmail || "Unknown",
+        requiredFilesCount: room.requiredFiles?.length || 0,
+        submissionsCount: roomCounts?.submissionsCount || 0,
+        filesCount: roomCounts?.filesCount || 0,
+        maxFileSizeMB: room.maxFileSizeMB,
+        status: getDropRoomStatus(room),
+        createdAt: room.createdAt,
+        expiresAt: room.expiresAt,
+      };
+    });
+
+    return res.json({
+      success: true,
+      rooms: formatted,
+      pagination: {
+        total,
+        page,
+        pages,
+        limit,
+        hasMore: page < pages,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching admin drop rooms:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching drop rooms",
     });
   }
 };

@@ -10,7 +10,7 @@ import {
 import api from "../services/api";
 import CountdownTimer from "../components/CountdownTimer";
 import SEO from "../components/SEO";
-import ScrollValuePicker from "../components/ScrollValuePicker";
+import ExpirySelector from "../components/ExpirySelector";
 import LanguageSelector from "../components/LanguageSelector";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -31,9 +31,6 @@ function CodeShare() {
   const formatTimeoutRef = useRef(null);
   const { success, error } = useToast();
   const { user } = useAuth();
-  const hourOptions = Array.from({ length: 25 }, (_, index) => index);
-  const minuteOptions = Array.from({ length: 12 }, (_, index) => index * 5);
-
   useEffect(() => {
     if (formatTimeoutRef.current) {
       clearTimeout(formatTimeoutRef.current);
@@ -174,7 +171,7 @@ function CodeShare() {
 
       <section className="page-section">
         <header style={{ marginBottom: "2rem" }}>
-          <span className="si-chip">Precision Logistics for Developers</span>
+          <span className="si-chip">Code sharing for developers</span>
           <h1
             className="si-title"
             style={{ marginTop: "1rem", marginBottom: "1rem" }}
@@ -182,8 +179,8 @@ function CodeShare() {
             Secure Snippet Sharing.
           </h1>
           <p className="si-subtitle">
-            Paste your code, let SendIt format it, choose an expiry, and
-            generate the working share code from your existing backend.
+            Paste or write a snippet, review its formatted preview, then choose
+            how long it should remain available.
           </p>
           {!user && (
             <div
@@ -259,7 +256,7 @@ function CodeShare() {
                     <span className="si-chip">Formatted Preview</span>
                   </div>
                   <span className="si-footer-copy">
-                    This version is sent to Reciver
+                    This formatted version is shared with the recipient.
                   </span>
                 </div>
                 <div
@@ -282,39 +279,16 @@ function CodeShare() {
                 disabled={loading}
               />
 
-              <div className="wheel-panel" style={{ marginTop: "1rem" }}>
-                <div className="wheel-column">
-                  <div className="wheel-value">
-                    <ScrollValuePicker
-                      label="Hours"
-                      options={hourOptions}
-                      value={expiresInHours}
-                      onChange={setExpiresInHours}
-                      disabled={loading}
-                    />
-                  </div>
-                </div>
-                <div
-                  style={{
-                    fontSize: "2rem",
-                    fontWeight: 800,
-                    color: "var(--si-primary)",
-                  }}
-                >
-                  :
-                </div>
-                <div className="wheel-column">
-                  <div className="wheel-value">
-                    <ScrollValuePicker
-                      label="Minutes"
-                      options={minuteOptions}
-                      value={expiresInMinutes}
-                      onChange={setExpiresInMinutes}
-                      disabled={loading}
-                    />
-                  </div>
-                </div>
-              </div>
+              <ExpirySelector
+                hours={expiresInHours}
+                minutes={expiresInMinutes}
+                selected={calculateTotalMinutes() > 0}
+                disabled={loading || Boolean(shareCode)}
+                onChange={(nextHours, nextMinutes) => {
+                  setExpiresInHours(nextHours);
+                  setExpiresInMinutes(nextMinutes);
+                }}
+              />
               <div className="expiry-summary-card">
                 <div>
                   <div className="si-meta-label">Selected Window</div>
@@ -393,10 +367,9 @@ function CodeShare() {
             )}
 
             <div className="info-note">
-              <strong>Enterprise Compliance</strong>
+              <strong>Temporary by design</strong>
               <p className="si-footer-copy" style={{ marginTop: "0.5rem" }}>
-                Snippets remain temporary and respect your expiry policy. UI
-                changed, backend logic preserved.
+                Your snippet is available only until the expiry time you choose.
               </p>
             </div>
           </aside>

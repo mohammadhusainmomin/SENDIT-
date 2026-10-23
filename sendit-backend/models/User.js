@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema(
     email: { type: String, unique: true },
     password: { type: String },
     googleId: { type: String },
+    picture: { type: String, default: "" },
 
     authProvider: {
       type: String,

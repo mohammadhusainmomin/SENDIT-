@@ -21,6 +21,9 @@ function formatBlogDate(date) {
 
 function Home() {
   const navigate = useNavigate();
+  const latestPosts = [...posts]
+    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .slice(0, 3);
 
   const homeStructuredData = [
     {
@@ -76,10 +79,6 @@ function Home() {
       ],
     },
   ];
-  const latestPosts = [...posts]
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
-    .slice(0, 4);
-
   return (
     <div className="page-shell">
       <SEO
@@ -106,7 +105,7 @@ function Home() {
 
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "2rem" }}>
               {/* Issues 12+13: "Send File & Code" clarifies both use-cases; matches nav singular */}
-              <button className="si-button" onClick={() => navigate("/send")} type="button">
+              <button className="si-button"   style={{ boxShadow: "none" }} onClick={() => navigate("/send")} type="button">
                 Send File & Code <FiArrowRight />
               </button>
               {/* Issue 11: added FiDownload to match visual weight of primary CTA */}
@@ -135,15 +134,7 @@ function Home() {
 
           <div className="hero-visual">
             <div className="hero-visual-core">
-              <img
-                className="hero-brand-image"
-                src="/images/Sendit_logo.png"
-                alt="SendIt temporary file and code sharing logo"
-                width="180"
-                height="180"
-                loading="lazy"
-                decoding="async"
-              />
+
               <div className="hero-visual-illustration" aria-label="Animated file transfer illustration" role="img">
                 <FileTransferIllustration />
               </div>
@@ -463,9 +454,9 @@ function Home() {
           </div>
 
           <div className="si-card span-2">
-            <h3>📚 SendIt Blog</h3>
-            <p>Original in-depth guides on secure transfers, encryption, temporary access codes, QR sharing, file expiry policies and the sharing habits that prevent data leaks.</p>
-            <Link className="inline-resource-link" to="/blog">Read the Blog</Link>
+            <h3>📚 Practical Guides</h3>
+            <p>Read articles with practical sharing advice and notes tied to SendIt's current features, workflows, and limitations.</p>
+            <Link className="inline-resource-link" to="/blog">Browse the Blog</Link>
           </div>
 
           <div className="si-card span-2">
@@ -476,17 +467,15 @@ function Home() {
         </div>
       </section>
 
-      {/* Latest articles */}
-      <section className="page-section " aria-labelledby="home-blog-title">
+      <section className="page-section" aria-labelledby="home-blog-title">
         <div className="home-blog-header">
           <div className="home-blog-header-copy">
-            <span className="si-chip">From the Blog</span>
-            <h2 id="home-blog-title" className="si-heading">Guides on sharing files and code safely</h2>
+            <span className="si-chip">Practical Guides</span>
+            <h2 id="home-blog-title" className="si-heading">Advice grounded in the SendIt workflow</h2>
             <p className="si-subtitle">
-              Practical, original writing about moving files between people without leaving copies behind.
+              Read practical file-sharing guidance alongside notes on what SendIt currently does—and does not—support.
             </p>
           </div>
-
           <Link className="si-button-secondary home-blog-header-link" to="/blog">
             Browse all articles <FiArrowRight aria-hidden="true" />
           </Link>
@@ -504,24 +493,13 @@ function Home() {
                 <span className="home-blog-index">{String(index + 1).padStart(2, "0")}</span>
                 <span className="home-blog-tag">{post.tags?.[0] || "Guide"}</span>
               </div>
-
               <h3>{post.title}</h3>
               <p>{post.description}</p>
-
               <div className="home-blog-meta">
-                <span>
-                  <FiCalendar aria-hidden="true" />
-                  {formatBlogDate(post.date)}
-                </span>
-                <span>
-                  <FiClock aria-hidden="true" />
-                  {post.readTime}
-                </span>
+                <span><FiCalendar aria-hidden="true" />{formatBlogDate(post.date)}</span>
+                <span><FiClock aria-hidden="true" />{post.readTime}</span>
               </div>
-
-              <span className="home-blog-read">
-                Read article <FiArrowRight aria-hidden="true" />
-              </span>
+              <span className="home-blog-read">Read article <FiArrowRight aria-hidden="true" /></span>
             </Link>
           ))}
         </div>

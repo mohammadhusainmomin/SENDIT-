@@ -239,14 +239,18 @@ export default function Contact() {
                     <div className="contact-input-shell">
                       <FiUser />
                       <input 
+                        id="contact-name"
                         type="text" 
                         placeholder="Enter your name" 
                         value={form.name} 
                         onChange={handleChange("name")}
                         className={errors.name ? "error" : ""}
+                        autoComplete="name"
+                        aria-invalid={Boolean(errors.name)}
+                        aria-describedby={errors.name ? "contact-name-error" : undefined}
                       />
                     </div>
-                    {errors.name && <span className="contact-error">{errors.name}</span>}
+                    {errors.name && <span className="contact-error" id="contact-name-error" role="alert">{errors.name}</span>}
                   </label>
 
                   <label className="contact-field">
@@ -254,14 +258,18 @@ export default function Contact() {
                     <div className="contact-input-shell">
                       <FiMail />
                       <input 
+                        id="contact-email"
                         type="email" 
                         placeholder="Enter your email" 
                         value={form.email} 
                         onChange={handleChange("email")}
                         className={errors.email ? "error" : ""}
+                        autoComplete="email"
+                        aria-invalid={Boolean(errors.email)}
+                        aria-describedby={errors.email ? "contact-email-error" : undefined}
                       />
                     </div>
-                    {errors.email && <span className="contact-error">{errors.email}</span>}
+                    {errors.email && <span className="contact-error" id="contact-email-error" role="alert">{errors.email}</span>}
                   </label>
                 </div>
 
@@ -270,30 +278,36 @@ export default function Contact() {
                   <div className="contact-input-shell">
                     <FiShield />
                     <input 
+                      id="contact-subject"
                       type="text" 
                       placeholder="What is this about?" 
                       value={form.subject} 
                       onChange={handleChange("subject")}
                       className={errors.subject ? "error" : ""}
+                      aria-invalid={Boolean(errors.subject)}
+                      aria-describedby={errors.subject ? "contact-subject-error" : undefined}
                     />
                   </div>
-                  {errors.subject && <span className="contact-error">{errors.subject}</span>}
+                  {errors.subject && <span className="contact-error" id="contact-subject-error" role="alert">{errors.subject}</span>}
                 </label>
 
                 <label className="contact-field">
                   <span>Message</span>
                   <div className="contact-textarea-shell">
                     <textarea
+                      id="contact-message"
                       placeholder="Write your message here (minimum 10 characters)"
                       value={form.message}
                       onChange={handleChange("message")}
                       className={errors.message ? "error" : ""}
+                      aria-invalid={Boolean(errors.message)}
+                      aria-describedby={errors.message ? "contact-message-error" : undefined}
                     />
                   </div>
                   <div className="contact-char-count">
                     {form.message.length}/500 characters
                   </div>
-                  {errors.message && <span className="contact-error">{errors.message}</span>}
+                  {errors.message && <span className="contact-error" id="contact-message-error" role="alert">{errors.message}</span>}
                 </label>
 
                 <button className="contact-primary-btn contact-submit-btn" type="submit" disabled={loading || Object.keys(errors).length > 0}>

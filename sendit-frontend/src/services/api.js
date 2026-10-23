@@ -10,11 +10,13 @@ const api = axios.create({
 
 // Cache token in memory for faster access
 let cachedToken = localStorage.getItem("token");
+let sessionExpiredNotified = false;
 
 // Listen for storage changes (e.g., login/logout in other tabs)
 window.addEventListener("storage", (e) => {
   if (e.key === "token") {
     cachedToken = e.newValue;
+    if (cachedToken) sessionExpiredNotified = false;
   }
 });
 
@@ -31,9 +33,27 @@ api.interceptors.request.use(
   }
 );
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+
+    if (status === 401 && cachedToken && !sessionExpiredNotified) {
+      sessionExpiredNotified = true;
+      cachedToken = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.dispatchEvent(new CustomEvent("sendit:session-expired"));
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 // Expose function to update cached token when it changes
 export const updateCachedToken = (token) => {
   cachedToken = token;
+  if (token) sessionExpiredNotified = false;
 };
 
 export default api;

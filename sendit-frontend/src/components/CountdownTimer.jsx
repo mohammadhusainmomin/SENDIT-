@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 function CountdownTimer({ expiresInMinutes = 0, expiresAt, onExpire }) {
-  const [timeLeft, setTimeLeft] = useState(() =>
-    expiresAt
-      ? Math.max(0, Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000))
-      : Math.max(0, expiresInMinutes * 60)
-  );
-  const timerRef = useRef(null);
+  const [timeLeft, setTimeLeft] = useState(0);
   const onExpireRef = useRef(onExpire);
   const hasExpiredRef = useRef(false);
 
@@ -15,46 +10,29 @@ function CountdownTimer({ expiresInMinutes = 0, expiresAt, onExpire }) {
   }, [onExpire]);
 
   useEffect(() => {
-    setTimeLeft(
-      expiresAt
-        ? Math.max(0, Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000))
-        : Math.max(0, expiresInMinutes * 60)
-    );
     hasExpiredRef.current = false;
-  }, [expiresAt, expiresInMinutes]);
+    const serverDeadline = expiresAt ? new Date(expiresAt).getTime() : NaN;
+    const deadline = Number.isFinite(serverDeadline)
+      ? serverDeadline
+      : Date.now() + Math.max(0, expiresInMinutes) * 60 * 1000;
 
-  useEffect(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
+    const updateRemainingTime = () => {
+      const remainingSeconds = Math.max(
+        0,
+        Math.ceil((deadline - Date.now()) / 1000),
+      );
+      setTimeLeft(remainingSeconds);
 
-    if (timeLeft <= 0) {
-      if (!hasExpiredRef.current) {
+      if (remainingSeconds === 0 && !hasExpiredRef.current) {
         hasExpiredRef.current = true;
-        onExpireRef.current && onExpireRef.current();
-      }
-      return undefined;
-    }
-
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          if (!hasExpiredRef.current) {
-            hasExpiredRef.current = true;
-            onExpireRef.current && onExpireRef.current();
-          }
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
+        onExpireRef.current?.();
       }
     };
-  }, [timeLeft]);
+
+    updateRemainingTime();
+    const timerId = window.setInterval(updateRemainingTime, 1000);
+    return () => window.clearInterval(timerId);
+  }, [expiresAt, expiresInMinutes]);
 
   const hours = Math.floor(timeLeft / 3600);
   const minutes = Math.floor((timeLeft % 3600) / 60);

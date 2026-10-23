@@ -64,7 +64,7 @@
   </url>
   <url>
     <loc>https://senditsystem.in/blog</loc>
-    <lastmod>2026-08-28</lastmod>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -93,101 +93,21 @@
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
-  <!-- Blog posts -->
-  <url>
-    <loc>https://senditsystem.in/blog/share-files-securely-without-email</loc>
-    <lastmod>2026-06-14</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/encrypted-file-transfer-explained</loc>
-    <lastmod>2026-05-30</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/qr-code-file-sharing-guide</loc>
-    <lastmod>2026-06-02</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/file-expiry-and-auto-delete</loc>
-    <lastmod>2026-06-20</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/share-code-snippets-with-your-team</loc>
-    <lastmod>2026-06-05</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/temporary-access-codes-vs-links</loc>
-    <lastmod>2026-06-11</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/send-large-files-online</loc>
-    <lastmod>2026-06-08</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/file-sharing-mistakes-to-avoid</loc>
-    <lastmod>2026-06-18</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/anonymous-file-sharing-explained</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/file-sharing-for-students</loc>
-    <lastmod>2026-06-01</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/how-file-upload-works</loc>
-    <lastmod>2026-06-09</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/cloud-storage-vs-file-transfer</loc>
-    <lastmod>2026-06-21</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/password-protect-shared-files</loc>
-    <lastmod>2026-06-19</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/receive-files-from-clients-safely</loc>
-    <lastmod>2026-06-22</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/why-links-expire-security</loc>
-    <lastmod>2026-06-23</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://senditsystem.in/blog/file-sharing-etiquette-for-remote-teams</loc>
-    <lastmod>2026-06-24</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- Blog articles with SendIt-specific product notes -->
+  <url><loc>https://senditsystem.in/blog/share-files-securely-without-email</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/encrypted-file-transfer-explained</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/qr-code-file-sharing-guide</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/file-expiry-and-auto-delete</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/share-code-snippets-with-your-team</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/temporary-access-codes-vs-links</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/send-large-files-online</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/file-sharing-mistakes-to-avoid</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/anonymous-file-sharing-explained</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/file-sharing-for-students</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/how-file-upload-works</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/cloud-storage-vs-file-transfer</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/password-protect-shared-files</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/receive-files-from-clients-safely</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/why-links-expire-security</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
+  <url><loc>https://senditsystem.in/blog/file-sharing-etiquette-for-remote-teams</loc><lastmod>2026-10-23</lastmod><priority>0.8</priority></url>
 </urlset>

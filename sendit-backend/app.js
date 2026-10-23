@@ -22,6 +22,7 @@ import codeRoutes from "./routes/code.routes.js";
 import dropRoomRoutes from "./routes/dropRoom.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import contactRoutes from "./routes/contact.routes.js";
+import assistantRoutes from "./routes/assistant.routes.js";
 
 
 connectDB();
@@ -63,6 +64,7 @@ app.use("/api", fileRoutes);
 app.use("/api", codeRoutes);
 app.use("/api", dropRoomRoutes);
 app.use("/api", contactRoutes);
+app.use("/api", assistantRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.use((err, req, res, next) => {
